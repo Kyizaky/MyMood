@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E3F2FD"
+    android:padding="16dp">
+
+    <!-- Teks Panduan -->
+    <TextView
+        android:id="@+id/instructionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="Klik lingkaran untuk memulai"
+        android:textSize="20sp"
+        android:textColor="#000"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="80dp" />
+
+    <!-- Lingkaran -->
+    <View
+        android:id="@+id/circleView"
+        android:layout_width="@dimen/initial_circle_size"
+        android:layout_height="@dimen/initial_circle_size"
+        android:layout_centerInParent="true"
+        android:background="@drawable/circle_shape" />
+    <TextView
+        android:id="@+id/circleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Breath"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/goBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/black"
+        android:paddingLeft="10dp"
+        android:src="@drawable/ic_back" />
+
+    <ImageView
+        android:id="@+id/howTo"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:background="@color/black"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_ask" />
+</RelativeLayout>

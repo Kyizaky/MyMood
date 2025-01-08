@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Beranda"
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home"/>
+
+    <item android:title="Riwayat"
+        android:id="@+id/riwayat"
+        android:icon="@drawable/ic_riwayat"/>
+
+    <item android:title="Tambah"
+        android:id="@+id/tambah"
+        android:icon="@drawable/ic_tambah"/>
+
+    <item android:title="Kegiatan"
+        android:id="@+id/kegiatan"
+        android:icon="@drawable/img_2"/>
+
+    <item android:title="Pengaturan"
+        android:id="@+id/pengaturan"
+        android:icon="@drawable/ic_pengaturan"/>
+</menu>

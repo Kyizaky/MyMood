@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="initial_circle_size">100dp</dimen>
+</resources>
