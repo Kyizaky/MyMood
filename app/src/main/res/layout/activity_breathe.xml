@@ -38,19 +38,17 @@
 
     <ImageView
         android:id="@+id/goBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="44dp"
+        android:layout_height="42dp"
         android:layout_marginTop="16dp"
-        android:background="@color/black"
         android:paddingLeft="10dp"
         android:src="@drawable/ic_back" />
 
     <ImageView
         android:id="@+id/howTo"
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
-        android:background="@color/black"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_ask" />
 </RelativeLayout>

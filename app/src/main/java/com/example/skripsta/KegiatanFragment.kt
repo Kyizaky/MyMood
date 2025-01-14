@@ -23,15 +23,13 @@ class KegiatanFragment : Fragment() {
 
         // Set OnClickListener for CardView 1
         cardMeditation.setOnClickListener {
-            val intent = Intent(activity, PreMeditationActivity::class.java)
-            intent.putExtra("fragment", "A")
+            val intent = Intent(activity, MeditationActivity::class.java)
             startActivity(intent)
         }
 
         // Set OnClickListener for CardView 2
         cardBreathe.setOnClickListener {
-            val intent = Intent(activity, PreMeditationActivity::class.java)
-            intent.putExtra("fragment", "B")
+            val intent = Intent(activity, BreatheActivity::class.java)
             startActivity(intent)
         }
 

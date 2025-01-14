@@ -4,7 +4,9 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 
@@ -13,6 +15,8 @@ class BreatheActivity : AppCompatActivity() {
     private lateinit var instructionText: TextView
     private lateinit var circleText: TextView
     private lateinit var circleView: View
+    private lateinit var icBack: ImageView
+    private lateinit var howTo: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,12 +24,24 @@ class BreatheActivity : AppCompatActivity() {
 
         hideSystemUI()
 
+        icBack = findViewById(R.id.goBack)
         instructionText = findViewById(R.id.instructionText)
         circleView = findViewById(R.id.circleView)
         circleText = findViewById(R.id.circleText)
         circleText.visibility = View.INVISIBLE
+        howTo = findViewById(R.id.howTo)
+
+        icBack.setOnClickListener{
+            onBackPressed()
+        }
+
+        howTo.setOnClickListener{
+            showCustomDialog()
+        }
 
         circleView.setOnClickListener {
+            icBack.visibility = View.INVISIBLE
+            howTo.visibility = View.INVISIBLE
             startBreathingCycle()
         }
     }
@@ -40,6 +56,18 @@ class BreatheActivity : AppCompatActivity() {
                         or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 )
     }
+
+    private fun showCustomDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Androidly Alert")
+        builder.setMessage("We have a message")
+
+        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+
+        }
+        builder.show()
+    }
+
     private fun startBreathingCycle() {
         circleView.isEnabled = false // Disable interaction during the cycle
 
@@ -58,6 +86,8 @@ class BreatheActivity : AppCompatActivity() {
                     instructionText.visibility = View.VISIBLE
                     instructionText.text = "Selesai! Klik lingkaran untuk memulai lagi."
                     circleText.visibility = View.INVISIBLE
+                    icBack.visibility = View.VISIBLE
+                    howTo.visibility = View.VISIBLE
                     circleView.isEnabled = true
                 }
             }

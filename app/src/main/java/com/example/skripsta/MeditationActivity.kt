@@ -22,15 +22,15 @@ class MeditationActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
-        // Handle the "Go Back" button click
         binding.goBack.setOnClickListener {
             resetAudio()
-            onBackPressed()  // This will navigate back to the previous activity or fragment
+            onBackPressed()
         }
 
         binding.howTo.setOnClickListener {
             showCustomDialog()
         }
+
         // Initialize MediaPlayer with a sample audio file
         mediaPlayer = MediaPlayer.create(this, R.raw.music)
 

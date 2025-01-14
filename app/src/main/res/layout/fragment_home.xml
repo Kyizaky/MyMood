@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#D2DBE6"
     tools:context=".HomeFragment">
 
@@ -13,11 +14,22 @@
         android:src="@drawable/img_1"
         android:layout_gravity="bottom|center_horizontal"
         />
-    <TextView
+
+    <!-- CardView untuk Kalender -->
+    <androidx.cardview.widget.CardView
+        android:layout_margin="20dp"
+        android:id="@+id/calendarCardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:text="Hello home fragment"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <!-- Kalender -->
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp" />
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>
