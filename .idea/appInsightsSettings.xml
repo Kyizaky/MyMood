@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.skripsta" />
+                  <option name="mobileSdkAppId" value="1:1034234256151:android:34fe9114c44f552ccaf552" />
+                  <option name="projectId" value="skripsita-1ff99" />
+                  <option name="projectNumber" value="1034234256151" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
