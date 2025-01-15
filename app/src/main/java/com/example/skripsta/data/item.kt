@@ -1,4 +1,4 @@
-package com.example.skripsta
+package com.example.skripsta.data
 
 data class Item(
     val icon: Int,

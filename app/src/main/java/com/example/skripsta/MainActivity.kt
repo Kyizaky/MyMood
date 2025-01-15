@@ -1,9 +1,10 @@
 package com.example.skripsta
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.skripsta.databinding.ActivityMainBinding
 
@@ -32,9 +33,9 @@ class MainActivity : AppCompatActivity() {
                     true // Return true to indicate the item is selected
                 }
                 R.id.tambah -> {
-                    val intent = Intent(this, TambahActivity::class.java)
-                    startActivity(intent)
-                    true // Return true to indicate the item is selected
+                    replaceFragment(TambahFragment())
+                    setBottomNavIndicator(false)
+                    false // Return true to indicate the item is selected
                 }
                 R.id.kegiatan -> {
                     replaceFragment(KegiatanFragment())
@@ -48,6 +49,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun setBottomNavIndicator(isActive: Boolean) {
+        if (isActive) {
+            binding.bottomNavigationView.itemActiveIndicatorColor = ContextCompat.getColorStateList(this, R.color.vista)
+        } else {
+            binding.bottomNavigationView.itemActiveIndicatorColor = ContextCompat.getColorStateList(this, R.color.transparent)
+        }
+    }
+    @SuppressLint("ResourceType")
+
     private fun hideSystemUI() {
         // Sembunyikan navbar dan status bar
         window.decorView.systemUiVisibility = (
@@ -62,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 }

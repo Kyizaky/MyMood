@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
     <color name="app">#D2DBE6</color>
     <color name="vista">#7896CC</color>
 </resources>

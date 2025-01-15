@@ -15,9 +15,6 @@
         <activity
             android:name=".BreatheActivity"
             android:exported="false" />
-       <activity
-            android:name=".TambahActivity"
-            android:exported="false" />
         <activity
             android:name=".MeditationActivity"
             android:exported="false" />
