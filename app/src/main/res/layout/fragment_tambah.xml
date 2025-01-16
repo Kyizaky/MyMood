@@ -241,42 +241,48 @@
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Marah" />
+                            android:text="Marah"
+                            app:closeIconEnabled="false" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip2"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Jijik" />
+                            android:text="Jijik"
+                            app:closeIconEnabled="false" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip3"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Takut" />
+                            android:text="Takut"
+                            app:closeIconEnabled="false" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip4"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sedih" />
+                            android:text="Sedih"
+                            app:closeIconEnabled="false" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip5"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Bahagia" />
+                            android:text="Bahagia"
+                            app:closeIconEnabled="false" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip6"
                             style="@style/Widget.MaterialComponents.Chip.Choice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Netral" />
+                            android:text="Netral"
+                            app:closeIconEnabled="false" />
 
                     </com.google.android.material.chip.ChipGroup>
 

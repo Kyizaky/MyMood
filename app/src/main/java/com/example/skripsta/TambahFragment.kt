@@ -1,7 +1,6 @@
 package com.example.skripsta
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -82,17 +81,16 @@ class TambahFragment : Fragment() {
     private fun insertDataToDatabase(view: View) {
         val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString()
         val moodType = getSelectedMoodType(view)
-        val selectedFeeling = getSelectedChipText(view, R.id.chipGroup) // Mendapatkan nama chip yang dipilih
+        val selectedFeeling = getSelectedChipText(view) // Sekarang mengambil semua chip yang dipilih
         val selectedActivity = getSelectedActivity(view)
 
         // Validasi input
         if (journalContent.isBlank() || moodType == null || selectedFeeling == null || selectedActivity == null) {
-            // Tampilkan pesan error jika ada input yang kosong
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
-            // Menyimpan data ke database
-            mUserViewModel.addUser(User(0, moodType.toString(), selectedActivity, selectedFeeling ?: "Unknown", journalContent))
+            // Simpan ke database dengan nilai yang benar (chip dipisahkan dengan koma)
+            mUserViewModel.addUser(User(0, moodType.toString(), selectedActivity, selectedFeeling, journalContent))
             Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
             parentFragmentManager.popBackStack() // Kembali ke layar sebelumnya
         }
@@ -116,22 +114,19 @@ class TambahFragment : Fragment() {
         button.setBackgroundColor(resources.getColor(R.color.vista))
     }
 
-    private fun getSelectedChipText(view: View, chipGroupId: Int): String? {
-        val chipGroup = view.findViewById<ChipGroup>(chipGroupId)
-        val selectedChipId = chipGroup.checkedChipId
+    private fun getSelectedChipText(view: View): String? {
+        val chipGroup = view.findViewById<ChipGroup>(R.id.chipGroup)
+        val selectedChips = mutableListOf<String>()
 
-        // Debugging log
-        Log.d("SelectedChip", "Checked Chip ID: $selectedChipId")
-
-        return if (selectedChipId != View.NO_ID) {
-            val selectedChip = view.findViewById<Chip>(selectedChipId)
-            selectedChip?.text.toString() // Mendapatkan teks chip yang dipilih
-        } else {
-            null // Jika tidak ada chip yang dipilih
+        for (i in 0 until chipGroup.childCount) {
+            val chip = chipGroup.getChildAt(i) as Chip
+            if (chip.isChecked) {
+                selectedChips.add(chip.text.toString()) // Tambahkan teks chip yang dipilih
+            }
         }
+
+        return if (selectedChips.isNotEmpty()) selectedChips.joinToString(", ") else null
     }
-
-
 
     private fun getSelectedActivity(view: View): String? {
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter

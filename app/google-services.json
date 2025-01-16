@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1034234256151",
+    "project_id": "skripsita-1ff99",
+    "storage_bucket": "skripsita-1ff99.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034234256151:android:34fe9114c44f552ccaf552",
+        "android_client_info": {
+          "package_name": "com.example.skripsta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8m9NJ1iyOQAoAGkxEihhhJdfNPrEgyS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
