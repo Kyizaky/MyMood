@@ -5,4 +5,7 @@
     <color name="transparent">#00000000</color>
     <color name="app">#D2DBE6</color>
     <color name="vista">#7896CC</color>
+
+    <color name="light_green">#B2CBB0</color>
+    <color name="pale_green">#C7E4C4</color>
 </resources>

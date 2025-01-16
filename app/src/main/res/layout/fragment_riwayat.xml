@@ -5,18 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".RiwayatFragment">
 
-    <ImageView
-        android:layout_width="138dp"
-        android:layout_height="140dp"
-        android:layout_marginBottom="4dp"
-        android:src="@drawable/img_1"
-        android:layout_gravity="bottom|center_horizontal"
-        />
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMoodHistory"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:text="Hello riwayat fragment"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"
+        android:padding="8dp"/>
 
 </FrameLayout>

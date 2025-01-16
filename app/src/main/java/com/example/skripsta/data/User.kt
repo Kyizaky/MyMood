@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class User (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val mood: String,
+    val mood: Int,
     val aktivitas: String,
     val perasaan: String,
     val jurnal: String

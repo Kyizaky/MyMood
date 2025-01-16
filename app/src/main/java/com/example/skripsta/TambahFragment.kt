@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.adapter.ItemAdapter
+import com.example.skripsta.adapter.getDisplayName
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
@@ -90,12 +92,11 @@ class TambahFragment : Fragment() {
             return
         } else {
             // Simpan ke database dengan nilai yang benar (chip dipisahkan dengan koma)
-            mUserViewModel.addUser(User(0, moodType.toString(), selectedActivity, selectedFeeling, journalContent))
+            mUserViewModel.addUser(User(0, moodType.toInt(), selectedActivity, selectedFeeling, journalContent))
             Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
             parentFragmentManager.popBackStack() // Kembali ke layar sebelumnya
         }
     }
-
 
     private fun getSelectedMoodType(view: View): Int? {
         val moodButtons = listOf(

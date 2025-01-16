@@ -1,4 +1,4 @@
-package com.example.skripsta
+package com.example.skripsta.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.skripsta.R
 import com.example.skripsta.data.Item
 
 class ItemAdapter(
