@@ -8,25 +8,49 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.data.Item
 
-class ItemAdapter(private val items: List<Item>) :
-    RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class ItemAdapter(
+    val items: List<Item>,
+    private val onItemClicked: (Item) -> Unit // Callback untuk menangani klik
+) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
-    class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val icon: ImageView = view.findViewById(R.id.item_icon)
-        val text: TextView = view.findViewById(R.id.item_text)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val icon: ImageView = itemView.findViewById(R.id.item_icon)
+        private val text: TextView = itemView.findViewById(R.id.item_text)
+
+        fun bind(item: Item) {
+            icon.setImageResource(item.iconResId)
+            text.text = item.text
+
+            // Ubah tampilan berdasarkan status pemilihan
+            if (item.isSelected) {
+                itemView.setBackgroundColor(itemView.context.resources.getColor(R.color.vista)) // Warna dipilih
+            } else {
+                itemView.setBackgroundColor(itemView.context.resources.getColor(R.color.white)) // Warna default
+            }
+
+            // Atur klik listener
+            itemView.setOnClickListener {
+                // Logika untuk mengatur status item yang dipilih
+                items.forEach { it.isSelected = false } // Set semua item menjadi tidak dipilih
+                item.isSelected = true // Tandai item yang diklik sebagai dipilih
+                notifyDataSetChanged() // Perbarui tampilan RecyclerView
+
+                onItemClicked(item) // Panggil callback dengan item yang dipilih
+            }
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_grid, parent, false)
-        return ItemViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val item = items[position]
-        holder.icon.setImageResource(item.icon)
-        holder.text.text = item.text
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(items[position])
     }
 
     override fun getItemCount(): Int = items.size
 }
+
+fun Item.getDisplayName(): String = this.text

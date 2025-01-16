@@ -1,38 +1,63 @@
 package com.example.skripsta
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.*
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.data.Item
+import com.example.skripsta.data.User
+import com.example.skripsta.data.UserViewModel
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
 class TambahFragment : Fragment() {
+
+    private lateinit var mUserViewModel: UserViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_tambah, container, false)
 
-        // Sembunyikan BottomNavigationView
-        val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavigationView)
-        bottomNav.visibility = View.GONE
+        mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
-        val goBack: ImageView = view.findViewById(R.id.ic_back)
-        goBack.setOnClickListener{
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
+        view.findViewById<ImageView>(R.id.ic_back).setOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        // Inisialisasi RecyclerView
-        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
+        view.findViewById<Button>(R.id.btn_save).setOnClickListener {
+            insertDataToDatabase(view)
+        }
 
-        // Data untuk item grid
+        setupMoodButtons(view)
+        setupRecyclerView(view)
+
+        return view
+    }
+
+    private fun setupMoodButtons(view: View) {
+        val moodButtons = listOf(
+            R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
+            R.id.mood4 to 4, R.id.mood5 to 5, R.id.mood6 to 6
+        )
+
+        moodButtons.forEach { (id, _) ->
+            view.findViewById<ImageButton>(id).setOnClickListener { button ->
+                updateMoodSelection(button as ImageButton, moodButtons.map { view.findViewById<ImageButton>(it.first) })
+            }
+        }
+    }
+
+    private fun setupRecyclerView(view: View) {
         val items = listOf(
             Item(R.drawable.ic_bekerja, "Family"),
             Item(R.drawable.ic_belajar, "Friends"),
@@ -44,17 +69,77 @@ class TambahFragment : Fragment() {
             Item(R.drawable.ic_mood, "Traveling")
         )
 
-        // Set Adapter dan LayoutManager
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 4) // 4 kolom
-        recyclerView.adapter = ItemAdapter(items)
+        view.findViewById<RecyclerView>(R.id.recycler_view).apply {
+            layoutManager = GridLayoutManager(requireContext(), 5)
+            adapter = ItemAdapter(items) { selectedItem ->
+                items.forEach { it.isSelected = false }
+                selectedItem.isSelected = true
+                adapter?.notifyDataSetChanged()
+            }
+        }
+    }
 
-        return view
+    private fun insertDataToDatabase(view: View) {
+        val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString()
+        val moodType = getSelectedMoodType(view)
+        val selectedFeeling = getSelectedChipText(view, R.id.chipGroup) // Mendapatkan nama chip yang dipilih
+        val selectedActivity = getSelectedActivity(view)
+
+        // Validasi input
+        if (journalContent.isBlank() || moodType == null || selectedFeeling == null || selectedActivity == null) {
+            // Tampilkan pesan error jika ada input yang kosong
+            Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
+            return
+        } else {
+            // Menyimpan data ke database
+            mUserViewModel.addUser(User(0, moodType.toString(), selectedActivity, selectedFeeling ?: "Unknown", journalContent))
+            Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
+            parentFragmentManager.popBackStack() // Kembali ke layar sebelumnya
+        }
+    }
+
+
+    private fun getSelectedMoodType(view: View): Int? {
+        val moodButtons = listOf(
+            R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
+            R.id.mood4 to 4, R.id.mood5 to 5, R.id.mood6 to 6
+        )
+        return moodButtons.firstOrNull { view.findViewById<ImageButton>(it.first).isSelected }?.second
+    }
+
+    private fun updateMoodSelection(button: ImageButton, allButtons: List<ImageButton>) {
+        allButtons.forEach {
+            it.isSelected = false
+            it.setBackgroundColor(resources.getColor(R.color.white))
+        }
+        button.isSelected = true
+        button.setBackgroundColor(resources.getColor(R.color.vista))
+    }
+
+    private fun getSelectedChipText(view: View, chipGroupId: Int): String? {
+        val chipGroup = view.findViewById<ChipGroup>(chipGroupId)
+        val selectedChipId = chipGroup.checkedChipId
+
+        // Debugging log
+        Log.d("SelectedChip", "Checked Chip ID: $selectedChipId")
+
+        return if (selectedChipId != View.NO_ID) {
+            val selectedChip = view.findViewById<Chip>(selectedChipId)
+            selectedChip?.text.toString() // Mendapatkan teks chip yang dipilih
+        } else {
+            null // Jika tidak ada chip yang dipilih
+        }
+    }
+
+
+
+    private fun getSelectedActivity(view: View): String? {
+        val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
+        return adapter?.items?.firstOrNull { it.isSelected }?.getDisplayName()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Tampilkan kembali BottomNavigationView
-        val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavigationView)
-        bottomNav.visibility = View.VISIBLE
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
 }
