@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:id="@+id/consMood">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_view"
+        android:id="@+id/cv_mood"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
@@ -24,7 +25,7 @@
             android:padding="15dp">
 
             <TextView
-                android:id="@+id/textViewMood"
+                android:id="@+id/tv_cal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tanggal"
@@ -47,7 +48,7 @@
                 android:src="@drawable/mood1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewMood"
+                app:layout_constraintTop_toBottomOf="@+id/tv_cal"
                 app:layout_constraintVertical_bias="0.65" />
 
             <TextView
@@ -61,11 +62,11 @@
                 android:textStyle="bold"
                 android:layout_marginTop="15dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewMood"
+                app:layout_constraintTop_toBottomOf="@id/tv_cal"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
-                android:id="@+id/textViewTimestamp"
+                android:id="@+id/tv_jam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"

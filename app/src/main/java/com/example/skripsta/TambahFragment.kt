@@ -1,5 +1,7 @@
 package com.example.skripsta
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +18,9 @@ import com.example.skripsta.adapter.ItemAdapter
 import com.example.skripsta.adapter.getDisplayName
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class TambahFragment : Fragment() {
 
@@ -37,6 +42,50 @@ class TambahFragment : Fragment() {
 
         view.findViewById<Button>(R.id.btn_save).setOnClickListener {
             insertDataToDatabase(view)
+        }
+
+        val btnCal: EditText = view.findViewById(R.id.btn_cal)
+        val btnClock: EditText = view.findViewById(R.id.btn_clock)
+        val calendar = Calendar.getInstance()
+
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        btnClock.setText(timeFormat.format(calendar.time))
+
+        // Format tanggal
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+        btnCal.setText(dateFormat.format(calendar.time))
+
+        // Event untuk menampilkan TimePickerDialog
+        btnClock.setOnClickListener {
+            val timePickerDialog = TimePickerDialog(
+                requireContext(),
+                { _, hourOfDay, minute ->
+                    val selectedTime = Calendar.getInstance()
+                    selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    selectedTime.set(Calendar.MINUTE, minute)
+                    btnClock.setText(timeFormat.format(selectedTime.time))
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            )
+            timePickerDialog.show()
+        }
+
+        // Event untuk menampilkan DatePickerDialog
+        btnCal.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = Calendar.getInstance()
+                    selectedDate.set(year, month, dayOfMonth)
+                    btnCal.setText(dateFormat.format(selectedDate.time))
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
         }
 
         setupMoodButtons(view)
@@ -85,14 +134,16 @@ class TambahFragment : Fragment() {
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = getSelectedChipText(view) // Sekarang mengambil semua chip yang dipilih
         val selectedActivity = getSelectedActivity(view)
+        val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
+        val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
         // Validasi input
-        if (journalContent.isBlank() || moodType == null || selectedFeeling == null || selectedActivity == null) {
+        if (journalContent.isBlank() || moodType == null || selectedFeeling == null || selectedActivity == null|| selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
             // Simpan ke database dengan nilai yang benar (chip dipisahkan dengan koma)
-            mUserViewModel.addUser(User(0, moodType.toInt(), selectedActivity, selectedFeeling, journalContent))
+            mUserViewModel.addUser(User(0, moodType.toInt(), selectedActivity, selectedFeeling, journalContent, selectedDate, selectedTime))
             Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
             parentFragmentManager.popBackStack() // Kembali ke layar sebelumnya
         }

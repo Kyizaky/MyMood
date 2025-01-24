@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/riwayatFragment">
+
+    <fragment
+        android:id="@+id/riwayatFragment"
+        android:name="com.example.skripsta.RiwayatFragment"
+        android:label="fragment_riwayat"
+        tools:layout="@layout/fragment_riwayat" >
+        <action
+            android:id="@+id/action_riwayatFragment_to_isiRiwayatFragment"
+            app:destination="@id/isiRiwayatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/isiRiwayatFragment"
+        android:name="com.example.skripsta.IsiRiwayatFragment"
+        android:label="fragment_isi_riwayat"
+        tools:layout="@layout/fragment_isi_riwayat" >
+        <action
+            android:id="@+id/action_isiRiwayatFragment_to_riwayatFragment"
+            app:destination="@id/riwayatFragment" />
+        <argument
+            android:name="currentUser"
+            app:argType="com.example.skripsta.data.User" />
+    </fragment>
+</navigation>
