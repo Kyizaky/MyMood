@@ -9,9 +9,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.IsiRiwayatFragment
 import com.example.skripsta.R
+import com.example.skripsta.RiwayatFragmentDirections
 import com.example.skripsta.data.User
 
 class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<RiwayatAdapter.MyViewHolder>() {
@@ -38,20 +40,9 @@ class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Riwa
         holder.imageMood.setImageResource(convertMoodToImage(currentItem.mood))
         holder.feeling.text = currentItem.perasaan
 
-        holder.cvMood.setOnClickListener { view ->
-            val fragment = IsiRiwayatFragment()
-
-            // Kirim data ke fragment baru
-            val bundle = Bundle()
-            bundle.putParcelable("currentUser", currentItem)
-            fragment.arguments = bundle
-
-            val fragmentManager = (view.context as AppCompatActivity).supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-
-            fragmentTransaction.replace(R.id.frame_layout, fragment) // Ganti dengan ID dari container fragment Anda
-            fragmentTransaction.addToBackStack(null) // Menyimpan fragment sebelumnya dalam stack
-            fragmentTransaction.commit()
+        holder.cvMood.setOnClickListener {
+            val action = RiwayatFragmentDirections.actionRiwayatFragmentToIsiRiwayatFragment(currentItem)
+            holder.itemView.findNavController().navigate(action)
         }
 
     }

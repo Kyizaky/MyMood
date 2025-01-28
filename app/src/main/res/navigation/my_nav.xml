@@ -2,26 +2,47 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/my_nav"
-    app:startDestination="@id/riwayatFragment">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.skripsta.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/riwayatFragment"
         android:name="com.example.skripsta.RiwayatFragment"
-        android:label="fragment_riwayat"
+        android:label="Riwayat"
         tools:layout="@layout/fragment_riwayat" >
         <action
             android:id="@+id/action_riwayatFragment_to_isiRiwayatFragment"
             app:destination="@id/isiRiwayatFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/tambahFragment"
+        android:name="com.example.skripsta.TambahFragment"
+        android:label="Tambah"
+        tools:layout="@layout/fragment_tambah" />
+
+    <fragment
+        android:id="@+id/kegiatanFragment"
+        android:name="com.example.skripsta.KegiatanFragment"
+        android:label="Kegiatan"
+        tools:layout="@layout/fragment_kegiatan" />
+
+    <fragment
+        android:id="@+id/pengaturanFragment"
+        android:name="com.example.skripsta.PengaturanFragment"
+        android:label="Pengaturan"
+        tools:layout="@layout/fragment_pengaturan" />
     <fragment
         android:id="@+id/isiRiwayatFragment"
         android:name="com.example.skripsta.IsiRiwayatFragment"
         android:label="fragment_isi_riwayat"
         tools:layout="@layout/fragment_isi_riwayat" >
-        <action
-            android:id="@+id/action_isiRiwayatFragment_to_riwayatFragment"
-            app:destination="@id/riwayatFragment" />
         <argument
             android:name="currentUser"
             app:argType="com.example.skripsta.data.User" />
