@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.databinding.FragmentIsiRiwayatBinding
 import com.google.android.flexbox.FlexDirection
