@@ -105,4 +105,5 @@ dependencies {
     api (libs.kotlinx.coroutines.core)
     api (libs.kotlinx.coroutines.android)
 
+    implementation ("com.google.android.flexbox:flexbox:3.0.0")
 }

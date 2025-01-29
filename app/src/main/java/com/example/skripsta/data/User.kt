@@ -11,7 +11,7 @@ data class User (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val mood: Int,
-    val aktivitas: String,
+    val activities: List<String>,
     val perasaan: String,
     val jurnal: String,
     val tanggal: String, // Format: MM/dd/yyyy

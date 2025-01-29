@@ -16,6 +16,11 @@ import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
 import com.example.skripsta.adapter.ItemAdapter
 import com.example.skripsta.adapter.getDisplayName
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import java.text.SimpleDateFormat
@@ -119,33 +124,48 @@ class TambahFragment : Fragment() {
             Item(R.drawable.ic_mood, "Traveling")
         )
 
-        view.findViewById<RecyclerView>(R.id.recycler_view).apply {
-            layoutManager = GridLayoutManager(requireContext(), 5)
-            adapter = ItemAdapter(items) { selectedItem ->
-                items.forEach { it.isSelected = false }
-                selectedItem.isSelected = true
-                adapter?.notifyDataSetChanged()
-            }
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+            justifyContent = JustifyContent.FLEX_START // Agar item ditata lebih rapi
         }
+
+        val adapter = ItemAdapter(items) { selectedItems ->
+            // Anda bisa menangani item yang dipilih di sini
+            val selectedNames = selectedItems.joinToString(", ") { it.text }
+            Toast.makeText(requireContext(), "Selected: $selectedNames", Toast.LENGTH_SHORT).show()
+        }
+
+        recyclerView.adapter = adapter
     }
+
 
     private fun insertDataToDatabase(view: View) {
         val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString()
         val moodType = getSelectedMoodType(view)
-        val selectedFeeling = getSelectedChipText(view) // Sekarang mengambil semua chip yang dipilih
-        val selectedActivity = getSelectedActivity(view)
+        val selectedFeeling = getSelectedChipText(view)
+        val selectedActivities = getSelectedActivities(view) // Dapatkan semua aktivitas yang dipilih
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
-        // Validasi input
-        if (journalContent.isBlank() || moodType == null || selectedFeeling == null || selectedActivity == null|| selectedDate.isBlank() || selectedTime.isBlank()) {
+        if (journalContent.isBlank() || moodType == null || selectedFeeling == null || selectedActivities.isEmpty() || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
-            // Simpan ke database dengan nilai yang benar (chip dipisahkan dengan koma)
-            mUserViewModel.addUser(User(0, moodType.toInt(), selectedActivity, selectedFeeling, journalContent, selectedDate, selectedTime))
+            val user = User(
+                id = 0,
+                mood = moodType.toInt(),
+                activities = selectedActivities, // Simpan aktivitas sebagai List<String>
+                perasaan = selectedFeeling,
+                jurnal = journalContent,
+                tanggal = selectedDate,
+                jam = selectedTime
+            )
+
+            mUserViewModel.addUser(user)
             Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
-            parentFragmentManager.popBackStack() // Kembali ke layar sebelumnya
+            parentFragmentManager.popBackStack()
         }
     }
 
@@ -180,10 +200,11 @@ class TambahFragment : Fragment() {
         return if (selectedChips.isNotEmpty()) selectedChips.joinToString(", ") else null
     }
 
-    private fun getSelectedActivity(view: View): String? {
+    private fun getSelectedActivities(view: View): List<String> {
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
-        return adapter?.items?.firstOrNull { it.isSelected }?.getDisplayName()
+        return adapter?.items?.filter { it.isSelected }?.map { it.text } ?: emptyList()
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
