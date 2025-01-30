@@ -9,14 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
 import com.example.skripsta.adapter.ItemAdapter
-import com.example.skripsta.adapter.getDisplayName
-import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -143,13 +140,14 @@ class TambahFragment : Fragment() {
 
     private fun insertDataToDatabase(view: View) {
         val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString()
+        val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString()
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = getSelectedChipText(view)
         val selectedActivities = getSelectedActivities(view) // Dapatkan semua aktivitas yang dipilih
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
-        if (journalContent.isBlank() || moodType == null || selectedFeeling == null || selectedActivities.isEmpty() || selectedDate.isBlank() || selectedTime.isBlank()) {
+        if (journalContent.isBlank() || titleJournal.isBlank() || moodType == null || selectedFeeling == null || selectedActivities.isEmpty() || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
@@ -158,6 +156,7 @@ class TambahFragment : Fragment() {
                 mood = moodType.toInt(),
                 activities = selectedActivities, // Simpan aktivitas sebagai List<String>
                 perasaan = selectedFeeling,
+                judul = titleJournal,
                 jurnal = journalContent,
                 tanggal = selectedDate,
                 jam = selectedTime

@@ -46,5 +46,8 @@
         <argument
             android:name="currentUser"
             app:argType="com.example.skripsta.data.User" />
+        <action
+            android:id="@+id/action_isiRiwayatFragment_to_riwayatFragment"
+            app:destination="@id/riwayatFragment" />
     </fragment>
 </navigation>

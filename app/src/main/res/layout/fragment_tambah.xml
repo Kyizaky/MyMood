@@ -389,7 +389,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
+                    <EditText
                         android:id="@+id/tvJurnaling"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -397,7 +397,7 @@
                         android:layout_marginTop="20dp"
                         android:background="@drawable/rounded_background2"
                         android:padding="12dp"
-                        android:text="Judul"
+                        android:hint="Judul Jurnal"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

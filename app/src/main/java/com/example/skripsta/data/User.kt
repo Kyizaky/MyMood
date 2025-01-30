@@ -13,6 +13,7 @@ data class User (
     val mood: Int,
     val activities: List<String>,
     val perasaan: String,
+    val judul: String,
     val jurnal: String,
     val tanggal: String, // Format: MM/dd/yyyy
     val jam: String // Format: HH:mm
