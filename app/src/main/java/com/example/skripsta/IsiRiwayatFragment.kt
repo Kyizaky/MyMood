@@ -64,7 +64,7 @@ class IsiRiwayatFragment : Fragment() {
         builder.setPositiveButton("Yes"){ _, _ ->
             mUserViewModel.deleteUser(args.currentUser)
             Toast.makeText(requireContext(), "data berhasil dihapus", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_isiRiwayatFragment_to_riwayatFragment)
+            findNavController().popBackStack()
         }
         builder.setNegativeButton("No"){ _, _ ->
 

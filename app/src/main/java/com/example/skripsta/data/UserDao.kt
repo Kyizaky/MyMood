@@ -19,6 +19,6 @@ interface UserDao {
     @Delete
     suspend fun deleteUser(user: User)
 
-    @Query("DELETE FROM user_table")
-    suspend fun deleteAllUsers()
+    @Query("SELECT * FROM user_table WHERE tanggal = :selectedDate ORDER BY jam ASC")
+    fun getJournalsByDate(selectedDate: String): LiveData<List<User>>
 }

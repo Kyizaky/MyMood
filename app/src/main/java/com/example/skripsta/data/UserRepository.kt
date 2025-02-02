@@ -14,8 +14,8 @@ class UserRepository(private val userDao: UserDao) {
         userDao.deleteUser(user)
     }
 
-    suspend fun deleteAllUsers(){
-        userDao.deleteAllUsers()
+    fun getJournalsByDate(selectedDate: String): LiveData<List<User>> {
+        return userDao.getJournalsByDate(selectedDate)
     }
 
 }
