@@ -1,4 +1,4 @@
-package com.example.skripsta.adapter
+package com.example.skripsta
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.skripsta.R
 import com.example.skripsta.data.Item
 
 class ItemAdapter(
     val items: List<Item>,
-    private val onItemClicked: (List<Item>) -> Unit
+    private val onItemClicked: (Item) -> Unit // Callback untuk menangani klik
 ) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -21,15 +20,22 @@ class ItemAdapter(
         fun bind(item: Item) {
             icon.setImageResource(item.iconResId)
             text.text = item.text
-            itemView.setBackgroundColor(
-                if (item.isSelected) itemView.context.resources.getColor(R.color.vista)
-                else itemView.context.resources.getColor(R.color.white)
-            )
 
+            // Ubah tampilan berdasarkan status pemilihan
+            if (item.isSelected) {
+                itemView.setBackgroundColor(itemView.context.resources.getColor(R.color.vista)) // Warna dipilih
+            } else {
+                itemView.setBackgroundColor(itemView.context.resources.getColor(R.color.white)) // Warna default
+            }
+
+            // Atur klik listener
             itemView.setOnClickListener {
-                item.isSelected = !item.isSelected
-                notifyDataSetChanged()
-                onItemClicked(items.filter { it.isSelected })
+                // Logika untuk mengatur status item yang dipilih
+                items.forEach { it.isSelected = false } // Set semua item menjadi tidak dipilih
+                item.isSelected = true // Tandai item yang diklik sebagai dipilih
+                notifyDataSetChanged() // Perbarui tampilan RecyclerView
+
+                onItemClicked(item) // Panggil callback dengan item yang dipilih
             }
         }
     }
@@ -46,6 +52,5 @@ class ItemAdapter(
 
     override fun getItemCount(): Int = items.size
 }
-
 
 fun Item.getDisplayName(): String = this.text

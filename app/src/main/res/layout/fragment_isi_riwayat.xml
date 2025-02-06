@@ -128,15 +128,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvActivity">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewActivities"
-                    android:textSize="16sp"
-                    android:text="isi aktivitas"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_aktivitasdata"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:background="@drawable/rounded_background2"
+                    android:padding="10dp"
+                    android:text="Aktivitas"
+                    android:layout_margin="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

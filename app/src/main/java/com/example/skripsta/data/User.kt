@@ -11,7 +11,7 @@ data class User (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val mood: Int,
-    val activities: List<String>,
+    val activities: String,
     val perasaan: String,
     val judul: String,
     val jurnal: String,

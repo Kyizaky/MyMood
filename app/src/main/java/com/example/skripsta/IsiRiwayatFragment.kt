@@ -10,13 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.data.UserViewModel
 import com.example.skripsta.databinding.FragmentIsiRiwayatBinding
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 
 class IsiRiwayatFragment : Fragment() {
 
@@ -41,16 +36,8 @@ class IsiRiwayatFragment : Fragment() {
         binding.tvIsiJurnal.text = args.currentUser.jurnal
         binding.tvTitlej.text = args.currentUser.judul
         binding.ivMood.setImageResource(convertMoodToImage(args.currentUser.mood))
+        binding.tvAktivitasdata.text = args.currentUser.activities
 
-        // Set RecyclerView untuk aktivitas
-        binding.recyclerViewActivities.apply {
-            layoutManager = FlexboxLayoutManager(requireContext()).apply {
-                flexDirection = FlexDirection.ROW
-                flexWrap = FlexWrap.WRAP
-                justifyContent = JustifyContent.FLEX_START // Atur ke START, CENTER, atau SPACE_AROUND
-            }
-            adapter = ActivityAdapter(args.currentUser.activities)
-        }
 
         binding.btnDel.setOnClickListener {
             deleteUser()

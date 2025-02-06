@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
-import com.example.skripsta.adapter.ItemAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -127,14 +127,13 @@ class TambahFragment : Fragment() {
             flexWrap = FlexWrap.WRAP
             justifyContent = JustifyContent.FLEX_START // Agar item ditata lebih rapi
         }
-
-        val adapter = ItemAdapter(items) { selectedItems ->
-            // Anda bisa menangani item yang dipilih di sini
-            val selectedNames = selectedItems.joinToString(", ") { it.text }
-            Toast.makeText(requireContext(), "Selected: $selectedNames", Toast.LENGTH_SHORT).show()
+        view.findViewById<RecyclerView>(R.id.recycler_view).apply {
+            adapter = ItemAdapter(items) { selectedItem ->
+                items.forEach { it.isSelected = false }
+                selectedItem.isSelected = true
+                adapter?.notifyDataSetChanged()
+            }
         }
-
-        recyclerView.adapter = adapter
     }
 
 
@@ -143,11 +142,11 @@ class TambahFragment : Fragment() {
         val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString()
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = getSelectedChipText(view)
-        val selectedActivities = getSelectedActivities(view) // Dapatkan semua aktivitas yang dipilih
+        val selectedActivities = getSelectedActivity(view) // Dapatkan semua aktivitas yang dipilih
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
-        if (journalContent.isBlank() || titleJournal.isBlank() || moodType == null || selectedFeeling == null || selectedActivities.isEmpty() || selectedDate.isBlank() || selectedTime.isBlank()) {
+        if (journalContent.isBlank() || titleJournal.isBlank() || moodType == null || selectedFeeling == null || selectedActivities == null || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
@@ -199,11 +198,10 @@ class TambahFragment : Fragment() {
         return if (selectedChips.isNotEmpty()) selectedChips.joinToString(", ") else null
     }
 
-    private fun getSelectedActivities(view: View): List<String> {
+    private fun getSelectedActivity(view: View): String? {
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
-        return adapter?.items?.filter { it.isSelected }?.map { it.text } ?: emptyList()
+        return adapter?.items?.firstOrNull { it.isSelected }?.getDisplayName()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

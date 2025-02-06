@@ -100,6 +100,7 @@ dependencies {
     implementation (libs.androidx.lifecycle.common.java8)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
 
+
     // Kotlin components
     implementation (libs.kotlin.stdlib.jdk7)
     api (libs.kotlinx.coroutines.core)
