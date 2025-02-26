@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.skripsta.adapter.FeelingAdapter
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
@@ -18,8 +18,6 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -92,6 +90,7 @@ class TambahFragment : Fragment() {
 
         setupMoodButtons(view)
         setupRecyclerView(view)
+        setupFeelingRecyclerView(view)
 
         return view
     }
@@ -101,7 +100,6 @@ class TambahFragment : Fragment() {
             R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
             R.id.mood4 to 4, R.id.mood5 to 5, R.id.mood6 to 6
         )
-
         moodButtons.forEach { (id, _) ->
             view.findViewById<ImageButton>(id).setOnClickListener { button ->
                 updateMoodSelection(button as ImageButton, moodButtons.map { view.findViewById<ImageButton>(it.first) })
@@ -127,6 +125,7 @@ class TambahFragment : Fragment() {
             flexWrap = FlexWrap.WRAP
             justifyContent = JustifyContent.FLEX_START // Agar item ditata lebih rapi
         }
+
         view.findViewById<RecyclerView>(R.id.recycler_view).apply {
             adapter = ItemAdapter(items) { selectedItem ->
                 items.forEach { it.isSelected = false }
@@ -136,24 +135,40 @@ class TambahFragment : Fragment() {
         }
     }
 
+    private var selectedFeelingText: String? = null
+
+    private fun setupFeelingRecyclerView(view: View) {
+        val feelings = listOf("Happy", "Sad", "Excited", "Angry", "Relaxed", "Anxious")
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_feelings)
+
+        recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+            justifyContent = JustifyContent.FLEX_START // Agar item ditata lebih rapi
+        }
+        recyclerView.adapter = FeelingAdapter(feelings) { selectedFeeling ->
+            selectedFeelingText = selectedFeeling
+        }
+    }
 
     private fun insertDataToDatabase(view: View) {
         val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString()
         val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString()
         val moodType = getSelectedMoodType(view)
-        val selectedFeeling = getSelectedChipText(view)
-        val selectedActivities = getSelectedActivity(view) // Dapatkan semua aktivitas yang dipilih
+        val selectedFeeling = selectedFeelingText
+        val selectedActivity = getSelectedActivity(view) // Ambil objek Item yang dipilih
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
-        if (journalContent.isBlank() || titleJournal.isBlank() || moodType == null || selectedFeeling == null || selectedActivities == null || selectedDate.isBlank() || selectedTime.isBlank()) {
+        if (journalContent.isBlank() || titleJournal.isBlank() || moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
             val user = User(
                 id = 0,
                 mood = moodType.toInt(),
-                activities = selectedActivities, // Simpan aktivitas sebagai List<String>
+                activities = selectedActivity.getDisplayName(), // Simpan nama aktivitas
+                activityIcon = selectedActivity.drawableId, // Simpan ID drawable gambar aktivitas
                 perasaan = selectedFeeling,
                 judul = titleJournal,
                 jurnal = journalContent,
@@ -166,6 +181,7 @@ class TambahFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
     }
+
 
     private fun getSelectedMoodType(view: View): Int? {
         val moodButtons = listOf(
@@ -184,23 +200,9 @@ class TambahFragment : Fragment() {
         button.setBackgroundColor(resources.getColor(R.color.vista))
     }
 
-    private fun getSelectedChipText(view: View): String? {
-        val chipGroup = view.findViewById<ChipGroup>(R.id.chipGroup)
-        val selectedChips = mutableListOf<String>()
-
-        for (i in 0 until chipGroup.childCount) {
-            val chip = chipGroup.getChildAt(i) as Chip
-            if (chip.isChecked) {
-                selectedChips.add(chip.text.toString()) // Tambahkan teks chip yang dipilih
-            }
-        }
-
-        return if (selectedChips.isNotEmpty()) selectedChips.joinToString(", ") else null
-    }
-
-    private fun getSelectedActivity(view: View): String? {
+    private fun getSelectedActivity(view: View): Item? {
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
-        return adapter?.items?.firstOrNull { it.isSelected }?.getDisplayName()
+        return adapter?.items?.firstOrNull { it.isSelected }
     }
 
     override fun onDestroyView() {

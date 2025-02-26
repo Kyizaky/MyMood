@@ -10,4 +10,8 @@
     <color name="pale_green">#C7E4C4</color>
     <color name="aliceBlue">#D2DBE6</color>
     <color name="aliceBlue2">#E0ECF8</color>
+
+    <color name="color_active">#A5C6F9</color> <!-- Sesuaikan dengan warna pada gambar -->
+    <color name="color_inactive">#FFFFFF</color>
 </resources>
+

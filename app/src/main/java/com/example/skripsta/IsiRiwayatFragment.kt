@@ -21,12 +21,15 @@ class IsiRiwayatFragment : Fragment() {
     private lateinit var binding: FragmentIsiRiwayatBinding
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
         mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
         binding = FragmentIsiRiwayatBinding.inflate(inflater, container, false)
 
@@ -35,12 +38,18 @@ class IsiRiwayatFragment : Fragment() {
         binding.txtTime.text = args.currentUser.jam
         binding.tvIsiJurnal.text = args.currentUser.jurnal
         binding.tvTitlej.text = args.currentUser.judul
+        binding.imageView2.setImageResource(args.currentUser.activityIcon)
         binding.ivMood.setImageResource(convertMoodToImage(args.currentUser.mood))
         binding.tvAktivitasdata.text = args.currentUser.activities
 
 
         binding.btnDel.setOnClickListener {
             deleteUser()
+        }
+
+        binding.btnEdit.setOnClickListener {
+            val action = IsiRiwayatFragmentDirections.actionIsiRiwayatFragmentToEditMoodFragment(args.currentUser)
+            findNavController().navigate(action)
         }
 
         return binding.root
@@ -60,6 +69,7 @@ class IsiRiwayatFragment : Fragment() {
         builder.setMessage("Are you sure?")
         builder.create().show()
     }
+
 
 
     private fun convertMoodToImage(mood: Int): Int {

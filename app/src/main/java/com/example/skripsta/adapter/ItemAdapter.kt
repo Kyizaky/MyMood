@@ -18,7 +18,7 @@ class ItemAdapter(
         private val text: TextView = itemView.findViewById(R.id.item_text)
 
         fun bind(item: Item) {
-            icon.setImageResource(item.iconResId)
+            icon.setImageResource(item.drawableId)
             text.text = item.text
 
             // Ubah tampilan berdasarkan status pemilihan

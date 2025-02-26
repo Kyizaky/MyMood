@@ -14,6 +14,10 @@ class UserRepository(private val userDao: UserDao) {
         userDao.deleteUser(user)
     }
 
+    suspend fun updateUser(user: User){
+        userDao.updateUser(user)
+    }
+
     fun getJournalsByDate(selectedDate: String): LiveData<List<User>> {
         return userDao.getJournalsByDate(selectedDate)
     }

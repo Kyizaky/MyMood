@@ -2,10 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/edit_main"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E3F2FD">
+    android:background="@color/app">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,9 +34,9 @@
                 android:drawableStart="@drawable/ic_calendar"
                 android:drawableEnd="@drawable/ic_drop"
                 android:focusable="false"
+                android:hint="MM/DD/YY"
                 android:focusableInTouchMode="false"
-                android:hint="MM/DD/YYYY"
-                android:drawablePadding="3dp"
+                android:fontFamily="@font/nunitoregular"
                 android:inputType="text|number"
                 android:textColor="@color/vista"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -56,6 +56,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:hint="00:00"
+                android:fontFamily="@font/nunitoregular"
                 android:inputType="text|number"
                 android:textColor="@color/vista"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -76,10 +77,11 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="24dp"
                 android:gravity=""
                 android:text="Bagaimana\nmood kamu saat ini?"
                 android:textColor="#000000"
+                android:fontFamily="@font/nunitoregular"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,8 +100,7 @@
                 android:id="@+id/cvMood"
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginHorizontal="30dp"
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="8dp"
@@ -112,14 +113,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clMood"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="5dp">
+                    android:layout_height="match_parent">
 
                     <ImageButton
                         android:id="@+id/mood1"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="2dp"
                         android:background="@drawable/ripple_effect"
                         android:contentDescription="Terrible"
                         android:scaleType="fitCenter"
@@ -132,7 +132,7 @@
                         android:id="@+id/mood2"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="2dp"
                         android:background="@drawable/ripple_effect"
                         android:contentDescription="Bad"
                         android:scaleType="fitCenter"
@@ -145,7 +145,7 @@
                         android:id="@+id/mood3"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="2dp"
                         android:background="@drawable/ripple_effect"
                         android:contentDescription="Neutral"
                         android:scaleType="fitCenter"
@@ -158,7 +158,7 @@
                         android:id="@+id/mood4"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="2dp"
                         android:background="@drawable/ripple_effect"
                         android:contentDescription="Good"
                         android:scaleType="fitCenter"
@@ -171,7 +171,7 @@
                         android:id="@+id/mood5"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="2dp"
                         android:background="@drawable/ripple_effect"
                         android:contentDescription="Amazing"
                         android:scaleType="fitCenter"
@@ -184,7 +184,7 @@
                         android:id="@+id/mood6"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="2dp"
                         android:background="@drawable/ripple_effect"
                         android:contentDescription="Excellent"
                         android:scaleType="fitCenter"
@@ -202,7 +202,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tvFeelings"
@@ -210,6 +210,7 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:gravity=""
+                android:fontFamily="@font/nunitoregular"
                 android:text="Perasaan"
                 android:textColor="#000000"
                 android:textSize="20sp"
@@ -220,12 +221,13 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvFeelings"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="5dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginHorizontal="30dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="8dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -237,64 +239,14 @@
                     android:layout_height="match_parent"
                     android:padding="5dp">
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chipGroup"
-                        android:layout_width="wrap_content"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_feelings"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:singleLine="false">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip1"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Marah"
-                            app:closeIconEnabled="false" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip2"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Jijik"
-                            app:closeIconEnabled="false" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip3"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Takut"
-                            app:closeIconEnabled="false" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip4"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Sedih"
-                            app:closeIconEnabled="false" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip5"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Bahagia"
-                            app:closeIconEnabled="false" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip6"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Netral"
-                            app:closeIconEnabled="false" />
-
-                    </com.google.android.material.chip.ChipGroup>
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -312,6 +264,7 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:gravity=""
+                android:fontFamily="@font/nunitoregular"
                 android:text="Aktivitas"
                 android:textColor="#000000"
                 android:textSize="20sp"
@@ -323,8 +276,7 @@
                 android:id="@+id/cvAktivitas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginHorizontal="30dp"
                 android:layout_marginBottom="20dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="8dp"
@@ -344,7 +296,7 @@
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="16dp"
+                        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -365,6 +317,7 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:gravity=""
+                android:fontFamily="@font/nunitoregular"
                 android:text="Jurnal"
                 android:textColor="#000000"
                 android:textSize="20sp"
@@ -376,8 +329,7 @@
                 android:id="@+id/cvJournal"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginHorizontal="30dp"
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="8dp"
@@ -389,26 +341,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/tvJurnaling"
+                    <EditText
+                        android:id="@+id/etJudul"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginTop="20dp"
+                        android:fontFamily="@font/nunitoregular"
                         android:background="@drawable/rounded_background2"
                         android:padding="12dp"
-                        android:text="Judul"
+                        android:hint="Judul Jurnal"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
-                        android:id="@+id/etJornal"
+                        android:id="@+id/etJurnal"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_marginHorizontal="20dp"
                         android:layout_marginTop="10dp"
+                        android:fontFamily="@font/nunitoregular"
                         android:background="#00FFFAFA"
                         android:ems="10"
                         android:gravity="start"
@@ -419,7 +373,7 @@
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvJurnaling"
+                        app:layout_constraintTop_toBottomOf="@+id/etJudul"
                         app:layout_constraintBottom_toBottomOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -433,13 +387,14 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/btn_simpan"
+                android:id="@+id/btnUpdate"
                 android:layout_width="200dp"
                 android:layout_marginBottom="20dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="100dp"
                 android:elevation="4dp"
                 android:padding="8dp"
+                android:fontFamily="@font/nunitoregular"
                 android:text="Simpan"
                 android:textColor="@android:color/white"
                 app:layout_constraintTop_toTopOf="parent"

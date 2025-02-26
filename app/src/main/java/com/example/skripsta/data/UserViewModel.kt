@@ -13,7 +13,7 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
     private val repository: UserRepository
 
     init {
-        val userDao = UserDatabase.getDatabase(application).userDao()
+        val userDao = AppDatabase.getDatabase(application).userDao()
         repository = UserRepository(userDao)
         readAllData = repository.readALlData
     }
@@ -30,9 +30,14 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun updateUser(user: User){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.updateUser(user)
+        }
+    }
+
     fun getJournalsByDate(selectedDate: String): LiveData<List<User>> {
         return repository.getJournalsByDate(selectedDate)
     }
-
 
 }

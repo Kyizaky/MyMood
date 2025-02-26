@@ -6,14 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.skripsta.IsiRiwayatFragment
 import com.example.skripsta.R
-import com.example.skripsta.RiwayatFragmentDirections
 import com.example.skripsta.data.User
 
 class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<RiwayatAdapter.MyViewHolder>() {
@@ -39,11 +35,6 @@ class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Riwa
         holder.jam.text = currentItem.jam
         holder.imageMood.setImageResource(convertMoodToImage(currentItem.mood))
         holder.feeling.text = currentItem.perasaan
-
-        holder.cvMood.setOnClickListener {
-            val action = RiwayatFragmentDirections.actionRiwayatFragmentToIsiRiwayatFragment(currentItem)
-            holder.itemView.findNavController().navigate(action)
-        }
 
     }
 

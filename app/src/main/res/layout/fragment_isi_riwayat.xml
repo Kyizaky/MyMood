@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/aliceBlue"
+    android:background="@color/app"
     tools:context=".IsiRiwayatFragment">
 
     <LinearLayout
@@ -34,6 +34,7 @@
                 android:layout_marginStart="68dp"
                 android:background="@drawable/circle_background2"
                 android:padding="8dp"
+                android:fontFamily="@font/nunitoregular"
                 android:text="22 Mei 2024"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -50,6 +51,7 @@
                 android:layout_marginStart="64dp"
                 android:background="@drawable/circle_background2"
                 android:padding="8dp"
+                android:fontFamily="@font/nunitoregular"
                 android:text="18.00"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -75,6 +77,7 @@
                 android:layout_margin="10dp"
                 android:background="@drawable/circle_background3"
                 android:gravity="center"
+                android:fontFamily="@font/nunitoregular"
                 android:padding="5dp"
                 android:text="judul"
                 android:textColor="@color/black"
@@ -106,6 +109,7 @@
                 android:layout_marginStart="24dp"
                 android:gravity=""
                 android:text="Aktivitas"
+                android:fontFamily="@font/nunitoregular"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -128,17 +132,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvActivity">
 
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_tambah"
+                    android:layout_marginHorizontal="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.049"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/tv_aktivitasdata"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginHorizontal="10dp"
                     android:background="@drawable/rounded_background2"
-                    android:padding="10dp"
+                    android:fontFamily="@font/nunitoregular"
                     android:text="Aktivitas"
-                    android:layout_margin="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.031"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -152,6 +174,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
+                android:fontFamily="@font/nunitoregular"
                 android:gravity=""
                 android:text="Jurnal"
                 android:textColor="#000000"
@@ -183,6 +206,7 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/circle_background3"
                     android:gravity="center"
+                    android:fontFamily="@font/nunitoregular"
                     android:padding="5dp"
                     android:text="judul"
                     android:textColor="@color/black"
@@ -196,6 +220,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Jurnal"
+                    android:fontFamily="@font/nunitoregular"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginVertical="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -207,7 +232,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/btnDel"
@@ -215,10 +240,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="44dp"
                 android:text="Delete"
+                android:fontFamily="@font/nunitoregular"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.894" />
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:text="Edit"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

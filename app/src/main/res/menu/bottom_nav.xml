@@ -6,7 +6,7 @@
         android:icon="@drawable/ic_home"/>
 
     <item android:title="Riwayat"
-        android:id="@+id/riwayatFragment"
+        android:id="@+id/statFragment"
         android:icon="@drawable/ic_riwayat"/>
 
     <item android:title="Tambah"

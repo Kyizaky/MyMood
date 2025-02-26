@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginVertical="20dp"
-        app:cardBackgroundColor="@color/pale_green"
+        android:layout_marginBottom="20dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,58 +24,49 @@
             android:layout_height="wrap_content"
             android:padding="15dp">
 
-            <TextView
-                android:id="@+id/tv_cal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tanggal"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:background="@color/vista"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/imageViewIcon"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.085" />
-
             <ImageView
                 android:id="@+id/imageViewIcon"
-                android:layout_width="49dp"
-                android:layout_height="57dp"
-                android:layout_marginEnd="280dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:contentDescription="Mood Icon"
                 android:src="@drawable/mood1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_cal"
-                app:layout_constraintVertical_bias="0.65" />
+                app:layout_constraintHorizontal_bias="0.003"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.166" />
 
             <TextView
                 android:id="@+id/textViewStory"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:paddingVertical="3dp"
+                android:background="@drawable/circle_background4"
+                android:paddingLeft="10dp"
                 android:text="Perasaan"
                 android:textColor="#000000"
-                android:background="@color/app"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_cal"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_jam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="8dp"
                 android:text="Jam"
+                android:textStyle="bold"
                 android:textColor="#000000"
                 android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.236"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewStory"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/textViewStory" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

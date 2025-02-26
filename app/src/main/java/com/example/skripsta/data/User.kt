@@ -12,6 +12,7 @@ data class User (
     val id: Int,
     val mood: Int,
     val activities: String,
+    val activityIcon: Int, // ID drawable aktivitas yang dipilih
     val perasaan: String,
     val judul: String,
     val jurnal: String,

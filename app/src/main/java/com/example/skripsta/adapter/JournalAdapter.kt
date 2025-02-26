@@ -19,7 +19,6 @@ class JournalAdapter : ListAdapter<User, JournalAdapter.JournalViewHolder>(DiffC
     class JournalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageMood: ImageView = itemView.findViewById(R.id.imageViewIcon)
         val feeling: TextView = itemView.findViewById(R.id.textViewStory)
-        val tgl: TextView = itemView.findViewById(R.id.tv_cal)
         val jam: TextView = itemView.findViewById(R.id.tv_jam)
         val cvMood: ConstraintLayout = itemView.findViewById(R.id.consMood)
     }
@@ -31,7 +30,6 @@ class JournalAdapter : ListAdapter<User, JournalAdapter.JournalViewHolder>(DiffC
 
     override fun onBindViewHolder(holder: JournalViewHolder, position: Int) {
         val journal = getItem(position)
-        holder.tgl.text = journal.tanggal
         holder.jam.text = journal.jam
         holder.imageMood.setImageResource(convertMoodToImage(journal.mood))
         holder.feeling.text = journal.perasaan

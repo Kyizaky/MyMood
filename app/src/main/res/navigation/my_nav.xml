@@ -19,11 +19,7 @@
         android:id="@+id/riwayatFragment"
         android:name="com.example.skripsta.RiwayatFragment"
         android:label="Riwayat"
-        tools:layout="@layout/fragment_riwayat" >
-        <action
-            android:id="@+id/action_riwayatFragment_to_isiRiwayatFragment"
-            app:destination="@id/isiRiwayatFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_riwayat" />
 
     <fragment
         android:id="@+id/tambahFragment"
@@ -49,13 +45,14 @@
         tools:layout="@layout/fragment_isi_riwayat" >
         <argument
             android:name="currentUser"
-            app:argType="com.example.skripsta.data.User" />
-        <action
-            android:id="@+id/action_isiRiwayatFragment_to_riwayatFragment"
-            app:destination="@id/riwayatFragment" />
+            app:argType="com.example.skripsta.data.User"
+            app:nullable="false"/>
         <action
             android:id="@+id/action_isiRiwayatFragment_to_riwayatTanggalFragment"
             app:destination="@id/riwayatTanggalFragment" />
+        <action
+            android:id="@+id/action_isiRiwayatFragment_to_editMoodFragment"
+            app:destination="@id/editMoodFragment" />
     </fragment>
     <fragment
         android:id="@+id/riwayatTanggalFragment"
@@ -73,4 +70,20 @@
             android:id="@+id/action_riwayatTanggalFragment_to_isiRiwayatFragment"
             app:destination="@id/isiRiwayatFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editMoodFragment"
+        android:name="com.example.skripsta.EditMoodFragment"
+        android:label="EditMoodFragment" >
+        <argument
+            android:name="currentUser"
+            app:argType="com.example.skripsta.data.User" />
+        <action
+            android:id="@+id/action_editMoodFragment_to_isiRiwayatFragment"
+            app:destination="@id/isiRiwayatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statFragment"
+        android:name="com.example.skripsta.StatFragment"
+        android:label="fragment_stat"
+        tools:layout="@layout/fragment_stat" />
 </navigation>

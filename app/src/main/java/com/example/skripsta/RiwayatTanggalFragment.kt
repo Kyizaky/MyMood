@@ -27,7 +27,10 @@ class RiwayatTanggalFragment : Fragment() {
         binding = FragmentRiwayatTanggalBinding.inflate(inflater, container, false)
         mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+
         // Konfigurasi RecyclerView
+        binding.tvCal.text = args.selectedDate
         adapter = JournalAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -35,9 +38,13 @@ class RiwayatTanggalFragment : Fragment() {
         // Ambil data berdasarkan tanggal yang dipilih
         mUserViewModel.getJournalsByDate(args.selectedDate).observe(viewLifecycleOwner) { journalList ->
             if (journalList.isEmpty()) {
+                binding.cvMood.visibility = View.GONE
+                binding.tvCal.visibility = View.GONE
                 binding.recyclerView.visibility = View.GONE
                 binding.tvNoData.visibility = View.VISIBLE
             } else {
+                binding.cvMood.visibility = View.VISIBLE
+                binding.tvCal.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.VISIBLE
                 binding.tvNoData.visibility = View.GONE
                 adapter.submitList(journalList)
