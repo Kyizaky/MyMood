@@ -49,6 +49,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
 
     // JSON serialization library, works with the Kotlin serialization plugin
