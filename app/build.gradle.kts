@@ -21,6 +21,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildFeatures{
         viewBinding = true
 
@@ -35,6 +36,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -42,15 +44,23 @@ android {
         jvmTarget = "1.8"
     }
 }
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+}
+
 dependencies {
     val room_version = "2.6.1"
 
     val navVersion = "2.7.3"
+
+
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation("com.kizitonwose.calendar:view:2.0.3")
 
     // JSON serialization library, works with the Kotlin serialization plugin
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
