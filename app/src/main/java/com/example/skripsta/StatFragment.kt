@@ -57,8 +57,6 @@ class StatFragment : Fragment() {
     private var tvSelectedDate: String = ""
     private var selectedDate: String = ""
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -80,7 +78,6 @@ class StatFragment : Fragment() {
         monthSpinnerPie = view.findViewById(R.id.spinner_month_pie)
 
         barChart = view.findViewById(R.id.bar_chart_mood_time)
-
         btnPickDate = view.findViewById(R.id.btn_pick_date)
 
         showLoading(true) // <- Tambahkan ini
