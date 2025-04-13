@@ -19,6 +19,7 @@
         android:padding="16dp">
 
         <LinearLayout
+            android:id="@+id/container_stat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -79,20 +80,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
-
-                    <!-- Spinner untuk memilih bulan -->
-                    <Spinner
-                        android:id="@+id/spinner_month_bar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <!-- Bar Chart untuk Mood berdasarkan Jam -->
-                    <com.github.mikephil.charting.charts.BarChart
-                        android:id="@+id/bar_chart_mood_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="300dp"
-                        android:layout_marginTop="16dp" />
-
                     <!-- Button untuk pilih tanggal -->
                     <Button
                         android:id="@+id/btn_pick_date"
@@ -101,15 +88,14 @@
                         android:text="Pilih Tanggal"
                         android:layout_marginTop="16dp" />
 
-                    <!-- Teks untuk menampilkan tanggal yang dipilih -->
-                    <TextView
-                        android:id="@+id/tv_selected_date"
+                    <!-- Bar Chart untuk Mood berdasarkan Jam -->
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/bar_chart_mood_time"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Tanggal yang dipilih: -"
-                        android:gravity="center"
-                        android:textSize="16sp"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_height="300dp"
+                        android:layout_marginTop="16dp" />
+
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -141,6 +127,104 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_background2"
+                android:fillViewport="true"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <GridLayout
+                        android:id="@+id/moodCalendarGrid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:columnCount="13"
+                        android:rowCount="32"
+                        android:orientation="horizontal"
+                        android:padding="4dp" />
+
+                    <!-- Label bulan di bawah grid -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:layout_marginStart="40dp">
+
+                        <!-- Nanti isi label bulan dari Kotlin -->
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="#4CAF50"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bahagia" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="#2196F3"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Netral" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="#9C27B0"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sedih" />
+                </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

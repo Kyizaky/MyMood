@@ -2,13 +2,19 @@ package com.example.skripsta
 
 import android.app.DatePickerDialog
 import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.GridLayout
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -44,11 +50,11 @@ class StatFragment : Fragment() {
     private lateinit var pieChart: PieChart
     private var selectedMonthRanking: String = ""
     private var selectedMonthPie: String = ""
+    private lateinit var progressBar: ProgressBar
+    private lateinit var containerStat: LinearLayout
     private lateinit var barChart: BarChart
-    private lateinit var monthSpinnerBar: Spinner
-    private var selectedMonthBar: String = ""
     private lateinit var btnPickDate: Button
-    private lateinit var tvSelectedDate: TextView
+    private var tvSelectedDate: String = ""
     private var selectedDate: String = ""
 
 
@@ -66,26 +72,64 @@ class StatFragment : Fragment() {
         recyclerViewRanking.adapter = activityRankingAdapter
         monthSpinnerRanking = view.findViewById(R.id.spinner_month_ranking)
 
+        progressBar = view.findViewById(R.id.progress_bar)
+        containerStat = view.findViewById(R.id.container_stat)
         pieChart = view.findViewById(R.id.moodPieChart)
         legendRecyclerView = view.findViewById(R.id.recycler_view_mood_legend)
         legendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         monthSpinnerPie = view.findViewById(R.id.spinner_month_pie)
 
         barChart = view.findViewById(R.id.bar_chart_mood_time)
-        monthSpinnerBar = view.findViewById(R.id.spinner_month_bar)
 
         btnPickDate = view.findViewById(R.id.btn_pick_date)
-        tvSelectedDate = view.findViewById(R.id.tv_selected_date)
+
+        showLoading(true) // <- Tambahkan ini
+        val gridLayout = view.findViewById<GridLayout>(R.id.moodCalendarGrid)
+
+        gridLayout.rowCount = 33
+        gridLayout.columnCount = 13
 
         btnPickDate.setOnClickListener {
             showDatePickerDialog()
         }
-        setupSpinnerBar()
+
         setupSpinnerRanking()
         setupSpinnerPie()
+
+        val displayFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id"))
+        val storageFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+
+        val today = Calendar.getInstance().time
+        selectedDate = storageFormat.format(today)
+
+        tvSelectedDate = "$selectedDate"
+        btnPickDate.text = displayFormat.format(today) // <- ini untuk tampilan
+
+        observeDataBarChart()
+
         return view
     }
 
+    //Progress bar
+    private fun showLoading(show: Boolean) {
+
+        if (show) {
+            containerStat.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+        } else {
+            containerStat.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showLoading(true) // <- Tambahkan ini
+        observeMoodData()
+    }
+
+
+    //Setup pie chart
     private fun setupSpinnerPie() {
         val months = listOf(
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -173,7 +217,7 @@ class StatFragment : Fragment() {
     )
 
 
-
+    //Rangking
     private fun setupSpinnerRanking() {
         val months = listOf(
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -237,37 +281,7 @@ class StatFragment : Fragment() {
     }
 
 
-
-    private fun setupSpinnerBar() {
-        val months = listOf(
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        )
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        monthSpinnerBar.adapter = adapter
-
-        val currentCalendar = Calendar.getInstance()
-        val currentMonth = currentCalendar.get(Calendar.MONTH)
-        val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale("id")).format(currentCalendar.time)
-
-        selectedMonthBar = months[currentMonth]
-        selectedDate = currentDate
-        tvSelectedDate.text = "Tanggal yang dipilih: $selectedDate"
-        monthSpinnerBar.setSelection(currentMonth)
-
-        observeDataBarChart() // Refresh data saat pertama kali tampil
-
-        monthSpinnerBar.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedMonthBar = months[position]
-                observeDataBarChart()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-    }
-
+    //Bar chart
     private fun observeDataBarChart() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodByHour = mutableMapOf<Int, MutableList<Pair<Int, Long>>>()
@@ -376,7 +390,7 @@ class StatFragment : Fragment() {
         val marker = MoodMarkerView(requireContext(), R.layout.custom_marker_view)
         marker.chartView = barChart
         barChart.marker = marker
-
+        barChart.legend.isEnabled = false
         barChart.invalidate()
     }
 
@@ -387,16 +401,155 @@ class StatFragment : Fragment() {
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
         DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val displayFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id"))
+            val storageFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+
             val selectedCalendar = Calendar.getInstance().apply {
                 set(selectedYear, selectedMonth, selectedDay)
             }
-            selectedDate = dateFormat.format(selectedCalendar.time)
-            tvSelectedDate.text = "Tanggal yang dipilih: $selectedDate"
-            observeDataBarChart() // Refresh data saat tanggal berubah
+
+            val date = selectedCalendar.time
+            selectedDate = storageFormat.format(date)
+            tvSelectedDate = "Tanggal yang dipilih: $selectedDate"
+            btnPickDate.text = displayFormat.format(date) // <- ini untuk tampilan
+
+            observeDataBarChart()
+
         }, year, month, day).show()
     }
 
 
+    //Grid
+    private fun observeMoodData() {
+        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+            val moodCountPerDay = mutableMapOf<String, Int>()
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+
+            users.forEach { user ->
+                val date = try {
+                    dateFormat.parse(user.tanggal)
+                } catch (e: Exception) {
+                    null
+                }
+
+                if (date != null) {
+                    val key = SimpleDateFormat("dd/MM", Locale("id")).format(date)
+                    moodCountPerDay[key] = user.mood
+                }
+            }
+            generateMoodCalendar(moodCountPerDay)
+            showLoading(false)  // Saat mulai generate
+        }
+    }
+
+    private fun generateMoodCalendar(moodData: Map<String, Int>) {
+        val gridLayout = requireView().findViewById<GridLayout>(R.id.moodCalendarGrid)
+        gridLayout.removeAllViews()
+
+        val columnCount = 13 // 1 untuk angka hari + 12 bulan
+        val rowCount = 33    // 1 header + 31 hari + 1 footer
+        gridLayout.columnCount = columnCount
+        gridLayout.rowCount = rowCount
+
+        val screenWidth = resources.displayMetrics.widthPixels
+        val cellSize = screenWidth / columnCount
+
+        val months = listOf(" ", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
+
+        // Header (baris 0)
+        for (col in 0 until columnCount) {
+            val params = GridLayout.LayoutParams().apply {
+                width = cellSize
+                height = cellSize
+                rowSpec = GridLayout.spec(0)
+                columnSpec = GridLayout.spec(col)
+                setMargins(2, 2, 2, 2)
+            }
+
+            val tv = TextView(requireContext()).apply {
+                text = months[col]
+                gravity = Gravity.CENTER
+                textSize = 12f
+                setTypeface(null, Typeface.BOLD)
+                layoutParams = params
+            }
+
+            gridLayout.addView(tv)
+        }
+
+        // Isi grid: baris 1–31 (hari ke-1 s.d. 31)
+        for (day in 1..31) {
+            val row = day
+
+            for (col in 0 until columnCount) {
+                val params = GridLayout.LayoutParams().apply {
+                    width = cellSize
+                    height = cellSize
+                    rowSpec = GridLayout.spec(row)
+                    columnSpec = GridLayout.spec(col)
+                    setMargins(2, 2, 2, 2)
+                }
+
+                if (col == 0) {
+                    // Kolom angka hari
+                    val tv = TextView(requireContext()).apply {
+                        text = day.toString()
+                        gravity = Gravity.CENTER
+                        textSize = 12f
+                        layoutParams = params
+                    }
+                    gridLayout.addView(tv)
+                } else {
+                    val key = "%02d/%02d".format(day, col)
+                    val moodColor = moodData[key]?.let { getMoodColor(it) } ?: Color.TRANSPARENT
+
+                    val view = View(requireContext()).apply {
+                        background = GradientDrawable().apply {
+                            setColor(moodColor)
+                            setStroke(1, Color.LTGRAY)
+                            cornerRadius = 6f
+                        }
+                        layoutParams = params
+                    }
+                    gridLayout.addView(view)
+                }
+            }
+        }
+
+        // Footer (baris ke-32, index 32 karena 0-based)
+        for (col in 0 until columnCount) {
+            val footerText = if (col == 0) "" else months[col]
+
+            val params = GridLayout.LayoutParams().apply {
+                width = cellSize
+                height = cellSize
+                rowSpec = GridLayout.spec(rowCount - 1) // FIXED here
+                columnSpec = GridLayout.spec(col)
+                setMargins(2, 2, 2, 2)
+            }
+
+            val tv = TextView(requireContext()).apply {
+                text = footerText
+                gravity = Gravity.CENTER
+                textSize = 12f
+                setTypeface(null, Typeface.BOLD_ITALIC)
+                layoutParams = params
+            }
+
+            gridLayout.addView(tv)
+        }
+    }
+
+    private fun getMoodColor(mood: Int): Int {
+        return when (mood) {
+            1 -> Color.parseColor("#F44336") // Marah (merah)
+            2 -> Color.parseColor("#9C27B0") // Jijik (ungu)
+            3 -> Color.parseColor("#3F51B5") // Takut (biru)
+            4 -> Color.parseColor("#03A9F4") // Sedih (biru muda)
+            5 -> Color.parseColor("#4CAF50") // Bahagia (hijau)
+            6 -> Color.parseColor("#9E9E9E") // Netral (abu)
+            else -> Color.TRANSPARENT
+        }
+    }
 
 }
