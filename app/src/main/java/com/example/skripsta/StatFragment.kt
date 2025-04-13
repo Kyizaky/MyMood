@@ -1,5 +1,6 @@
 package com.example.skripsta
 
+import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,10 +18,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.adapter.ActivityRankingAdapter
 import com.example.skripsta.adapter.MoodLegendAdapter
 import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.utils.MoodMarkerView
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -34,6 +44,14 @@ class StatFragment : Fragment() {
     private lateinit var pieChart: PieChart
     private var selectedMonthRanking: String = ""
     private var selectedMonthPie: String = ""
+    private lateinit var barChart: BarChart
+    private lateinit var monthSpinnerBar: Spinner
+    private var selectedMonthBar: String = ""
+    private lateinit var btnPickDate: Button
+    private lateinit var tvSelectedDate: TextView
+    private var selectedDate: String = ""
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +71,16 @@ class StatFragment : Fragment() {
         legendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         monthSpinnerPie = view.findViewById(R.id.spinner_month_pie)
 
+        barChart = view.findViewById(R.id.bar_chart_mood_time)
+        monthSpinnerBar = view.findViewById(R.id.spinner_month_bar)
+
+        btnPickDate = view.findViewById(R.id.btn_pick_date)
+        tvSelectedDate = view.findViewById(R.id.tv_selected_date)
+
+        btnPickDate.setOnClickListener {
+            showDatePickerDialog()
+        }
+        setupSpinnerBar()
         setupSpinnerRanking()
         setupSpinnerPie()
         return view
@@ -206,6 +234,167 @@ class StatFragment : Fragment() {
 
             activityRankingAdapter.updateData(sortedActivities)
         }
+    }
+
+
+
+    private fun setupSpinnerBar() {
+        val months = listOf(
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        )
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        monthSpinnerBar.adapter = adapter
+
+        val currentCalendar = Calendar.getInstance()
+        val currentMonth = currentCalendar.get(Calendar.MONTH)
+        val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale("id")).format(currentCalendar.time)
+
+        selectedMonthBar = months[currentMonth]
+        selectedDate = currentDate
+        tvSelectedDate.text = "Tanggal yang dipilih: $selectedDate"
+        monthSpinnerBar.setSelection(currentMonth)
+
+        observeDataBarChart() // Refresh data saat pertama kali tampil
+
+        monthSpinnerBar.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedMonthBar = months[position]
+                observeDataBarChart()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun observeDataBarChart() {
+        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+            val moodByHour = mutableMapOf<Int, MutableList<Pair<Int, Long>>>()
+
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val timeFormat = SimpleDateFormat("HH:mm", Locale("id"))
+            val selected = dateFormat.parse(selectedDate)
+
+            users.forEach { user ->
+                val userDate = try {
+                    dateFormat.parse(user.tanggal)
+                } catch (e: Exception) {
+                    null
+                }
+
+                if (userDate == selected) {
+                    val time = try {
+                        timeFormat.parse(user.jam)
+                    } catch (e: Exception) {
+                        null
+                    }
+
+                    val hour = time?.hours ?: 0
+                    val timestamp = time?.time ?: 0L
+
+                    moodByHour.getOrPut(hour) { mutableListOf() }.add(user.mood to timestamp)
+                }
+            }
+
+            val processedMoodByHour = (0..23).associateWith { hour ->
+                val moodList = moodByHour[hour] ?: return@associateWith 0f
+
+                // Hitung frekuensi mood
+                val freqMap = moodList.groupingBy { it.first }.eachCount()
+
+                // Ambil mood dengan frekuensi tertinggi
+                val maxFreq = freqMap.values.maxOrNull() ?: 0
+                val candidateMoods = freqMap.filterValues { it == maxFreq }.keys
+
+                // Kalau hanya satu kandidat, langsung ambil
+                if (candidateMoods.size == 1) {
+                    candidateMoods.first().toFloat()
+                } else {
+                    // Ambil data terakhir dari kandidat yang memiliki waktu terbaru
+                    val latest = moodList.filter { it.first in candidateMoods }
+                        .maxByOrNull { it.second }
+
+                    latest?.first?.toFloat() ?: 0f
+                }
+            }
+
+            updateBarChart(processedMoodByHour)
+        }
+    }
+
+    private fun updateBarChart(moodByHour: Map<Int, Float>) {
+        val entries = moodByHour.map { (hour, avgMood) ->
+            BarEntry(hour.toFloat(), avgMood)
+        }
+
+        val barDataSet = BarDataSet(entries, "Mood per Jam").apply {
+            color = Color.CYAN
+            valueTextSize = 12f
+            setDrawValues(false) // Hilangkan angka di atas bar
+        }
+
+
+        val barData = BarData(barDataSet)
+        barChart.data = barData
+        barChart.description.isEnabled = false
+
+        barChart.axisLeft.apply {
+            axisMinimum = 0f
+            axisMaximum = 6f
+            granularity = 1f
+            textSize = 14f
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return when (value.toInt()) {
+                        1 -> "😠"
+                        2 -> "🤢"
+                        3 -> "😱"
+                        4 -> "😢"
+                        5 -> "😊"
+                        6 -> "😐"
+                        else -> ""
+                    }
+                }
+            }
+        }
+
+        barChart.axisRight.isEnabled = false
+
+        barChart.xAxis.apply {
+            setDrawGridLines(false)
+            granularity = 1f
+            textSize = 12f
+            position = XAxis.XAxisPosition.BOTTOM
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return String.format("%02d:00", value.toInt())
+                }
+            }
+        }
+
+        val marker = MoodMarkerView(requireContext(), R.layout.custom_marker_view)
+        marker.chartView = barChart
+        barChart.marker = marker
+
+        barChart.invalidate()
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val selectedCalendar = Calendar.getInstance().apply {
+                set(selectedYear, selectedMonth, selectedDay)
+            }
+            selectedDate = dateFormat.format(selectedCalendar.time)
+            tvSelectedDate.text = "Tanggal yang dipilih: $selectedDate"
+            observeDataBarChart() // Refresh data saat tanggal berubah
+        }, year, month, day).show()
     }
 
 

@@ -1,96 +1,147 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/app">
 
-    <LinearLayout
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="15dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp">
+                app:cardCornerRadius="15dp"
+                app:cardElevation="15dp"
+                android:layout_marginVertical="20dp">
 
-            <Spinner
-                android:id="@+id/spinner_month_pie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_background2"
-                android:padding="5dp"
-                android:layout_marginBottom="8dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/moodPieChart"
-                    android:layout_width="0dp"
-                    android:layout_height="250dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="16dp"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_mood_legend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never"/>
-
-            </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="15dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp">
-
-                <Spinner
-                    android:id="@+id/spinner_month_ranking"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_background2"
-                    android:padding="5dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:orientation="vertical"
+                    android:padding="15dp">
 
-                <TextView
-                    android:id="@+id/tv_activity_ranking"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Peringkat Aktivitas"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp" />
+                    <Spinner
+                        android:id="@+id/spinner_month_pie"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:layout_marginBottom="8dp"/>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_ranking"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/moodPieChart"
+                            android:layout_width="0dp"
+                            android:layout_height="250dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="16dp"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_view_mood_legend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:overScrollMode="never"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="15dp"
+                android:layout_marginVertical="20dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:listitem="@layout/item_activity_ranking" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    <!-- Spinner untuk memilih bulan -->
+                    <Spinner
+                        android:id="@+id/spinner_month_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
-    </LinearLayout>
-</ScrollView>
+                    <!-- Bar Chart untuk Mood berdasarkan Jam -->
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/bar_chart_mood_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginTop="16dp" />
+
+                    <!-- Button untuk pilih tanggal -->
+                    <Button
+                        android:id="@+id/btn_pick_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pilih Tanggal"
+                        android:layout_marginTop="16dp" />
+
+                    <!-- Teks untuk menampilkan tanggal yang dipilih -->
+                    <TextView
+                        android:id="@+id/tv_selected_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tanggal yang dipilih: -"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="20dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Spinner untuk memilih bulan peringkat aktivitas -->
+                    <Spinner
+                        android:id="@+id/spinner_month_ranking"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <!-- RecyclerView untuk menampilkan peringkat aktivitas -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_ranking"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>
