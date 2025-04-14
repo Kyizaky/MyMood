@@ -192,7 +192,7 @@
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@id/mood5"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/mood5" />
+                        app:srcCompat="@drawable/mood6" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

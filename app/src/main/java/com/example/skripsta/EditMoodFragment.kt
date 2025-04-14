@@ -114,14 +114,12 @@ class EditMoodFragment : Fragment() {
 
     private fun setupRecyclerView(view: View) {
         val items = listOf(
-            Item(R.drawable.ic_bekerja, "Family"),
-            Item(R.drawable.ic_belajar, "Friends"),
-            Item(R.drawable.ic_belanja, "Beloved"),
-            Item(R.drawable.ic_makan, "Colleague"),
-            Item(R.drawable.ic_olahraga, "Stranger"),
-            Item(R.drawable.ic_renang, "Party"),
-            Item(R.drawable.ic_riwayat, "Dating"),
-            Item(R.drawable.ic_mood, "Traveling")
+            Item(R.drawable.activity1, "Study"),
+            Item(R.drawable.activity2, "Shop"),
+            Item(R.drawable.activity3, "Work"),
+            Item(R.drawable.activity4, "Vacation"),
+            Item(R.drawable.activity5, "Eat"),
+            Item(R.drawable.activity6, "Gym")
         )
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
@@ -143,7 +141,7 @@ class EditMoodFragment : Fragment() {
     private var selectedFeelingText: String? = null
 
     private fun setupFeelingRecyclerView(view: View) {
-        val feelings = listOf("Happy", "Sad", "Excited", "Angry", "Relaxed", "Anxious")
+        val feelings = listOf("Angry", "Disgust", "Scary", "Sad", "Happy", "Neutral")
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_feelings)
 
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {

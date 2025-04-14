@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.adapter.FeelingAdapter
 import com.example.skripsta.data.Item
@@ -109,14 +110,12 @@ class TambahFragment : Fragment() {
 
     private fun setupRecyclerView(view: View) {
         val items = listOf(
-            Item(R.drawable.ic_bekerja, "Family"),
-            Item(R.drawable.ic_belajar, "Friends"),
-            Item(R.drawable.ic_belanja, "Beloved"),
-            Item(R.drawable.ic_makan, "Colleague"),
-            Item(R.drawable.ic_olahraga, "Stranger"),
-            Item(R.drawable.ic_renang, "Party"),
-            Item(R.drawable.ic_riwayat, "Dating"),
-            Item(R.drawable.ic_mood, "Traveling")
+            Item(R.drawable.activity1, "Study"),
+            Item(R.drawable.activity2, "Shop"),
+            Item(R.drawable.activity3, "Work"),
+            Item(R.drawable.activity4, "Vacation"),
+            Item(R.drawable.activity5, "Eat"),
+            Item(R.drawable.activity6, "Gym")
         )
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
@@ -138,7 +137,7 @@ class TambahFragment : Fragment() {
     private var selectedFeelingText: String? = null
 
     private fun setupFeelingRecyclerView(view: View) {
-        val feelings = listOf("Happy", "Sad", "Excited", "Angry", "Relaxed", "Anxious")
+        val feelings = listOf("Angry", "Disgust", "Scary", "Sad", "Happy", "Neutral")
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_feelings)
 
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
@@ -152,15 +151,15 @@ class TambahFragment : Fragment() {
     }
 
     private fun insertDataToDatabase(view: View) {
-        val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString()
-        val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString()
+        val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString().ifBlank { "No story today" }
+        val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString().ifBlank { "Today" }
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = selectedFeelingText
         val selectedActivity = getSelectedActivity(view) // Ambil objek Item yang dipilih
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
-        if (journalContent.isBlank() || titleJournal.isBlank() || moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
+        if (moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
@@ -178,7 +177,9 @@ class TambahFragment : Fragment() {
 
             mUserViewModel.addUser(user)
             Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
-            parentFragmentManager.popBackStack()
+            val action = TambahFragmentDirections.actionTambahFragmentToValidationFragment(moodType)
+            findNavController().navigate(action)
+
         }
     }
 

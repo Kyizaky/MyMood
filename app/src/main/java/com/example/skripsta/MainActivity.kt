@@ -19,8 +19,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
         hideSystemUI()
         val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragmentContainer) as NavHostFragment
         val navController = navHost.navController
@@ -28,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.homeFragment || destination.id == R.id.statFragment || destination.id == R.id.pengaturanFragment || destination.id == R.id.kegiatanFragment) { // Sesuaikan dengan ID fragment 'Tambah'
+            if (destination.id == R.id.homeFragment || destination.id == R.id.statFragment || destination.id == R.id.pengaturanFragment || destination.id == R.id.kegiatanFragment) {
                 binding.bottomNavigationView.visibility = View.VISIBLE
             } else {
                 binding.bottomNavigationView.visibility = View.GONE
@@ -40,8 +38,6 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.navHostFragmentContainer)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
-
-
 
     @SuppressLint("ResourceType")
     private fun hideSystemUI() {

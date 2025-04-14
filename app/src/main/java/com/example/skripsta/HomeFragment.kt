@@ -168,7 +168,7 @@ class HomeFragment : Fragment() {
             3 -> R.drawable.mood3
             4 -> R.drawable.mood4
             5 -> R.drawable.mood5
-            6 -> R.drawable.ic_mood
+            6 -> R.drawable.mood6
             else -> R.drawable.ic_mood
         }
     }

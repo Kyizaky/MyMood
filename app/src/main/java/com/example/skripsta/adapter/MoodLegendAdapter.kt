@@ -17,7 +17,7 @@ class MoodLegendAdapter(private val moodData: List<Pair<Int, String>>) :
         3 to R.drawable.mood3,    // Ganti dengan icon sesuai
         4 to R.drawable.mood4,     // Ganti dengan icon sesuai
         5 to R.drawable.mood5,   // Ganti dengan icon sesuai
-        6 to R.drawable.ic_mood  // Ganti dengan icon sesuai
+        6 to R.drawable.mood6  // Ganti dengan icon sesuai
     )
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

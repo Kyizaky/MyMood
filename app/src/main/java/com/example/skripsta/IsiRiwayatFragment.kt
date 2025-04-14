@@ -20,8 +20,6 @@ class IsiRiwayatFragment : Fragment() {
 
     private lateinit var binding: FragmentIsiRiwayatBinding
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,7 +77,7 @@ class IsiRiwayatFragment : Fragment() {
             3 -> R.drawable.mood3
             4 -> R.drawable.mood4
             5 -> R.drawable.mood5
-            else -> R.drawable.mood5
+            else -> R.drawable.mood6
         }
     }
 }

@@ -47,7 +47,7 @@ class JournalAdapter : ListAdapter<User, JournalAdapter.JournalViewHolder>(DiffC
             3 -> R.drawable.mood3
             4 -> R.drawable.mood4
             5 -> R.drawable.mood5
-            else -> R.drawable.mood5
+            else -> R.drawable.mood6
         }
     }
     class DiffCallback : DiffUtil.ItemCallback<User>() {

@@ -45,7 +45,7 @@ class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Riwa
             3 -> R.drawable.mood3
             4 -> R.drawable.mood4
             5 -> R.drawable.mood5
-            else -> R.drawable.mood5
+            else -> R.drawable.mood6
         }
     }
 

@@ -14,12 +14,12 @@ class MoodMarkerView(context: Context, layoutResource: Int) : MarkerView(context
     private val markerText: TextView = findViewById(R.id.tv_marker_content)
 
     private val moodMapping = mapOf(
-        1 to "😠 Marah",
-        2 to "🤢 Jijik",
-        3 to "😱 Takut",
-        4 to "😢 Sedih",
-        5 to "😊 Bahagia",
-        6 to "😐 Netral"
+        1 to "Angry",
+        2 to "Disgust",
+        3 to "Scary",
+        4 to "Sad",
+        5 to "Happy",
+        6 to "Neutral"
     )
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {

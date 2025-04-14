@@ -25,7 +25,11 @@
         android:id="@+id/tambahFragment"
         android:name="com.example.skripsta.TambahFragment"
         android:label="Tambah"
-        tools:layout="@layout/fragment_tambah" />
+        tools:layout="@layout/fragment_tambah" >
+        <action
+            android:id="@+id/action_tambahFragment_to_validationFragment"
+            app:destination="@id/validationFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/kegiatanFragment"
@@ -86,4 +90,16 @@
         android:name="com.example.skripsta.StatFragment"
         android:label="fragment_stat"
         tools:layout="@layout/fragment_stat" />
+    <fragment
+        android:id="@+id/validationFragment"
+        android:name="com.example.skripsta.ValidationFragment"
+        android:label="fragment_validation"
+        tools:layout="@layout/fragment_validation" >
+        <argument
+            android:name="moodType"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_validationFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>
