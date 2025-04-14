@@ -21,17 +21,22 @@ class MainActivity : AppCompatActivity() {
 
         hideSystemUI()
         val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragmentContainer) as NavHostFragment
-        val navController = navHost.navController
+        navController = navHost.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
 
+        val visibleFragments = setOf(
+            R.id.homeFragment,
+            R.id.statFragment,
+            R.id.pengaturanFragment,
+            R.id.kegiatanFragment
+        )
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.homeFragment || destination.id == R.id.statFragment || destination.id == R.id.pengaturanFragment || destination.id == R.id.kegiatanFragment) {
-                binding.bottomNavigationView.visibility = View.VISIBLE
-            } else {
-                binding.bottomNavigationView.visibility = View.GONE
-            }
+            binding.bottomNavigationView.visibility =
+                if (destination.id in visibleFragments) View.VISIBLE else View.GONE
         }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

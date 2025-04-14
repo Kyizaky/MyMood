@@ -205,9 +205,4 @@ class TambahFragment : Fragment() {
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
         return adapter?.items?.firstOrNull { it.isSelected }
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
-    }
 }
