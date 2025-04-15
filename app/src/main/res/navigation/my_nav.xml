@@ -13,13 +13,20 @@
         <action
             android:id="@+id/action_homeFragment_to_riwayatTanggalFragment"
             app:destination="@id/riwayatTanggalFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_riwayatFragment"
+            app:destination="@id/riwayatFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/riwayatFragment"
         android:name="com.example.skripsta.RiwayatFragment"
         android:label="Riwayat"
-        tools:layout="@layout/fragment_riwayat" />
+        tools:layout="@layout/fragment_riwayat">
+        <action
+            android:id="@+id/action_riwayatFragment_to_isiRiwayatFragment"
+            app:destination="@id/isiRiwayatFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/tambahFragment"

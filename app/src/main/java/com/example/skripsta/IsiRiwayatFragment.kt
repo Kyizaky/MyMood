@@ -68,6 +68,16 @@ class IsiRiwayatFragment : Fragment() {
         builder.create().show()
     }
 
+    private fun formatTanggal(tanggal: String): String {
+        return try {
+            val inputFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            val outputFormat = java.text.SimpleDateFormat("dd MMMM", java.util.Locale.getDefault())
+            val date = inputFormat.parse(tanggal)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            tanggal // fallback ke format asli kalau gagal parsing
+        }
+    }
 
 
     private fun convertMoodToImage(mood: Int): Int {

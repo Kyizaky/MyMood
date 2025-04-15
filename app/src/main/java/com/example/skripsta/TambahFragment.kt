@@ -176,7 +176,6 @@ class TambahFragment : Fragment() {
             )
 
             mUserViewModel.addUser(user)
-            Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
             val action = TambahFragmentDirections.actionTambahFragmentToValidationFragment(moodType)
             findNavController().navigate(action)
 

@@ -1,6 +1,5 @@
 package com.example.skripsta
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +13,8 @@ import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
 import com.example.skripsta.databinding.FragmentHomeBinding
 import com.kizitonwose.calendar.core.*
-import com.kizitonwose.calendar.view.CalendarView
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -39,7 +36,7 @@ class HomeFragment : Fragment() {
 
         userViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             usersWithData = users
-            binding.calendarView.notifyCalendarChanged() // refresh calendar setelah data di-load
+            binding.calendarView.notifyCalendarChanged()
         }
 
 
@@ -105,13 +102,12 @@ class HomeFragment : Fragment() {
                         val maxCount = moodCountMap.values.maxOrNull()
                         val mostFrequentMoods = moodCountMap.filterValues { it == maxCount }.keys
 
-                        // Pilih mood terbaru jika imbang
                         val chosenMood = entriesOnThisDate.lastOrNull { it.mood in mostFrequentMoods }?.mood
 
                         if (chosenMood != null) {
                             emojiIcon.visibility = View.VISIBLE
                             emojiIcon.setImageResource(getMoodEmojiDrawable(chosenMood))
-                            dayText.text = "" // Kosongkan angka, hanya tampilkan emoji
+                            dayText.text = ""
                         } else {
                             emojiIcon.visibility = View.GONE
                             dayText.text = date.dayOfMonth.toString()
@@ -134,8 +130,6 @@ class HomeFragment : Fragment() {
                 }
 
             }
-
-
         }
 
         // Observe data dari database
@@ -149,6 +143,11 @@ class HomeFragment : Fragment() {
                 }
             })
             calendarView.notifyCalendarChanged() // Refresh tampilan kalender
+        }
+
+        binding.riwayatButton.setOnClickListener {
+            // Navigate to the RiwayatFragment (adjust the action based on your navigation graph)
+            findNavController().navigate(R.id.action_homeFragment_to_riwayatFragment)
         }
 
         return binding.root

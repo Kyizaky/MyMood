@@ -12,6 +12,9 @@ import com.example.skripsta.adapter.JournalAdapter
 import com.example.skripsta.data.UserViewModel
 import com.example.skripsta.databinding.FragmentHomeBinding
 import com.example.skripsta.databinding.FragmentRiwayatTanggalBinding
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class RiwayatTanggalFragment : Fragment() {
 
@@ -30,7 +33,7 @@ class RiwayatTanggalFragment : Fragment() {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
         // Konfigurasi RecyclerView
-        binding.tvCal.text = args.selectedDate
+        binding.tvCal.text = formatDateToDayMonth(args.selectedDate)
         adapter = JournalAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -52,5 +55,22 @@ class RiwayatTanggalFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    // Function to format the date to "21 Mei"
+    private fun formatDateToDayMonth(dateString: String): String {
+        return try {
+            // Define the input format based on your date string (adjust if needed)
+            val inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault())
+            // Parse the input date string
+            val date = LocalDate.parse(dateString, inputFormatter)
+            // Define the output format (day and month name in Indonesian)
+            val outputFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale("in", "ID"))
+            // Format the date to "21 Mei"
+            date.format(outputFormatter)
+        } catch (e: Exception) {
+            // Fallback in case the date string is invalid
+            dateString
+        }
     }
 }
