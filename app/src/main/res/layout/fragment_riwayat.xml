@@ -7,14 +7,27 @@
     android:background="#D2DBE6"
     tools:context=".RiwayatFragment">
 
-    <!-- Spinner for selecting month and year -->
-    <Spinner
-        android:id="@+id/monthYearSpinner"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown" />
+        android:orientation="horizontal">
+        <!-- Spinner for selecting month and year -->
+        <Spinner
+            android:id="@+id/monthYearSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
+
+        <Spinner
+            android:id="@+id/dateSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
 
     <!-- RecyclerView for history entries -->
     <androidx.recyclerview.widget.RecyclerView
@@ -22,8 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="16dp"
+        android:layout_marginHorizontal="16dp"
         android:clipToPadding="false"
-        android:paddingBottom="16dp" />
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
 
 </LinearLayout>

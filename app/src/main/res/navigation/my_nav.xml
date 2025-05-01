@@ -48,7 +48,11 @@
         android:id="@+id/pengaturanFragment"
         android:name="com.example.skripsta.PengaturanFragment"
         android:label="Pengaturan"
-        tools:layout="@layout/fragment_pengaturan" />
+        tools:layout="@layout/fragment_pengaturan" >
+        <action
+            android:id="@+id/action_pengaturanFragment_to_reminderFragment"
+            app:destination="@id/reminderFragment" />
+    </fragment>
     <fragment
         android:id="@+id/isiRiwayatFragment"
         android:name="com.example.skripsta.IsiRiwayatFragment"
@@ -108,5 +112,13 @@
         <action
             android:id="@+id/action_validationFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reminderFragment"
+        android:name="com.example.skripsta.ReminderFragment"
+        android:label="ReminderFragment" >
+        <action
+            android:id="@+id/action_reminderFragment_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment" />
     </fragment>
 </navigation>

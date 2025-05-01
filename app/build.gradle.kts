@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.skripsta"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -61,6 +61,8 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation("com.kizitonwose.calendar:view:2.0.3")
+
+    implementation ("androidx.gridlayout:gridlayout:1.0.0")
 
     // JSON serialization library, works with the Kotlin serialization plugin
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")

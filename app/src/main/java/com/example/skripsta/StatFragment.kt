@@ -1,6 +1,5 @@
 package com.example.skripsta
 
-import android.app.DatePickerDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -13,28 +12,27 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.GridLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.NumberPicker
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.adapter.ActivityRankingAdapter
+import com.example.skripsta.adapter.FeelingRankingAdapter
 import com.example.skripsta.adapter.MoodLegendAdapter
 import com.example.skripsta.data.UserViewModel
-import com.example.skripsta.utils.MoodMarkerView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -44,16 +42,23 @@ class StatFragment : Fragment() {
     private lateinit var mUserViewModel: UserViewModel
     private lateinit var legendRecyclerView: RecyclerView
     private lateinit var recyclerViewRanking: RecyclerView
+    private lateinit var recyclerViewFeelingRanking: RecyclerView
     private lateinit var activityRankingAdapter: ActivityRankingAdapter
-    private lateinit var monthSpinnerRanking: Spinner
+    private lateinit var feelingRankingAdapter: FeelingRankingAdapter
+    private lateinit var btnMonthActivity: Button
+    private lateinit var btnYearActivity: Button
+    private lateinit var btnMonthFeeling: Button
+    private lateinit var btnYearFeeling: Button
     private lateinit var monthSpinnerPie: Spinner
     private lateinit var pieChart: PieChart
-    private var selectedMonthRanking: String = ""
+    private var selectedMonthActivity: String = ""
+    private var selectedYearActivity: String = ""
+    private var selectedMonthFeeling: String = ""
+    private var selectedYearFeeling: String = ""
     private var selectedMonthPie: String = ""
     private lateinit var progressBar: ProgressBar
     private lateinit var containerStat: LinearLayout
-    private lateinit var barChart: BarChart
-    private lateinit var btnPickDate: Button
+    private lateinit var containerLegend: CardView
     private var tvSelectedDate: String = ""
     private var selectedDate: String = ""
 
@@ -68,17 +73,23 @@ class StatFragment : Fragment() {
         recyclerViewRanking.layoutManager = LinearLayoutManager(requireContext())
         activityRankingAdapter = ActivityRankingAdapter(emptyList())
         recyclerViewRanking.adapter = activityRankingAdapter
-        monthSpinnerRanking = view.findViewById(R.id.spinner_month_ranking)
+        btnMonthActivity = view.findViewById(R.id.btn_month)
+        btnYearActivity = view.findViewById(R.id.btn_year)
+
+        recyclerViewFeelingRanking = view.findViewById(R.id.recycler_view_feeling_ranking)
+        recyclerViewFeelingRanking.layoutManager = LinearLayoutManager(requireContext())
+        feelingRankingAdapter = FeelingRankingAdapter(emptyList())
+        recyclerViewFeelingRanking.adapter = feelingRankingAdapter
+        btnMonthFeeling = view.findViewById(R.id.btn_month_feeling)
+        btnYearFeeling = view.findViewById(R.id.btn_year_feeling)
 
         progressBar = view.findViewById(R.id.progress_bar)
         containerStat = view.findViewById(R.id.container_stat)
+        containerLegend = view.findViewById(R.id.container_legend)
         pieChart = view.findViewById(R.id.moodPieChart)
         legendRecyclerView = view.findViewById(R.id.recycler_view_mood_legend)
         legendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         monthSpinnerPie = view.findViewById(R.id.spinner_month_pie)
-
-        barChart = view.findViewById(R.id.bar_chart_mood_time)
-        btnPickDate = view.findViewById(R.id.btn_pick_date)
 
         showLoading(true) // <- Tambahkan ini
         val gridLayout = view.findViewById<GridLayout>(R.id.moodCalendarGrid)
@@ -86,23 +97,20 @@ class StatFragment : Fragment() {
         gridLayout.rowCount = 33
         gridLayout.columnCount = 13
 
-        btnPickDate.setOnClickListener {
-            showDatePickerDialog()
-        }
+        setupRankingButtons()
+        observeDataRanking()
+        observeDataFeelingRanking()
 
-        setupSpinnerRanking()
         setupSpinnerPie()
 
-        val displayFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id"))
+
         val storageFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
 
         val today = Calendar.getInstance().time
         selectedDate = storageFormat.format(today)
 
         tvSelectedDate = "$selectedDate"
-        btnPickDate.text = displayFormat.format(today) // <- ini untuk tampilan
 
-        observeDataBarChart()
 
         return view
     }
@@ -112,8 +120,10 @@ class StatFragment : Fragment() {
 
         if (show) {
             containerStat.visibility = View.GONE
+            containerLegend.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
         } else {
+            containerLegend.visibility = View.VISIBLE
             containerStat.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
         }
@@ -175,15 +185,38 @@ class StatFragment : Fragment() {
     }
 
     private fun updatePieChart(moodCount: Map<Int, Int>) {
-        val entries = moodCount.mapNotNull { (moodInt, count) ->
-            val label = moodMapping[moodInt] ?: moodInt.toString() // Ambil label atau angka default
-            PieEntry(count.toFloat(), label)
+        // Urutkan entri berdasarkan moodInt untuk memastikan urutan konsisten
+        val entries = moodCount.entries
+            .sortedBy { it.key } // Urutkan berdasarkan moodInt (1 sampai 6)
+            .mapNotNull { (moodInt, count) ->
+                if (count > 0) PieEntry(count.toFloat(), moodInt.toString()) else null
+            }
+
+        if (entries.isEmpty()) {
+            pieChart.data = null
+            pieChart.invalidate()
+            return
         }
 
-        val colors = listOf(Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.MAGENTA)
+        // Definisikan warna untuk setiap mood (indeks 0 untuk mood 1, indeks 1 untuk mood 2, dst.)
+        val colorMap = mapOf(
+            1 to Color.parseColor("#FF6242"), // Marah (merah)
+            2 to Color.parseColor("#6DD627"), // Jijik (ungu)
+            3 to Color.parseColor("#CB88FF"), // Takut (biru)
+            4 to Color.parseColor("#87C1FF"), // Sedih (biru muda)
+            5 to Color.parseColor("#FFE500"), // Bahagia (hijau)
+            6 to Color.parseColor("#FFEAC7")  // Netral (abu)
+        )
+
+        // Buat daftar warna berdasarkan urutan entri
+        val colors = entries.map { entry ->
+            val moodInt = entry.label.toInt()
+            colorMap[moodInt] ?: Color.GRAY // Gunakan warna default jika moodInt tidak ada
+        }
 
         val dataSet = PieDataSet(entries, "").apply {
-            setColors(colors)
+            setColors(colors) // Atur warna untuk setiap segmen
+            sliceSpace = 3f
             setDrawValues(false) // Hilangkan angka dalam chart
         }
 
@@ -191,6 +224,7 @@ class StatFragment : Fragment() {
         pieChart.data = pieData
         pieChart.description.isEnabled = false // Hilangkan label deskripsi
         pieChart.legend.isEnabled = false // Hilangkan legend jika tidak diperlukan
+        pieChart.setDrawEntryLabels(false)
         pieChart.invalidate() // Refresh chart
     }
 
@@ -204,60 +238,138 @@ class StatFragment : Fragment() {
         legendRecyclerView.adapter = MoodLegendAdapter(moodData)
     }
 
-    private val moodMapping = mapOf(
-        1 to "Marah",
-        2 to "Jijik",
-        3 to "Takut",
-        4 to "Sedih",
-        5 to "Bahagia",
-        6 to "Netral"
-    )
 
-
-    //Rangking
-    private fun setupSpinnerRanking() {
+    //ranking
+    private fun setupRankingButtons() {
+        // Daftar bulan
         val months = listOf(
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"
         )
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        monthSpinnerRanking.adapter = adapter
 
-        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
-        monthSpinnerRanking.setSelection(currentMonth)
-        selectedMonthRanking = months[currentMonth]
+        // Daftar tahun (misalnya, dari 2020 sampai 2025)
+        val years = (2020..2025).map { it.toString() }
 
-        monthSpinnerRanking.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedMonthRanking = months[position]
-                observeDataRanking()
-            }
+        // Atur teks default ke bulan dan tahun saat ini untuk Ranking Activity
+        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) // 0-11
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR).toString()
+        selectedMonthActivity = months[currentMonth]
+        selectedYearActivity = currentYear
+        btnMonthActivity.text = selectedMonthActivity
+        btnYearActivity.text = selectedYearActivity
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        // Atur teks default ke bulan dan tahun saat ini untuk Ranking Feeling
+        selectedMonthFeeling = months[currentMonth]
+        selectedYearFeeling = currentYear
+        btnMonthFeeling.text = selectedMonthFeeling
+        btnYearFeeling.text = selectedYearFeeling
+
+        // Listener untuk Button bulan (Ranking Activity)
+        btnMonthActivity.setOnClickListener {
+            showPickerDialog(isMonth = true, months, years, isActivity = true)
         }
+
+        // Listener untuk Button tahun (Ranking Activity)
+        btnYearActivity.setOnClickListener {
+            showPickerDialog(isMonth = false, months, years, isActivity = true)
+        }
+
+        // Listener untuk Button bulan (Ranking Feeling)
+        btnMonthFeeling.setOnClickListener {
+            showPickerDialog(isMonth = true, months, years, isActivity = false)
+        }
+
+        // Listener untuk Button tahun (Ranking Feeling)
+        btnYearFeeling.setOnClickListener {
+            showPickerDialog(isMonth = false, months, years, isActivity = false)
+        }
+    }
+
+    private fun showPickerDialog(isMonth: Boolean, months: List<String>, years: List<String>, isActivity: Boolean) {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_picker, null)
+        dialog.setContentView(view)
+
+        val numberPicker = view.findViewById<NumberPicker>(R.id.number_picker)
+        val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
+        val btnConfirm = view.findViewById<Button>(R.id.btn_confirm)
+
+        // Pastikan looping dinonaktifkan
+        numberPicker.wrapSelectorWheel = false
+
+        if (isMonth) {
+            // Setup NumberPicker untuk bulan
+            numberPicker.minValue = 0
+            numberPicker.maxValue = months.size - 1
+            numberPicker.displayedValues = months.toTypedArray()
+            numberPicker.value = months.indexOf(if (isActivity) selectedMonthActivity else selectedMonthFeeling)
+        } else {
+            // Setup NumberPicker untuk tahun
+            numberPicker.minValue = 0
+            numberPicker.maxValue = years.size - 1
+            numberPicker.displayedValues = years.toTypedArray()
+            numberPicker.value = years.indexOf(if (isActivity) selectedYearActivity else selectedYearFeeling)
+        }
+
+        // Tombol Cancel
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        // Tombol Confirm
+        btnConfirm.setOnClickListener {
+            if (isActivity) {
+                if (isMonth) {
+                    selectedMonthActivity = months[numberPicker.value]
+                    btnMonthActivity.text = selectedMonthActivity
+                    observeDataRanking()
+                } else {
+                    selectedYearActivity = years[numberPicker.value]
+                    btnYearActivity.text = selectedYearActivity
+                    observeDataRanking()
+                }
+            } else {
+                if (isMonth) {
+                    selectedMonthFeeling = months[numberPicker.value]
+                    btnMonthFeeling.text = selectedMonthFeeling
+                    observeDataFeelingRanking()
+                } else {
+                    selectedYearFeeling = years[numberPicker.value]
+                    btnYearFeeling.text = selectedYearFeeling
+                    observeDataFeelingRanking()
+                }
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun observeDataRanking() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val activityCount = mutableMapOf<String, Pair<Int, Int>>()
-            val dateFormat = SimpleDateFormat("MMMM", Locale("id"))
+            val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
 
             users.forEach { user ->
                 val dateString = user.tanggal
                 val date = try {
-                    SimpleDateFormat("MM/dd/yyyy", Locale("id")).parse(dateString)
+                    parseFormat.parse(dateString)
                 } catch (e: Exception) {
                     null
                 }
 
+                if (date != null) {
+                    val formattedDate = dateFormat.format(date) // Format: "April 2025"
+                    val dateMonthYear = formattedDate.split(" ") // Pisah menjadi ["April", "2025"]
+                    val dateMonth = dateMonthYear[0]
+                    val dateYear = dateMonthYear[1]
 
-                if (date != null && dateFormat.format(date) == selectedMonthRanking) {
-                    println("Matching data: ${user.tanggal}, activities: ${user.activities}")
-                    val activities = user.activities.split(",").map { it.trim() }
-                    val iconResId = user.activityIcon
+                    if (dateMonth == selectedMonthActivity && dateYear == selectedYearActivity) {
+                        println("Matching data: ${user.tanggal}, activities: ${user.activities}, icon: ${user.activityIcon}")
+                        val activity = user.activities.trim()
+                        val iconResId = user.activityIcon
 
-                    activities.forEach { activity ->
                         val currentData = activityCount[activity]
                         if (currentData != null) {
                             activityCount[activity] = Pair(currentData.first + 1, currentData.second)
@@ -277,142 +389,47 @@ class StatFragment : Fragment() {
         }
     }
 
-
-    //Bar chart
-    private fun observeDataBarChart() {
+    private fun observeDataFeelingRanking() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
-            val moodByHour = mutableMapOf<Int, MutableList<Pair<Int, Long>>>()
-
-            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-            val timeFormat = SimpleDateFormat("HH:mm", Locale("id"))
-            val selected = dateFormat.parse(selectedDate)
+            val feelingCount = mutableMapOf<String, Pair<Int, Int>>()
+            val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
 
             users.forEach { user ->
-                val userDate = try {
-                    dateFormat.parse(user.tanggal)
+                val dateString = user.tanggal
+                val date = try {
+                    parseFormat.parse(dateString)
                 } catch (e: Exception) {
                     null
                 }
 
-                if (userDate == selected) {
-                    val time = try {
-                        timeFormat.parse(user.jam)
-                    } catch (e: Exception) {
-                        null
-                    }
+                if (date != null) {
+                    val formattedDate = dateFormat.format(date) // Format: "April 2025"
+                    val dateMonthYear = formattedDate.split(" ") // Pisah menjadi ["April", "2025"]
+                    val dateMonth = dateMonthYear[0]
+                    val dateYear = dateMonthYear[1]
 
-                    val hour = time?.hours ?: 0
-                    val timestamp = time?.time ?: 0L
+                    if (dateMonth == selectedMonthFeeling && dateYear == selectedYearFeeling) {
+                        println("Matching data: ${user.tanggal}, feeling: ${user.perasaan}")
+                        val feeling = user.perasaan.trim()
 
-                    moodByHour.getOrPut(hour) { mutableListOf() }.add(user.mood to timestamp)
-                }
-            }
-
-            val processedMoodByHour = (0..23).associateWith { hour ->
-                val moodList = moodByHour[hour] ?: return@associateWith 0f
-
-                // Hitung frekuensi mood
-                val freqMap = moodList.groupingBy { it.first }.eachCount()
-
-                // Ambil mood dengan frekuensi tertinggi
-                val maxFreq = freqMap.values.maxOrNull() ?: 0
-                val candidateMoods = freqMap.filterValues { it == maxFreq }.keys
-
-                // Kalau hanya satu kandidat, langsung ambil
-                if (candidateMoods.size == 1) {
-                    candidateMoods.first().toFloat()
-                } else {
-                    // Ambil data terakhir dari kandidat yang memiliki waktu terbaru
-                    val latest = moodList.filter { it.first in candidateMoods }
-                        .maxByOrNull { it.second }
-
-                    latest?.first?.toFloat() ?: 0f
-                }
-            }
-
-            updateBarChart(processedMoodByHour)
-        }
-    }
-
-    private fun updateBarChart(moodByHour: Map<Int, Float>) {
-        val entries = moodByHour.map { (hour, avgMood) ->
-            BarEntry(hour.toFloat(), avgMood)
-        }
-
-        val barDataSet = BarDataSet(entries, "Mood per Jam").apply {
-            color = Color.CYAN
-            valueTextSize = 12f
-            setDrawValues(false) // Hilangkan angka di atas bar
-        }
-
-
-        val barData = BarData(barDataSet)
-        barChart.data = barData
-        barChart.description.isEnabled = false
-
-        barChart.axisLeft.apply {
-            axisMinimum = 0f
-            axisMaximum = 6f
-            granularity = 1f
-            textSize = 14f
-            valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return when (value.toInt()) {
-                        1 -> "😠"
-                        2 -> "🤢"
-                        3 -> "😱"
-                        4 -> "😢"
-                        5 -> "😊"
-                        6 -> "😐"
-                        else -> ""
+                        val currentData = feelingCount[feeling]
+                        if (currentData != null) {
+                            feelingCount[feeling] = Pair(currentData.first + 1, currentData.second)
+                        } else {
+                            feelingCount[feeling] = Pair(1, 0) // Ikon tidak digunakan, jadi gunakan 0
+                        }
                     }
                 }
             }
+
+            val sortedFeelings = feelingCount.toList()
+                .sortedByDescending { it.second.first }
+                .take(3)
+                .map { Triple(it.first, it.second.first, it.second.second) }
+
+            feelingRankingAdapter.updateData(sortedFeelings)
         }
-
-        barChart.axisRight.isEnabled = false
-
-        barChart.xAxis.apply {
-            setDrawGridLines(false)
-            granularity = 1f
-            textSize = 12f
-            position = XAxis.XAxisPosition.BOTTOM
-            valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return String.format("%02d:00", value.toInt())
-                }
-            }
-        }
-
-        val marker = MoodMarkerView(requireContext(), R.layout.custom_marker_view)
-        marker.chartView = barChart
-        barChart.marker = marker
-        barChart.legend.isEnabled = false
-        barChart.invalidate()
-    }
-
-    private fun showDatePickerDialog() {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-            val displayFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id"))
-            val storageFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-
-            val selectedCalendar = Calendar.getInstance().apply {
-                set(selectedYear, selectedMonth, selectedDay)
-            }
-
-            val date = selectedCalendar.time
-            selectedDate = storageFormat.format(date)
-            tvSelectedDate = "Tanggal yang dipilih: $selectedDate"
-            btnPickDate.text = displayFormat.format(date) // <- ini untuk tampilan
-
-            observeDataBarChart()
-
-        }, year, month, day).show()
     }
 
 
@@ -448,92 +465,110 @@ class StatFragment : Fragment() {
         gridLayout.columnCount = columnCount
         gridLayout.rowCount = rowCount
 
-        val screenWidth = resources.displayMetrics.widthPixels
-        val cellSize = screenWidth / columnCount
+        // Gunakan post untuk memastikan lebar gridLayout tersedia
+        gridLayout.post {
+            // Lebar aktual GridLayout (setelah layout diukur)
+            val availableWidth = gridLayout.width
+            val marginBetweenCells = 1 // Margin antar sel (kiri dan kanan masing-masing 1dp)
+            val totalMargin = (columnCount - 1) * marginBetweenCells * 2 // Total margin antar sel
+            val cellSize = maxOf((availableWidth - totalMargin) / columnCount, 20) // Minimal 20dp untuk visibilitas
 
-        val months = listOf(" ", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
-
-        // Header (baris 0)
-        for (col in 0 until columnCount) {
-            val params = GridLayout.LayoutParams().apply {
-                width = cellSize
-                height = cellSize
-                rowSpec = GridLayout.spec(0)
-                columnSpec = GridLayout.spec(col)
-                setMargins(2, 2, 2, 2)
+            // Sesuaikan ukuran teks berdasarkan lebar sel
+            val textSize = when {
+                cellSize < 25 -> 5f
+                cellSize < 30 -> 6f
+                cellSize < 40 -> 8f
+                cellSize < 60 -> 10f
+                else -> 12f
             }
 
-            val tv = TextView(requireContext()).apply {
-                text = months[col]
-                gravity = Gravity.CENTER
-                textSize = 12f
-                setTypeface(null, Typeface.BOLD)
-                layoutParams = params
-            }
+            val months = listOf(" ", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
 
-            gridLayout.addView(tv)
-        }
-
-        // Isi grid: baris 1–31 (hari ke-1 s.d. 31)
-        for (day in 1..31) {
-            val row = day
-
+            // Header (baris 0)
             for (col in 0 until columnCount) {
                 val params = GridLayout.LayoutParams().apply {
                     width = cellSize
                     height = cellSize
-                    rowSpec = GridLayout.spec(row)
+                    rowSpec = GridLayout.spec(0)
                     columnSpec = GridLayout.spec(col)
-                    setMargins(2, 2, 2, 2)
+                    setMargins(marginBetweenCells, marginBetweenCells, marginBetweenCells, marginBetweenCells)
                 }
 
-                if (col == 0) {
-                    // Kolom angka hari
-                    val tv = TextView(requireContext()).apply {
-                        text = day.toString()
-                        gravity = Gravity.CENTER
-                        textSize = 12f
-                        layoutParams = params
-                    }
-                    gridLayout.addView(tv)
-                } else {
-                    val key = "%02d/%02d".format(day, col)
-                    val moodColor = moodData[key]?.let { getMoodColor(it) } ?: Color.TRANSPARENT
+                val tv = TextView(requireContext()).apply {
+                    text = months[col]
+                    gravity = Gravity.CENTER
+                    this.textSize = textSize
+                    setTypeface(null, Typeface.BOLD)
+                    setTextColor(Color.BLACK)
+                    layoutParams = params
+                }
 
-                    val view = View(requireContext()).apply {
-                        background = GradientDrawable().apply {
-                            setColor(moodColor)
-                            setStroke(1, Color.LTGRAY)
-                            cornerRadius = 6f
+                gridLayout.addView(tv)
+            }
+
+            // Isi grid: baris 1–31 (hari ke-1 s.d. 31)
+            for (day in 1..31) {
+                val row = day
+
+                for (col in 0 until columnCount) {
+                    val params = GridLayout.LayoutParams().apply {
+                        width = cellSize
+                        height = cellSize
+                        rowSpec = GridLayout.spec(row)
+                        columnSpec = GridLayout.spec(col)
+                        setMargins(marginBetweenCells, marginBetweenCells, marginBetweenCells, marginBetweenCells)
+                    }
+
+                    if (col == 0) {
+                        // Kolom angka hari
+                        val tv = TextView(requireContext()).apply {
+                            text = day.toString()
+                            gravity = Gravity.CENTER
+                            this.textSize = textSize
+                            setTextColor(Color.BLACK)
+                            layoutParams = params
                         }
-                        layoutParams = params
+                        gridLayout.addView(tv)
+                    } else {
+                        val key = "%02d/%02d".format(day, col)
+                        val moodColor = moodData[key]?.let { getMoodColor(it) } ?: Color.TRANSPARENT
+
+                        val view = View(requireContext()).apply {
+                            background = GradientDrawable().apply {
+                                setColor(moodColor)
+                                setStroke(1, Color.LTGRAY)
+                                cornerRadius = if (cellSize < 25) 1f else if (cellSize < 30) 2f else 4f
+                            }
+                            layoutParams = params
+                        }
+                        gridLayout.addView(view)
                     }
-                    gridLayout.addView(view)
                 }
             }
-        }
 
-        // Footer (baris ke-32, index 32 karena 0-based)
-        for (col in 0 until columnCount) {
-            val footerText = if (col == 0) "" else months[col]
+            // Footer (baris ke-32, index 32 karena 0-based)
+            for (col in 0 until columnCount) {
+                val footerText = if (col == 0) "" else months[col]
 
-            val params = GridLayout.LayoutParams().apply {
-                width = cellSize
-                height = cellSize
-                rowSpec = GridLayout.spec(rowCount - 1) // FIXED here
-                columnSpec = GridLayout.spec(col)
-                setMargins(2, 2, 2, 2)
+                val params = GridLayout.LayoutParams().apply {
+                    width = cellSize
+                    height = cellSize
+                    rowSpec = GridLayout.spec(rowCount - 1)
+                    columnSpec = GridLayout.spec(col)
+                    setMargins(marginBetweenCells, marginBetweenCells, marginBetweenCells, marginBetweenCells)
+                }
+
+                val tv = TextView(requireContext()).apply {
+                    text = footerText
+                    gravity = Gravity.CENTER
+                    this.textSize = textSize
+                    setTypeface(null, Typeface.BOLD_ITALIC)
+                    setTextColor(Color.BLACK)
+                    layoutParams = params
+                }
+
+                gridLayout.addView(tv)
             }
-
-            val tv = TextView(requireContext()).apply {
-                text = footerText
-                gravity = Gravity.CENTER
-                textSize = 12f
-                setTypeface(null, Typeface.BOLD_ITALIC)
-                layoutParams = params
-            }
-
-            gridLayout.addView(tv)
         }
     }
 

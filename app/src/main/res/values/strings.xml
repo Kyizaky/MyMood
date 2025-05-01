@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">SkripsTa</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="set_daily_reminder">Atur Pengingat Harian</string>
+    <string name="enter_reminder_message">Masukkan pesan pengingat</string>
+    <string name="select_time">Pilih Waktu</string>
+    <string name="no_time_selected">Belum ada waktu yang dipilih</string>
+    <string name="save_reminder">Simpan Pengingat</string>
+    <string name="enable_reminder">Aktifkan Pengingat</string>
+    <string name="daily_reminder">Pengingat Harian</string>
+    <string name="reminder_activated">Pengingat diaktifkan!</string>
+    <string name="reminder_deactivated">Pengingat dinonaktifkan!</string>
+    <string name="reminder_set_successfully">Pengingat berhasil disetel!</string>
+    <string name="reminder_saved_not_active">Pengingat disimpan tetapi tidak aktif. Aktifkan dengan sakelar.</string>
+    <string name="please_save_reminder_first">Harap simpan pengingat terlebih dahulu</string>
+    <string name="notification_permission_required">Izin notifikasi diperlukan untuk pengingat. Aktifkan di pengaturan.</string>
+    <string name="exact_alarm_permission_required">Izin alarm tepat diperlukan untuk pengingat. Aktifkan di pengaturan.</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="lorem">Lorem ipsum odor amet, consectetuer adipiscing elit. Magnis torquent adipiscing ornare sem libero nunc massa. Euismod nec facilisi penatibus ex id rhoncus. Arcu tempor scelerisque congue cursus lectus amet malesuada. Duis ullamcorper enim malesuada condimentum etiam cubilia nam. Nulla ante mi auctor; montes et lacus. Et augue gravida semper justo eros libero nisi netus.
 

@@ -3,6 +3,7 @@ package com.example.skripsta
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -122,15 +123,12 @@ class TambahFragment : Fragment() {
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
-            justifyContent = JustifyContent.FLEX_START // Agar item ditata lebih rapi
+            justifyContent = JustifyContent.FLEX_START
         }
 
-        view.findViewById<RecyclerView>(R.id.recycler_view).apply {
-            adapter = ItemAdapter(items) { selectedItem ->
-                items.forEach { it.isSelected = false }
-                selectedItem.isSelected = true
-                adapter?.notifyDataSetChanged()
-            }
+        recyclerView.adapter = ItemAdapter(items) { selectedItem ->
+            // Tidak perlu mengatur isSelected di sini karena sudah ditangani di ItemAdapter
+            Log.d("TambahFragment", "Selected Activity: ${selectedItem.getDisplayName()}, Drawable ID: ${selectedItem.drawableId}")
         }
     }
 
@@ -155,7 +153,7 @@ class TambahFragment : Fragment() {
         val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString().ifBlank { "Today" }
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = selectedFeelingText
-        val selectedActivity = getSelectedActivity(view) // Ambil objek Item yang dipilih
+        val selectedActivity = getSelectedActivity(view)
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
@@ -166,8 +164,8 @@ class TambahFragment : Fragment() {
             val user = User(
                 id = 0,
                 mood = moodType.toInt(),
-                activities = selectedActivity.getDisplayName(), // Simpan nama aktivitas
-                activityIcon = selectedActivity.drawableId, // Simpan ID drawable gambar aktivitas
+                activities = selectedActivity.getDisplayName(),
+                activityIcon = selectedActivity.drawableId,
                 perasaan = selectedFeeling,
                 judul = titleJournal,
                 jurnal = journalContent,
@@ -175,10 +173,10 @@ class TambahFragment : Fragment() {
                 jam = selectedTime
             )
 
+            Log.d("TambahFragment", "Saving User - Activity: ${user.activities}, Icon: ${user.activityIcon}")
             mUserViewModel.addUser(user)
             val action = TambahFragmentDirections.actionTambahFragmentToValidationFragment(moodType)
             findNavController().navigate(action)
-
         }
     }
 
@@ -204,4 +202,5 @@ class TambahFragment : Fragment() {
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
         return adapter?.items?.firstOrNull { it.isSelected }
     }
+
 }
