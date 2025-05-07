@@ -10,26 +10,50 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <!-- Spinner for selecting month and year -->
-        <Spinner
-            android:id="@+id/monthYearSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-        <Spinner
-            android:id="@+id/dateSpinner"
-            android:layout_width="wrap_content"
+        <!-- Button for selecting year -->
+        <Button
+            android:id="@+id/yearButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="#FF6242"
+            android:textColor="@android:color/white"
+            android:text="Tahun"
+            android:padding="12dp"
+            android:textSize="14sp" />
+
+        <!-- Button for selecting month -->
+        <Button
+            android:id="@+id/monthButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:backgroundTint="#FF6242"
+            android:textColor="@android:color/white"
+            android:text="Bulan"
+            android:padding="12dp"
+            android:textSize="14sp" />
+
+        <!-- Button for selecting date -->
+        <Button
+            android:id="@+id/dateButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="#FF6242"
+            android:textColor="@android:color/white"
+            android:text="Tanggal"
+            android:padding="12dp"
+            android:textSize="14sp" />
+
     </LinearLayout>
 
-    <!-- RecyclerView for history entries -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/historyRecyclerView"
         android:layout_width="match_parent"
@@ -38,6 +62,6 @@
         android:layout_marginHorizontal="16dp"
         android:clipToPadding="false"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"/>
 
 </LinearLayout>

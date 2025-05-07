@@ -1,7 +1,6 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app">
@@ -13,12 +12,14 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
+
+    <!-- Legend Mood -->
     <androidx.cardview.widget.CardView
         android:id="@+id/container_legend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginVertical="30dp"
         app:cardCornerRadius="10dp">
 
         <LinearLayout
@@ -29,7 +30,6 @@
             android:padding="10dp"
             android:weightSum="6">
 
-        <!-- Contoh satu item emosi -->
             <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Marah"
+                android:text="Angry"
                 android:textSize="16sp"
                 android:layout_marginTop="8dp"
                 android:gravity="center" />
@@ -67,8 +67,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jijik"
-                android:textSize="16sp"
+                android:text="Disgust"
+                android:textSize="15sp"
                 android:layout_marginTop="8dp"
                 android:gravity="center" />
         </LinearLayout>
@@ -88,7 +88,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jijik"
+                    android:text="Scary"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
@@ -109,7 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jijik"
+                    android:text="Sad"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
@@ -130,7 +130,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jijik"
+                    android:text="Happy"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
@@ -151,8 +151,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jijik"
-                    android:textSize="16sp"
+                    android:text="Neutral"
+                    android:textSize="15sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
             </LinearLayout>
@@ -176,11 +176,13 @@
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
+
+            <!-- Pie Chart -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="15dp"
-                android:layout_marginVertical="5dp">
+                android:layout_marginVertical="15dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -219,10 +221,105 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Line Chart -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Baris untuk TextView dan dua Button -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- TextView untuk "Mood Trend" di kiri -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mood Trend"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black" />
+
+                        <!-- Spacer untuk mendorong Button ke kanan -->
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <!-- LinearLayout untuk dua Button (bulan dan tahun) -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- Button untuk memilih bulan -->
+                            <Button
+                                android:id="@+id/btn_month_trend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:text="Bulan"
+                                android:textSize="14sp"
+                                android:padding="8dp"
+                                android:background="@android:drawable/btn_default" />
+
+                            <!-- Button untuk memilih tahun -->
+                            <Button
+                                android:id="@+id/btn_year_trend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tahun"
+                                android:textSize="14sp"
+                                android:padding="8dp"
+                                android:background="@android:drawable/btn_default" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- LineChart untuk menampilkan tren mood -->
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/line_chart_trend"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="16dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Grid mood -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <GridLayout
+                    android:id="@+id/moodCalendarGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"
+                    app:useDefaultMargins="false" />
+            </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Ranking Activity -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:cardCornerRadius="15dp">
 
                 <LinearLayout
@@ -292,10 +389,11 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Ranking Feeling -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
+                android:layout_marginVertical="15dp"
                 app:cardCornerRadius="15dp">
 
                 <LinearLayout
@@ -363,27 +461,6 @@
                         android:layout_marginTop="16dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
-                app:cardCornerRadius="15dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="vertical">
-
-                <GridLayout
-                    android:id="@+id/moodCalendarGrid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="0dp"
-                    app:useDefaultMargins="false" />
-            </LinearLayout>
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>

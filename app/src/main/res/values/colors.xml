@@ -13,5 +13,13 @@
 
     <color name="color_active">#A5C6F9</color> <!-- Sesuaikan dengan warna pada gambar -->
     <color name="color_inactive">#FFFFFF</color>
+
+    <color name="mood_1">#FF6242</color>
+    <color name="mood_2">#82DF45</color>
+    <color name="mood_3">#D19DFF</color>
+    <color name="mood_4">#B0DDFF</color>
+    <color name="mood_5">#FFEE56</color>
+    <color name="mood_6">#FFF1D8</color>
+
 </resources>
 

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
 import com.example.skripsta.data.User
@@ -34,6 +35,7 @@ class MoodAdapter(
         private val moodIcon: ImageView = itemView.findViewById(R.id.moodIcon)
         private val moodText: TextView = itemView.findViewById(R.id.moodText)
         private val timeText: TextView = itemView.findViewById(R.id.timeText)
+        private val moodCard: CardView = itemView.findViewById(R.id.moodCardView)
 
         fun bind(user: User) {
             // Map mood integer to string and icon
@@ -41,6 +43,16 @@ class MoodAdapter(
             moodIcon.setImageResource(MoodUtils.getMoodIcon(user.mood))
 
             timeText.text = user.jam
+            val colorResId = when (user.mood) {
+                1 -> R.color.mood_1
+                2 -> R.color.mood_2
+                3 -> R.color.mood_3
+                4 -> R.color.mood_4
+                5 -> R.color.mood_5
+                6 -> R.color.mood_6
+                else -> R.color.transparent
+            }
+            moodCard.setCardBackgroundColor(itemView.context.getColor(colorResId))
 
             itemView.setOnClickListener { onItemClick(user) }
         }

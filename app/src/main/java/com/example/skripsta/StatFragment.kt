@@ -27,14 +27,23 @@ import com.example.skripsta.adapter.ActivityRankingAdapter
 import com.example.skripsta.adapter.FeelingRankingAdapter
 import com.example.skripsta.adapter.MoodLegendAdapter
 import com.example.skripsta.data.UserViewModel
-import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class StatFragment : Fragment() {
@@ -51,16 +60,22 @@ class StatFragment : Fragment() {
     private lateinit var btnYearFeeling: Button
     private lateinit var monthSpinnerPie: Spinner
     private lateinit var pieChart: PieChart
+
+    private lateinit var btnMonthTrend: Button
+    private lateinit var btnYearTrend: Button
+    private lateinit var lineChartTrend: LineChart
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var containerStat: LinearLayout
+    private lateinit var containerLegend: CardView
+
     private var selectedMonthActivity: String = ""
     private var selectedYearActivity: String = ""
     private var selectedMonthFeeling: String = ""
     private var selectedYearFeeling: String = ""
     private var selectedMonthPie: String = ""
-    private lateinit var progressBar: ProgressBar
-    private lateinit var containerStat: LinearLayout
-    private lateinit var containerLegend: CardView
-    private var tvSelectedDate: String = ""
-    private var selectedDate: String = ""
+    private var selectedMonthTrend: String = ""
+    private var selectedYearTrend: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,6 +84,7 @@ class StatFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_stat, container, false)
 
         mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
         recyclerViewRanking = view.findViewById(R.id.recycler_view_ranking)
         recyclerViewRanking.layoutManager = LinearLayoutManager(requireContext())
         activityRankingAdapter = ActivityRankingAdapter(emptyList())
@@ -83,13 +99,44 @@ class StatFragment : Fragment() {
         btnMonthFeeling = view.findViewById(R.id.btn_month_feeling)
         btnYearFeeling = view.findViewById(R.id.btn_year_feeling)
 
+        // Inisialisasi untuk Mood Trend
+        btnMonthTrend = view.findViewById(R.id.btn_month_trend)
+        btnYearTrend = view.findViewById(R.id.btn_year_trend)
+        lineChartTrend = view.findViewById(R.id.line_chart_trend)
+
         progressBar = view.findViewById(R.id.progress_bar)
         containerStat = view.findViewById(R.id.container_stat)
         containerLegend = view.findViewById(R.id.container_legend)
+
         pieChart = view.findViewById(R.id.moodPieChart)
         legendRecyclerView = view.findViewById(R.id.recycler_view_mood_legend)
         legendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         monthSpinnerPie = view.findViewById(R.id.spinner_month_pie)
+
+        val months = listOf(
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        )
+        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) // 0-11
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR).toString()
+
+        // Ranking Activity
+        selectedMonthActivity = months[currentMonth]
+        selectedYearActivity = currentYear
+        btnMonthActivity.text = selectedMonthActivity
+        btnYearActivity.text = selectedYearActivity
+
+        // Ranking Feeling
+        selectedMonthFeeling = months[currentMonth]
+        selectedYearFeeling = currentYear
+        btnMonthFeeling.text = selectedMonthFeeling
+        btnYearFeeling.text = selectedYearFeeling
+
+        // Mood Trend
+        selectedMonthTrend = months[currentMonth]
+        selectedYearTrend = currentYear
+        btnMonthTrend.text = selectedMonthTrend
+        btnYearTrend.text = selectedYearTrend
 
         showLoading(true) // <- Tambahkan ini
         val gridLayout = view.findViewById<GridLayout>(R.id.moodCalendarGrid)
@@ -98,18 +145,11 @@ class StatFragment : Fragment() {
         gridLayout.columnCount = 13
 
         setupRankingButtons()
+        setupTrendButtons()
         observeDataRanking()
         observeDataFeelingRanking()
 
         setupSpinnerPie()
-
-
-        val storageFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-
-        val today = Calendar.getInstance().time
-        selectedDate = storageFormat.format(today)
-
-        tvSelectedDate = "$selectedDate"
 
 
         return view
@@ -433,6 +473,312 @@ class StatFragment : Fragment() {
     }
 
 
+    //linechart
+    private fun setupTrendButtons() {
+        // Daftar bulan
+        val months = listOf(
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        )
+
+        // Daftar tahun (misalnya, dari 2020 sampai 2025)
+        val years = (2020..2025).map { it.toString() }
+
+        // Listener untuk Button bulan (Mood Trend)
+        btnMonthTrend.setOnClickListener {
+            showPickerDialog(isMonth = true, months, years, section = "trend")
+        }
+
+        // Listener untuk Button tahun (Mood Trend)
+        btnYearTrend.setOnClickListener {
+            showPickerDialog(isMonth = false, months, years, section = "trend")
+        }
+        observeDataTrend()
+        // Inisialisasi LineChart
+        lineChartTrend.apply {
+            description.isEnabled = false
+            legend.isEnabled = false
+            setTouchEnabled(false)
+            setDrawGridBackground(false)
+            axisRight.isEnabled = false
+            xAxis.position = XAxis.XAxisPosition.BOTTOM
+            xAxis.setDrawGridLines(true) // Tampilkan garis grid vertikal seperti gambar
+            xAxis.gridColor = Color.parseColor("#2A3637") // Warna grid seperti gambar
+            xAxis.setDrawLabels(true)
+            xAxis.setDrawAxisLine(true)
+            xAxis.textColor = Color.WHITE
+            axisLeft.setDrawGridLines(false)
+            axisLeft.setDrawLabels(true)
+            axisLeft.setDrawAxisLine(true)
+            axisLeft.textColor = Color.WHITE
+            setNoDataText("No chart data available.")
+            setNoDataTextColor(Color.parseColor("#FFC107"))
+        }
+    }
+
+    private fun showPickerDialog(isMonth: Boolean, months: List<String>, years: List<String>, section: String) {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_picker, null)
+        dialog.setContentView(view)
+
+        val numberPicker = view.findViewById<NumberPicker>(R.id.number_picker)
+        val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
+        val btnConfirm = view.findViewById<Button>(R.id.btn_confirm)
+
+        // Pastikan looping dinonaktifkan
+        numberPicker.wrapSelectorWheel = false
+
+        when (section) {
+            "activity" -> {
+                if (isMonth) {
+                    numberPicker.minValue = 0
+                    numberPicker.maxValue = months.size - 1
+                    numberPicker.displayedValues = months.toTypedArray()
+                    numberPicker.value = months.indexOf(selectedMonthActivity)
+                } else {
+                    numberPicker.minValue = 0
+                    numberPicker.maxValue = years.size - 1
+                    numberPicker.displayedValues = years.toTypedArray()
+                    numberPicker.value = years.indexOf(selectedYearActivity)
+                }
+            }
+            "feeling" -> {
+                if (isMonth) {
+                    numberPicker.minValue = 0
+                    numberPicker.maxValue = months.size - 1
+                    numberPicker.displayedValues = months.toTypedArray()
+                    numberPicker.value = months.indexOf(selectedMonthFeeling)
+                } else {
+                    numberPicker.minValue = 0
+                    numberPicker.maxValue = years.size - 1
+                    numberPicker.displayedValues = years.toTypedArray()
+                    numberPicker.value = years.indexOf(selectedYearFeeling)
+                }
+            }
+            "trend" -> {
+                if (isMonth) {
+                    numberPicker.minValue = 0
+                    numberPicker.maxValue = months.size - 1
+                    numberPicker.displayedValues = months.toTypedArray()
+                    numberPicker.value = months.indexOf(selectedMonthTrend)
+                } else {
+                    numberPicker.minValue = 0
+                    numberPicker.maxValue = years.size - 1
+                    numberPicker.displayedValues = years.toTypedArray()
+                    numberPicker.value = years.indexOf(selectedYearTrend)
+                }
+            }
+        }
+
+        // Tombol Cancel
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        // Tombol Confirm
+        btnConfirm.setOnClickListener {
+            when (section) {
+                "activity" -> {
+                    if (isMonth) {
+                        selectedMonthActivity = months[numberPicker.value]
+                        btnMonthActivity.text = selectedMonthActivity
+                        observeDataRanking()
+                    } else {
+                        selectedYearActivity = years[numberPicker.value]
+                        btnYearActivity.text = selectedYearActivity
+                        observeDataRanking()
+                    }
+                }
+                "feeling" -> {
+                    if (isMonth) {
+                        selectedMonthFeeling = months[numberPicker.value]
+                        btnMonthFeeling.text = selectedMonthFeeling
+                        observeDataFeelingRanking()
+                    } else {
+                        selectedYearFeeling = years[numberPicker.value]
+                        btnYearFeeling.text = selectedYearFeeling
+                        observeDataFeelingRanking()
+                    }
+                }
+                "trend" -> {
+                    if (isMonth) {
+                        selectedMonthTrend = months[numberPicker.value]
+                        btnMonthTrend.text = selectedMonthTrend
+                        observeDataTrend()
+                    } else {
+                        selectedYearTrend = years[numberPicker.value]
+                        btnYearTrend.text = selectedYearTrend
+                        observeDataTrend()
+                    }
+                }
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun observeDataTrend() {
+        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+
+            val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+
+            // Filter data berdasarkan bulan dan tahun yang dipilih
+            val filteredData = users
+                .mapNotNull { user ->
+                    val date = try {
+                        parseFormat.parse(user.tanggal)
+                    } catch (e: Exception) {
+                        println("Failed to parse date: ${user.tanggal}, error: $e")
+                        null
+                    }
+                    if (date != null) {
+                        val formattedDate = dateFormat.format(date)
+                        val dateMonthYear = formattedDate.split(" ")
+                        val dateMonth = dateMonthYear[0]
+                        val dateYear = dateMonthYear[1]
+                        println("Parsed date: $formattedDate, month: $dateMonth, year: $dateYear")
+                        if (dateMonth == selectedMonthTrend && dateYear == selectedYearTrend) {
+                            Pair(date, user.mood)
+                        } else {
+                            null
+                        }
+                    } else {
+                        null
+                    }
+                }
+
+            // Jika tidak ada data, kosongkan chart
+            if (filteredData.isEmpty()) {
+                lineChartTrend.data = null
+                lineChartTrend.setNoDataText("No chart data available.")
+                lineChartTrend.setNoDataTextColor(Color.parseColor("#FFC107"))
+                lineChartTrend.invalidate()
+                return@observe
+            }
+
+            // Kelompokkan data berdasarkan tanggal untuk menentukan mood terbanyak
+            val groupedByDate = filteredData
+                .groupBy { parseFormat.format(it.first).split("/")[1] } // Kelompokkan berdasarkan hari (dd)
+                .mapValues { entry ->
+                    // Hitung frekuensi setiap mood pada tanggal tersebut
+                    val moodCounts = entry.value.groupBy { it.second }.mapValues { it.value.size }
+                    // Temukan mood dengan frekuensi terbanyak
+                    val maxCount = moodCounts.values.maxOrNull() ?: 0
+                    val mostFrequentMoods = moodCounts.filter { it.value == maxCount }.keys
+                    // Jika ada beberapa mood yang sama rata, ambil mood terakhir
+                    val mood = if (mostFrequentMoods.size > 1) {
+                        entry.value.last().second // Ambil mood terakhir
+                    } else {
+                        mostFrequentMoods.first() // Ambil mood terbanyak
+                    }
+                    Pair(entry.value.first().first, mood) // Simpan tanggal dan mood terbanyak/terakhir
+                }
+
+            // Urutkan berdasarkan tanggal (langsung menggunakan objek Date)
+            val sortedData = groupedByDate.entries
+                .sortedBy { it.value.first } // Langsung bandingkan objek Date
+
+            // Ambil tanggal unik yang ada data
+            val dataDates = sortedData.map { it.value.first }.distinct()
+
+            // Ambil tanggal pertama dan terakhir dari data yang ada
+            val firstDate = dataDates.first()
+            val lastDate = dataDates.last()
+
+            // Tentukan tanggal maksimum dalam bulan (misalnya, 30 untuk April)
+            val calendar = Calendar.getInstance().apply { time = lastDate }
+            val maxDayInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            calendar.set(Calendar.DAY_OF_MONTH, maxDayInMonth)
+            val maxDateInMonth = calendar.time
+
+            // Hitung H+5, tetapi batasi hingga akhir bulan
+            calendar.time = lastDate
+            calendar.add(Calendar.DAY_OF_MONTH, 5)
+            val hPlusFiveDate = calendar.time
+            val maxDate = if (hPlusFiveDate > maxDateInMonth) maxDateInMonth else hPlusFiveDate
+
+            // Buat daftar tanggal dari dataDates hingga maxDate (H+5)
+            val displayDates = dataDates.toMutableList()
+            calendar.time = lastDate
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+            while (calendar.time <= maxDate) {
+                displayDates.add(calendar.time)
+                calendar.add(Calendar.DAY_OF_MONTH, 1)
+            }
+
+            // Buat label tanggal untuk sumbu X (hanya hari, misalnya "09")
+            val dateLabels = displayDates.map { parseFormat.format(it).split("/")[1] }
+
+            // Buat data untuk LineChart
+            val entries = sortedData.mapIndexed { index, entry ->
+                Entry(index.toFloat(), entry.value.second.toFloat())
+            }
+
+            println("Chart entries: $entries")
+            println("Date labels: $dateLabels")
+
+            val dataSet = LineDataSet(entries, "Mood Trend").apply {
+                // Atur gradien warna (dari hijau ke biru)
+                setDrawFilled(true)
+                fillDrawable = GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(Color.parseColor("#4CAF50"), Color.parseColor("#2196F3"))
+                )
+                color = Color.parseColor("#4CAF50") // Warna garis awal
+                setDrawCircles(true)
+                setDrawValues(false)
+                lineWidth = 2f
+                circleRadius = 4f
+                setCircleColor(Color.parseColor("#FF6242"))
+            }
+
+            val lineData = LineData(dataSet)
+            lineChartTrend.data = lineData
+
+            // Atur sumbu X (tanggal)
+            lineChartTrend.xAxis.apply {
+                valueFormatter = IndexAxisValueFormatter(dateLabels)
+                granularity = 1f
+                labelCount = dateLabels.size
+                axisMinimum = 0f
+                axisMaximum = (dateLabels.size - 1).toFloat()
+                setDrawLabels(true)
+                setDrawAxisLine(true)
+                textColor = Color.WHITE
+                labelRotationAngle = 0f
+            }
+
+            // Atur sumbu Y (mood dengan emoji, urutan dibalik seperti gambar)
+            lineChartTrend.axisLeft.apply {
+                axisMinimum = 0.6f
+                axisMaximum = 6.6f
+                labelCount = 6
+                valueFormatter = object : ValueFormatter() {
+                    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                        return when (value.toInt()) {
+                            1 -> "😡" // Marah
+                            2 -> "🤢" // Jijik
+                            3 -> "😨" // Takut
+                            4 -> "😢" // Sedih
+                            5 -> "😊" // Bahagia
+                            6 -> "😐" // Netral
+                            else -> ""
+                        }
+                    }
+                }
+                setDrawLabels(true)
+                setDrawAxisLine(true)
+                textColor = Color.WHITE
+                setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
+            }
+
+            lineChartTrend.invalidate()
+        }
+    }
+
+
     //Grid
     private fun observeMoodData() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
@@ -574,12 +920,12 @@ class StatFragment : Fragment() {
 
     private fun getMoodColor(mood: Int): Int {
         return when (mood) {
-            1 -> Color.parseColor("#F44336") // Marah (merah)
-            2 -> Color.parseColor("#9C27B0") // Jijik (ungu)
-            3 -> Color.parseColor("#3F51B5") // Takut (biru)
-            4 -> Color.parseColor("#03A9F4") // Sedih (biru muda)
-            5 -> Color.parseColor("#4CAF50") // Bahagia (hijau)
-            6 -> Color.parseColor("#9E9E9E") // Netral (abu)
+            1 -> Color.parseColor("#FF6242") // Marah (merah)
+            2 -> Color.parseColor("#82DF45") // Jijik (ungu)
+            3 -> Color.parseColor("#D19DFF") // Takut (biru)
+            4 -> Color.parseColor("#B0DDFF") // Sedih (biru muda)
+            5 -> Color.parseColor("#FFEE56") // Bahagia (hijau)
+            6 -> Color.parseColor("#FFF1D8") // Netral (abu)
             else -> Color.TRANSPARENT
         }
     }

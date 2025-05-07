@@ -34,6 +34,7 @@ class HistorySectionAdapter(
         private val dateHeaderText: TextView = itemView.findViewById(R.id.dateHeaderText)
         private val moodRecyclerView: RecyclerView = itemView.findViewById(R.id.moodRecyclerView)
 
+
         fun bind(section: HistorySection) {
             dateHeaderText.text = section.date
 

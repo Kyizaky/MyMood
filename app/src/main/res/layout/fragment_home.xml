@@ -74,9 +74,8 @@
                 android:id="@+id/btnPreviousMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_media_previous"
-                android:contentDescription="Previous Month"
-                android:padding="8dp"/>
+                android:src="@drawable/chevron_left"
+                android:contentDescription="Previous Month"/>
 
             <TextView
                 android:id="@+id/monthYearText"
@@ -84,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="January 1970"
+                android:text="Year"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
@@ -92,9 +91,8 @@
                 android:id="@+id/btnNextMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_media_next"
-                android:contentDescription="Next Month"
-                android:padding="8dp"/>
+                android:src="@drawable/chevron_right"
+                android:contentDescription="Next Month"/>
         </LinearLayout>
 
         <com.kizitonwose.calendar.view.CalendarView

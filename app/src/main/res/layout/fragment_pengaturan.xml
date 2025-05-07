@@ -25,8 +25,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        android:backgroundTint="#E8F5E9">
+        app:cardElevation="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,7 +37,7 @@
             <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/img_1"
+                android:src="@drawable/ic_alarm"
                 android:contentDescription="Smile Icon"
                 android:layout_gravity="center_vertical" />
 
@@ -67,8 +66,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        android:backgroundTint="#E8F5E9">
+        app:cardElevation="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -109,8 +107,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        android:backgroundTint="#E8F5E9">
+        app:cardElevation="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -151,8 +148,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        android:backgroundTint="#E8F5E9">
+        app:cardElevation="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -193,8 +189,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        android:backgroundTint="#E8F5E9">
+        app:cardElevation="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"

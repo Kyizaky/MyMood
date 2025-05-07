@@ -31,8 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                android:backgroundTint="#E8F5E9">
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,9 +75,9 @@
 
                     <!-- Add Button -->
                     <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:src="@drawable/ic_go"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/chevron_right"
                         android:contentDescription="Add Icon"
                         android:layout_gravity="center_vertical" />
                 </LinearLayout>
@@ -91,8 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                android:backgroundTint="#E8F5E9">
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -136,9 +134,9 @@
 
                     <!-- Add Button -->
                     <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:src="@drawable/ic_go"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/chevron_right"
                         android:contentDescription="Add Icon"
                         android:layout_gravity="center_vertical" />
                 </LinearLayout>
