@@ -83,6 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:layout_marginHorizontal="50dp"
                 android:text="Year"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
@@ -107,7 +108,7 @@
 <ImageView
 android:layout_width="138dp"
 android:layout_height="140dp"
-android:layout_marginBottom="4dp"
+android:layout_marginBottom="20dp"
 android:src="@drawable/img_1"
 android:layout_gravity="bottom|center_horizontal" />
 
