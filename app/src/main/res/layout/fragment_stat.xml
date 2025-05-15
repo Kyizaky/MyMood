@@ -12,7 +12,6 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-
     <!-- Legend Mood -->
     <androidx.cardview.widget.CardView
         android:id="@+id/container_legend"
@@ -31,47 +30,47 @@
             android:weightSum="6">
 
             <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/mood1" />
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Angry"
-                android:textSize="16sp"
-                android:layout_marginTop="8dp"
-                android:gravity="center" />
+                android:orientation="vertical"
+                android:gravity="center">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/mood1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Angry"
+                    android:textSize="16sp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center" />
+
+            </LinearLayout>
 
             <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/mood2" />
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Disgust"
-                android:textSize="15sp"
-                android:layout_marginTop="8dp"
-                android:gravity="center" />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/mood2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disgust"
+                    android:textSize="15sp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -176,7 +175,6 @@
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
-
             <!-- Pie Chart -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -234,6 +232,72 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mood Trend"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/btn_month_trend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:text="Bulan"
+                                android:textSize="14sp"
+                                android:padding="8dp"
+                                android:background="@android:drawable/btn_default" />
+
+                            <Button
+                                android:id="@+id/btn_year_trend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tahun"
+                                android:textSize="14sp"
+                                android:padding="8dp"
+                                android:background="@android:drawable/btn_default" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/line_chart_trend"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="16dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Grid Mood -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
+
                     <!-- Baris untuk TextView dan dua Button -->
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -241,11 +305,11 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <!-- TextView untuk "Mood Trend" di kiri -->
+                        <!-- TextView untuk "Mood Calendar" di kiri -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mood Trend"
+                            android:text="Mood Calendar"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="@android:color/black" />
@@ -264,7 +328,7 @@
 
                             <!-- Button untuk memilih bulan -->
                             <Button
-                                android:id="@+id/btn_month_trend"
+                                android:id="@+id/btn_month_calendar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="8dp"
@@ -275,7 +339,7 @@
 
                             <!-- Button untuk memilih tahun -->
                             <Button
-                                android:id="@+id/btn_year_trend"
+                                android:id="@+id/btn_year_calendar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Tahun"
@@ -285,35 +349,13 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!-- LineChart untuk menampilkan tren mood -->
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/line_chart_trend"
+                    <GridLayout
+                        android:id="@+id/moodCalendarGrid"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginTop="16dp" />
+                        android:layout_height="wrap_content"
+                        android:padding="0dp"
+                        app:useDefaultMargins="false" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Grid mood -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="15dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="vertical">
-
-                <GridLayout
-                    android:id="@+id/moodCalendarGrid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="0dp"
-                    app:useDefaultMargins="false" />
-            </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Ranking Activity -->
@@ -328,14 +370,12 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Baris untuk TextView dan dua Button -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <!-- TextView untuk "Ranking Activity" di kiri -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -344,19 +384,16 @@
                             android:textStyle="bold"
                             android:textColor="@android:color/black" />
 
-                        <!-- Spacer untuk mendorong Button ke kanan -->
                         <View
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_weight="1" />
 
-                        <!-- LinearLayout untuk dua Button (bulan dan tahun) -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <!-- Button untuk memilih bulan -->
                             <Button
                                 android:id="@+id/btn_month"
                                 android:layout_width="wrap_content"
@@ -367,7 +404,6 @@
                                 android:padding="8dp"
                                 android:background="@android:drawable/btn_default" />
 
-                            <!-- Button untuk memilih tahun -->
                             <Button
                                 android:id="@+id/btn_year"
                                 android:layout_width="wrap_content"
@@ -379,7 +415,6 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!-- RecyclerView untuk menampilkan peringkat aktivitas -->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_ranking"
                         android:layout_width="match_parent"
@@ -402,14 +437,12 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Baris untuk TextView dan dua Button -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <!-- TextView untuk "Ranking Feeling" di kiri -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -418,19 +451,16 @@
                             android:textStyle="bold"
                             android:textColor="@android:color/black" />
 
-                        <!-- Spacer untuk mendorong Button ke kanan -->
                         <View
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_weight="1" />
 
-                        <!-- LinearLayout untuk dua Button (bulan dan tahun) -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <!-- Button untuk memilih bulan -->
                             <Button
                                 android:id="@+id/btn_month_feeling"
                                 android:layout_width="wrap_content"
@@ -441,7 +471,6 @@
                                 android:padding="8dp"
                                 android:background="@android:drawable/btn_default" />
 
-                            <!-- Button untuk memilih tahun -->
                             <Button
                                 android:id="@+id/btn_year_feeling"
                                 android:layout_width="wrap_content"
@@ -453,7 +482,6 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!-- RecyclerView untuk menampilkan peringkat perasaan -->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_feeling_ranking"
                         android:layout_width="match_parent"
