@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_tambahFragment_to_validationFragment"
             app:destination="@id/validationFragment" />
+        <action
+            android:id="@+id/action_tambahFragment_to_selectFeelingFragment"
+            app:destination="@id/selectFeelingFragment" />
     </fragment>
 
     <fragment
@@ -131,5 +134,13 @@
         <action
             android:id="@+id/action_addReminderFragment_to_reminderFragment"
             app:destination="@id/reminderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectFeelingFragment"
+        android:name="com.example.skripsta.SelectFeelingFragment"
+        android:label="SelectFeelingFragment" >
+        <action
+            android:id="@+id/action_selectFeelingFragment_to_tambahFragment"
+            app:destination="@id/tambahFragment" />
     </fragment>
 </navigation>

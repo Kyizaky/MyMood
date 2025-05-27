@@ -1,26 +1,32 @@
 package com.example.skripsta
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.skripsta.data.Feeling
+import com.example.skripsta.data.FeelingViewModel
 import com.example.skripsta.databinding.ActivityMainBinding
-import android.Manifest // Add this import
-import android.content.Context
-import android.content.Intent
-import android.util.Log
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var feelingViewModel: FeelingViewModel
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -38,9 +44,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+
+        // Initialize FeelingViewModel
+        feelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
+
         // Check and request to disable battery optimization
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val powerManager = getSystemService(POWER_SERVICE) as android.os.PowerManager
+            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
             if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
                 Log.d("MainActivity", "Requesting to disable battery optimization")
                 val intent = Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
@@ -68,6 +80,22 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigationView.visibility =
                 if (destination.id in visibleFragments) View.VISIBLE else View.GONE
         }
+
+        // Initialize feeling data if not already done
+        initializeFeelingData()
+
+        // Request notification permission on first launch
+        val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
+        if (isFirstLaunch && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                sharedPreferences.edit().putBoolean("isFirstLaunch", false).apply()
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -84,5 +112,31 @@ class MainActivity : AppCompatActivity() {
                         or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 )
+    }
+
+    private fun initializeFeelingData() {
+        val isDataInitialized = sharedPreferences.getBoolean("isFeelingDataInitialized", false)
+        if (!isDataInitialized) {
+            val initialFeelings = listOf(
+                Feeling(name = "Angry"),
+                Feeling(name = "Disgust"),
+                Feeling(name = "Scary"),
+                Feeling(name = "Sad"),
+                Feeling(name = "Happy"),
+                Feeling(name = "Neutral"),
+                Feeling(name = "Excited"),
+                Feeling(name = "Anxious"),
+                Feeling(name = "Calm"),
+                Feeling(name = "Surprised")
+            )
+            feelingViewModel.addAllFeelings(initialFeelings)
+
+            // Save default selected feeling IDs (Angry, Disgust, Scary, Sad, Happy)
+            val defaultSelectedIds = initialFeelings.take(5).map { it.name }.toSet()
+            sharedPreferences.edit()
+                .putStringSet("selected_feeling_names", defaultSelectedIds)
+                .putBoolean("isFeelingDataInitialized", true)
+                .apply()
+        }
     }
 }

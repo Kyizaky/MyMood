@@ -2,6 +2,8 @@ package com.example.skripsta
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +19,7 @@ import com.example.skripsta.adapter.FeelingAdapter
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.data.FeelingViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -27,6 +31,9 @@ import java.util.Locale
 class TambahFragment : Fragment() {
 
     private lateinit var mUserViewModel: UserViewModel
+    private lateinit var mFeelingViewModel: FeelingViewModel
+    private lateinit var sharedPreferences: SharedPreferences
+    private var selectedFeelingText: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,11 +42,13 @@ class TambahFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_tambah, container, false)
 
         mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        mFeelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
+        sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
         view.findViewById<ImageView>(R.id.ic_back).setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().popBackStack()
         }
 
         view.findViewById<Button>(R.id.btn_save).setOnClickListener {
@@ -48,16 +57,15 @@ class TambahFragment : Fragment() {
 
         val btnCal: EditText = view.findViewById(R.id.btn_cal)
         val btnClock: EditText = view.findViewById(R.id.btn_clock)
+        val btnSett: ImageView = view.findViewById(R.id.ic_sett)
         val calendar = Calendar.getInstance()
 
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         btnClock.setText(timeFormat.format(calendar.time))
 
-        // Format tanggal
         val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
         btnCal.setText(dateFormat.format(calendar.time))
 
-        // Event untuk menampilkan TimePickerDialog
         btnClock.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
                 requireContext(),
@@ -74,7 +82,6 @@ class TambahFragment : Fragment() {
             timePickerDialog.show()
         }
 
-        // Event untuk menampilkan DatePickerDialog
         btnCal.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
@@ -94,6 +101,11 @@ class TambahFragment : Fragment() {
         setupRecyclerView(view)
         setupFeelingRecyclerView(view)
 
+        btnSett.setOnClickListener {
+            findNavController().navigate(R.id.action_tambahFragment_to_selectFeelingFragment)
+            true
+        }
+        // Add button to select feelings (e.g., on long press of a view)
         return view
     }
 
@@ -127,25 +139,26 @@ class TambahFragment : Fragment() {
         }
 
         recyclerView.adapter = ItemAdapter(items) { selectedItem ->
-            // Tidak perlu mengatur isSelected di sini karena sudah ditangani di ItemAdapter
             Log.d("TambahFragment", "Selected Activity: ${selectedItem.getDisplayName()}, Drawable ID: ${selectedItem.drawableId}")
         }
     }
 
-    private var selectedFeelingText: String? = null
-
     private fun setupFeelingRecyclerView(view: View) {
-        val feelings = listOf("Angry", "Disgust", "Scary", "Sad", "Happy", "Neutral")
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_feelings)
 
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
-            justifyContent = JustifyContent.FLEX_START // Agar item ditata lebih rapi
+            justifyContent = JustifyContent.FLEX_START
         }
-        recyclerView.adapter = FeelingAdapter(feelings) { selectedFeeling ->
-            selectedFeelingText = selectedFeeling
-        }
+
+        mFeelingViewModel.allFeelings.observe(viewLifecycleOwner, Observer { feelings ->
+            val selectedNames = sharedPreferences.getStringSet("selected_feeling_names", emptySet()) ?: emptySet()
+            val displayedFeelings = feelings.filter { it.name in selectedNames }.map { it.name }
+            recyclerView.adapter = FeelingAdapter(displayedFeelings) { selectedFeeling ->
+                selectedFeelingText = selectedFeeling
+            }
+        })
     }
 
     private fun insertDataToDatabase(view: View) {
@@ -180,7 +193,6 @@ class TambahFragment : Fragment() {
         }
     }
 
-
     private fun getSelectedMoodType(view: View): Int? {
         val moodButtons = listOf(
             R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
@@ -202,5 +214,4 @@ class TambahFragment : Fragment() {
         val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
         return adapter?.items?.firstOrNull { it.isSelected }
     }
-
 }

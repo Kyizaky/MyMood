@@ -217,6 +217,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ImageView
+                android:id="@+id/ic_sett"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_medi"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.028"
+                app:layout_constraintStart_toEndOf="@+id/tvFeelings"
+                tools:layout_editor_absoluteY="16dp" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvFeelings"
                 android:layout_width="match_parent"
