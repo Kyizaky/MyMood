@@ -1,75 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#D2DBE6">
+    android:id="@+id/fragment_container"
+    android:background="@color/app">
 
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back"
+        android:src="@drawable/ic_back" />
+
+    <!-- Title -->
     <TextView
+        android:id="@+id/reminderTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set a Daily Reminder"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/nunitoextrabold"
         android:gravity="center"
+        android:text="Reminder"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <!-- RecyclerView for Reminder List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reminderRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/reminderTitle"
+        android:layout_above="@id/addReminderFab"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Field untuk pesan pengingat -->
-    <EditText
-        android:id="@+id/reminderMessageEditText"
-        android:layout_width="match_parent"
+    <!-- Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addReminderFab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter reminder message"
-        android:inputType="text"
-        android:padding="8dp"
-        android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="16dp" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:contentDescription="Add New Reminder"
+        android:src="@drawable/ic_alarm"
+        app:fabSize="normal"
+        app:backgroundTint="@color/aliceBlue2" />
 
-    <!-- Field untuk memilih waktu -->
-    <Button
-        android:id="@+id/selectTimeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Time"
-        android:layout_marginBottom="8dp" />
-
-    <TextView
-        android:id="@+id/selectedTimeTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No time selected"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Tombol untuk menyimpan pengingat -->
-    <Button
-        android:id="@+id/saveReminderButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Reminder"
-        android:backgroundTint="#6200EE"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Switch untuk mengaktifkan/menonaktifkan pengingat -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="16dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Enable Reminder"
-            android:textSize="16sp" />
-
-        <Switch
-            android:id="@+id/reminderSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

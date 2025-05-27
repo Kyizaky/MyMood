@@ -64,6 +64,8 @@ dependencies {
 
     implementation ("androidx.gridlayout:gridlayout:1.0.0")
 
+    implementation ("com.google.code.gson:gson:2.10.1")
+
     // JSON serialization library, works with the Kotlin serialization plugin
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation(libs.androidx.core.ktx)
