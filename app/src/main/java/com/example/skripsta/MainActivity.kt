@@ -18,6 +18,8 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.skripsta.data.Activity
+import com.example.skripsta.data.ActivityViewModel
 import com.example.skripsta.data.Feeling
 import com.example.skripsta.data.FeelingViewModel
 import com.example.skripsta.databinding.ActivityMainBinding
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var feelingViewModel: FeelingViewModel
+    private lateinit var activityViewModel: ActivityViewModel
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -47,8 +50,9 @@ class MainActivity : AppCompatActivity() {
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
-        // Initialize FeelingViewModel
+        // Initialize ViewModels
         feelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
+        activityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
 
         // Check and request to disable battery optimization
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -81,8 +85,9 @@ class MainActivity : AppCompatActivity() {
                 if (destination.id in visibleFragments) View.VISIBLE else View.GONE
         }
 
-        // Initialize feeling data if not already done
+        // Initialize feeling and activity data if not already done
         initializeFeelingData()
+        initializeActivityData()
 
         // Request notification permission on first launch
         val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
@@ -136,6 +141,32 @@ class MainActivity : AppCompatActivity() {
             sharedPreferences.edit()
                 .putStringSet("selected_feeling_names", defaultSelectedIds)
                 .putBoolean("isFeelingDataInitialized", true)
+                .apply()
+        }
+    }
+
+    private fun initializeActivityData() {
+        val isActivityDataInitialized = sharedPreferences.getBoolean("isActivityDataInitialized", false)
+        if (!isActivityDataInitialized) {
+            val initialActivities = listOf(
+                Activity(name = "Study", iconRes = R.drawable.activity1),
+                Activity(name = "Shop", iconRes = R.drawable.activity2),
+                Activity(name = "Work", iconRes = R.drawable.activity3),
+                Activity(name = "Vacation", iconRes = R.drawable.activity4),
+                Activity(name = "Eat", iconRes = R.drawable.activity5),
+                Activity(name = "Gym", iconRes = R.drawable.activity6),
+                Activity(name = "Sleep", iconRes = R.drawable.activity1),
+                Activity(name = "Travel", iconRes = R.drawable.activity2),
+                Activity(name = "Read", iconRes = R.drawable.activity3),
+                Activity(name = "Game", iconRes = R.drawable.activity4)
+            )
+            activityViewModel.addAllActivities(initialActivities)
+
+            // Save default selected activity IDs (Study, Shop, Work, Vacation, Eat)
+            val defaultSelectedIds = initialActivities.take(5).map { it.name }.toSet()
+            sharedPreferences.edit()
+                .putStringSet("selected_activity_names", defaultSelectedIds)
+                .putBoolean("isActivityDataInitialized", true)
                 .apply()
         }
     }

@@ -218,7 +218,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ic_sett"
+                android:id="@+id/edit_feelings_button"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_medi"
@@ -280,6 +280,16 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/edit_activities_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_alarm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.035"
+                app:layout_constraintStart_toEndOf="@+id/tvAktivitas"
+                tools:layout_editor_absoluteY="16dp" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvAktivitas"

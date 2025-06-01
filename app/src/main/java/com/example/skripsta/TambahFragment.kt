@@ -15,10 +15,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.adapter.FeelingAdapter
+import com.example.skripsta.data.Activity
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.data.ActivityViewModel
 import com.example.skripsta.data.FeelingViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -32,8 +35,10 @@ class TambahFragment : Fragment() {
 
     private lateinit var mUserViewModel: UserViewModel
     private lateinit var mFeelingViewModel: FeelingViewModel
+    private lateinit var mActivityViewModel: ActivityViewModel
     private lateinit var sharedPreferences: SharedPreferences
     private var selectedFeelingText: String? = null
+    private var selectedActivityItem: Item? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +48,7 @@ class TambahFragment : Fragment() {
 
         mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
         mFeelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
+        mActivityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
         sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
@@ -57,7 +63,6 @@ class TambahFragment : Fragment() {
 
         val btnCal: EditText = view.findViewById(R.id.btn_cal)
         val btnClock: EditText = view.findViewById(R.id.btn_clock)
-        val btnSett: ImageView = view.findViewById(R.id.ic_sett)
         val calendar = Calendar.getInstance()
 
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -101,11 +106,16 @@ class TambahFragment : Fragment() {
         setupRecyclerView(view)
         setupFeelingRecyclerView(view)
 
-        btnSett.setOnClickListener {
-            findNavController().navigate(R.id.action_tambahFragment_to_selectFeelingFragment)
-            true
+        // Add click listener to pencil icon for activities
+        view.findViewById<ImageView>(R.id.edit_activities_button).setOnClickListener {
+            findNavController().navigate(R.id.action_tambahFragment_to_selectActivityFragment)
         }
-        // Add button to select feelings (e.g., on long press of a view)
+
+        // Add click listener to pencil icon for feelings
+        view.findViewById<ImageView>(R.id.edit_feelings_button).setOnClickListener {
+            findNavController().navigate(R.id.action_tambahFragment_to_selectFeelingFragment)
+        }
+
         return view
     }
 
@@ -122,25 +132,24 @@ class TambahFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View) {
-        val items = listOf(
-            Item(R.drawable.activity1, "Study"),
-            Item(R.drawable.activity2, "Shop"),
-            Item(R.drawable.activity3, "Work"),
-            Item(R.drawable.activity4, "Vacation"),
-            Item(R.drawable.activity5, "Eat"),
-            Item(R.drawable.activity6, "Gym")
-        )
-
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
             justifyContent = JustifyContent.FLEX_START
         }
 
-        recyclerView.adapter = ItemAdapter(items) { selectedItem ->
-            Log.d("TambahFragment", "Selected Activity: ${selectedItem.getDisplayName()}, Drawable ID: ${selectedItem.drawableId}")
-        }
+        mActivityViewModel.allActivities.observe(viewLifecycleOwner, Observer { activities ->
+            Log.d("TambahFragment", "Observed activities: $activities") // Debug log
+            val selectedNames = sharedPreferences.getStringSet("selected_activity_names", emptySet()) ?: emptySet()
+            val displayedActivities = activities.filter { it.name in selectedNames }.map { Item(it.iconRes, it.name) }
+            Log.d("TambahFragment", "Displayed activities: $displayedActivities") // Debug log
+            recyclerView.adapter = ActivityAdapter(displayedActivities) { selectedItem ->
+                selectedActivityItem = selectedItem
+                Log.d("TambahFragment", "Selected Activity: ${selectedItem.getDisplayName()}, Drawable ID: ${selectedItem.drawableId}")
+            }
+        })
     }
 
     private fun setupFeelingRecyclerView(view: View) {
@@ -166,7 +175,7 @@ class TambahFragment : Fragment() {
         val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString().ifBlank { "Today" }
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = selectedFeelingText
-        val selectedActivity = getSelectedActivity(view)
+        val selectedActivity = selectedActivityItem
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
@@ -211,7 +220,6 @@ class TambahFragment : Fragment() {
     }
 
     private fun getSelectedActivity(view: View): Item? {
-        val adapter = view.findViewById<RecyclerView>(R.id.recycler_view).adapter as? ItemAdapter
-        return adapter?.items?.firstOrNull { it.isSelected }
+        return selectedActivityItem
     }
 }
