@@ -7,7 +7,7 @@
 
     <item android:title="Riwayat"
         android:id="@+id/statFragment"
-        android:icon="@drawable/ic_riwayat"/>
+        android:icon="@drawable/statistics"/>
 
     <item android:title="Tambah"
         android:id="@+id/tambahFragment"

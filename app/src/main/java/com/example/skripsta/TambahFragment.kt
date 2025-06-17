@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.adapter.FeelingAdapter
-import com.example.skripsta.data.Activity
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel

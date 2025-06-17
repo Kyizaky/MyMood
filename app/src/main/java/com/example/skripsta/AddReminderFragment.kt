@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -17,6 +18,9 @@ class AddReminderFragment : Fragment() {
 
     private var _binding: FragmentAddReminderBinding? = null
     private val binding get() = _binding!!
+
+    // Track selected days
+    private val selectedDays = mutableSetOf<Int>()
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -44,6 +48,9 @@ class AddReminderFragment : Fragment() {
         binding.timePicker.hour = calendar.get(Calendar.HOUR_OF_DAY)
         binding.timePicker.minute = calendar.get(Calendar.MINUTE)
 
+        // Set up day selection listeners
+        setupDaySelectionListeners()
+
         binding.cancelButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -64,17 +71,42 @@ class AddReminderFragment : Fragment() {
         }
     }
 
-    private fun saveReminder() {
-        val days = mutableListOf<Int>()
-        if (binding.dayMonday.isChecked) days.add(Calendar.MONDAY)
-        if (binding.dayTuesday.isChecked) days.add(Calendar.TUESDAY)
-        if (binding.dayWednesday.isChecked) days.add(Calendar.WEDNESDAY)
-        if (binding.dayThursday.isChecked) days.add(Calendar.THURSDAY)
-        if (binding.dayFriday.isChecked) days.add(Calendar.FRIDAY)
-        if (binding.daySaturday.isChecked) days.add(Calendar.SATURDAY)
-        if (binding.daySunday.isChecked) days.add(Calendar.SUNDAY)
+    private fun setupDaySelectionListeners() {
+        val dayViews = mapOf(
+            binding.dayMon to Calendar.MONDAY,
+            binding.dayTue to Calendar.TUESDAY,
+            binding.dayWed to Calendar.WEDNESDAY,
+            binding.dayThu to Calendar.THURSDAY,
+            binding.dayFri to Calendar.FRIDAY,
+            binding.daySat to Calendar.SATURDAY,
+            binding.daySun to Calendar.SUNDAY
+        )
 
-        if (days.isEmpty()) {
+        dayViews.forEach { (textView, day) ->
+            textView.setOnClickListener {
+                if (selectedDays.contains(day)) {
+                    selectedDays.remove(day)
+                    updateDayVisual(textView, false)
+                } else {
+                    selectedDays.add(day)
+                    updateDayVisual(textView, true)
+                }
+            }
+        }
+    }
+
+    private fun updateDayVisual(textView: TextView, isSelected: Boolean) {
+        if (isSelected) {
+            textView.setBackgroundResource(R.drawable.rounded_background_selected) // Create this drawable
+            textView.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+        } else {
+            textView.setBackgroundResource(R.drawable.rounded_background_day)
+            textView.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+        }
+    }
+
+    private fun saveReminder() {
+        if (selectedDays.isEmpty()) {
             Toast.makeText(context, "Please select at least one day", Toast.LENGTH_SHORT).show()
             return
         }
@@ -87,7 +119,7 @@ class AddReminderFragment : Fragment() {
             id = -1, // Placeholder ID, will be set in ReminderFragment
             hour = hour,
             minute = minute,
-            days = days
+            days = selectedDays.toList()
         )
 
         parentFragmentManager.setFragmentResult(

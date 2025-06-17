@@ -16,65 +16,12 @@
         android:gravity="center"
         android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/selectTimeButton"
+    <TimePicker
+        android:id="@+id/timePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Time"
+        android:timePickerMode="spinner"
         android:layout_marginTop="8dp" />
-
-    <TextView
-        android:id="@+id/selectedTimeTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No time selected"
-        android:textSize="16sp"
-        android:fontFamily="@font/nunitoregular"
-        android:layout_marginTop="8dp" />
-
-    <!-- Day Selection Checkboxes -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp">
-
-        <CheckBox
-            android:id="@+id/dayMonday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Monday" />
-        <CheckBox
-            android:id="@+id/dayTuesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tuesday" />
-        <CheckBox
-            android:id="@+id/dayWednesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wednesday" />
-        <CheckBox
-            android:id="@+id/dayThursday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Thursday" />
-        <CheckBox
-            android:id="@+id/dayFriday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Friday" />
-        <CheckBox
-            android:id="@+id/daySaturday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Saturday" />
-        <CheckBox
-            android:id="@+id/daySunday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sunday" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

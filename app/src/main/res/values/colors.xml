@@ -6,12 +6,14 @@
     <color name="app">#D2DBE6</color>
     <color name="vista">#7896CC</color>
 
+    <color name="lightGray">#D3D3D3</color>
+
     <color name="light_green">#B2CBB0</color>
     <color name="pale_green">#C7E4C4</color>
     <color name="aliceBlue">#D2DBE6</color>
     <color name="aliceBlue2">#E0ECF8</color>
 
-    <color name="color_active">#A5C6F9</color> <!-- Sesuaikan dengan warna pada gambar -->
+    <color name="color_active">#A5C6F9</color>
     <color name="color_inactive">#FFFFFF</color>
 
     <color name="mood_1">#FF6242</color>

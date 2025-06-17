@@ -26,7 +26,6 @@ class ReminderAdapter(
         with(holder.binding) {
             reminderMessage.text = reminder.message
             reminderTime.text = String.format("%02d:%02d", reminder.hour, reminder.minute)
-            reminderDays.text = reminder.days.map { dayOfWeekToString(it) }.joinToString(", ")
 
             reminderMenu.setOnClickListener {
                 val popup = PopupMenu(root.context, reminderMenu)

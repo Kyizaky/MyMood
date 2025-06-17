@@ -34,18 +34,11 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <!-- Riwayat Button (Right) -->
-        <TextView
+        <ImageView
             android:id="@+id/riwayatButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Riwayat"
-            android:textSize="16sp"
-            android:textColor="#6200EE"
-            android:padding="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground" />
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_riwayat"/>
     </LinearLayout>
 
     <!-- CardView untuk Kalender -->

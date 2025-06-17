@@ -43,22 +43,13 @@
                     android:textSize="16sp"
                     android:fontFamily="@font/nunitoregular"
                     android:textColor="#666666" />
-
-                <TextView
-                    android:id="@+id/reminderDays"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mon, Wed, Fri"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/nunitoregular"
-                    android:textColor="#666666" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/reminderMenu"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_medi"
+                android:src="@drawable/ic_riwayat"
                 android:contentDescription="Reminder Options"
                 android:background="?attr/selectableItemBackgroundBorderless" />
         </LinearLayout>

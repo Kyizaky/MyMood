@@ -10,7 +10,6 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.skripsta.data.Reminder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
@@ -36,6 +35,7 @@ class ReminderReceiver : BroadcastReceiver() {
 
         val reminderId = intent.getIntExtra("reminderId", -1)
         val message = intent.getStringExtra("message") ?: "Don't forget to fill ur mood today"
+        Log.d("ReminderReceiver", "Processing reminder $reminderId with message: $message")
 
         // Show notification
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -71,6 +71,8 @@ class ReminderReceiver : BroadcastReceiver() {
         if (reminder != null) {
             scheduleNextReminder(context, reminder)
             Log.d("ReminderReceiver", "Scheduled next reminder for ID: $reminderId")
+        } else {
+            Log.w("ReminderReceiver", "Reminder $reminderId not found in SharedPreferences")
         }
     }
 
@@ -82,15 +84,12 @@ class ReminderReceiver : BroadcastReceiver() {
         }
 
         val calendar = Calendar.getInstance(TimeZone.getDefault())
-        val currentDay = calendar.get(Calendar.DAY_OF_WEEK)
-        val nextDay = reminder.days.sorted().find { it >= currentDay } ?: reminder.days.sorted().first()
-
-        calendar.set(Calendar.DAY_OF_WEEK, nextDay)
         calendar.set(Calendar.HOUR_OF_DAY, reminder.hour)
         calendar.set(Calendar.MINUTE, reminder.minute)
         calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
         if (calendar.timeInMillis <= System.currentTimeMillis()) {
-            calendar.add(Calendar.WEEK_OF_YEAR, 1)
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
 
         val intent = Intent(context, ReminderReceiver::class.java).apply {
