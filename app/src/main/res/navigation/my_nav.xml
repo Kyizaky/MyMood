@@ -137,6 +137,11 @@
         <action
             android:id="@+id/action_addReminderFragment_to_reminderFragment"
             app:destination="@id/reminderFragment" />
+        <argument
+            android:name="reminder"
+            app:argType="com.example.skripsta.data.Reminder"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/selectFeelingFragment"

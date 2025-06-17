@@ -1,7 +1,6 @@
 package com.example.skripsta
 
 import android.app.AlarmManager
-import android.app.Dialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -13,27 +12,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.skripsta.databinding.DialogAddReminderBinding
+import com.example.skripsta.data.Reminder
 import com.example.skripsta.databinding.FragmentReminderBinding
 import com.example.skripsta.databinding.ItemReminderBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
-
-data class Reminder(
-    val id: Int,
-    val hour: Int,
-    val minute: Int
-) {
-    val message: String
-        get() = "Don't forget to fill ur mood today"
-}
 
 class ReminderAdapter(
     private val reminders: MutableList<Reminder>,
@@ -88,18 +78,18 @@ class ReminderFragment : Fragment() {
                 reminders.forEach { reminder ->
                     scheduleReminder(reminder)
                 }
-                Toast.makeText(context, "Exact alarm permission granted", Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(context, "Exact alarm permission granted", android.widget.Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Exact alarm permission required", Toast.LENGTH_LONG).show()
+                android.widget.Toast.makeText(context, "Exact alarm permission required", android.widget.Toast.LENGTH_LONG).show()
             }
         }
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                Toast.makeText(context, "Notification permission granted", Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(context, "Notification permission granted", android.widget.Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Notification permission required for reminders", Toast.LENGTH_LONG).show()
+                android.widget.Toast.makeText(context, "Notification permission required for reminders", android.widget.Toast.LENGTH_LONG).show()
             }
         }
 
@@ -128,18 +118,46 @@ class ReminderFragment : Fragment() {
         }
 
         // Setup RecyclerView
-        adapter = ReminderAdapter(reminders, { reminder -> showEditReminderDialog(reminder) }, { reminder -> deleteReminder(reminder) })
+        adapter = ReminderAdapter(reminders, { reminder ->
+            val action = ReminderFragmentDirections.actionReminderFragmentToAddReminderFragment(reminder)
+            findNavController().navigate(action)
+        }, { reminder -> deleteReminder(reminder) })
         binding.reminderRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.reminderRecyclerView.adapter = adapter
 
         // Back button
         binding.backButton.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().popBackStack()
         }
 
         // FAB to add new reminder
         binding.addReminderFab.setOnClickListener {
-            showAddReminderDialog()
+            val action = ReminderFragmentDirections.actionReminderFragmentToAddReminderFragment(null)
+            findNavController().navigate(action)
+        }
+
+        // Listen for result from AddReminderFragment
+        setFragmentResultListener("addReminderResult") { _, bundle ->
+            val reminder = bundle.getParcelable<Reminder>("reminder")
+            if (reminder != null) {
+                if (reminder.id == -1) {
+                    // Add new reminder
+                    val newReminder = Reminder(nextReminderId++, reminder.hour, reminder.minute)
+                    reminders.add(newReminder)
+                    scheduleReminder(newReminder)
+                } else {
+                    // Edit existing reminder
+                    val index = reminders.indexOfFirst { it.id == reminder.id }
+                    if (index != -1) {
+                        val updatedReminder = Reminder(reminder.id, reminder.hour, reminder.minute)
+                        reminders[index] = updatedReminder
+                        cancelReminder(reminder)
+                        scheduleReminder(updatedReminder)
+                    }
+                }
+                saveReminders()
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 
@@ -161,110 +179,6 @@ class ReminderFragment : Fragment() {
         sharedPreferences.edit().putInt("nextReminderId", nextReminderId).apply()
     }
 
-    private fun showAddReminderDialog() {
-        val dialog = Dialog(requireContext())
-        val dialogBinding = DialogAddReminderBinding.inflate(layoutInflater)
-        dialog.setContentView(dialogBinding.root)
-
-        // Setup TimePicker
-        dialogBinding.timePicker.setIs24HourView(true) // Use 24-hour format
-
-        dialogBinding.saveButton.setOnClickListener {
-            // Check notification permission before saving
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    android.Manifest.permission.POST_NOTIFICATIONS
-                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
-            ) {
-                Toast.makeText(context, "Notification permission required to save reminder", Toast.LENGTH_LONG).show()
-                requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-                return@setOnClickListener
-            }
-
-            val hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dialogBinding.timePicker.hour
-            } else {
-                dialogBinding.timePicker.currentHour
-            }
-            val minute = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dialogBinding.timePicker.minute
-            } else {
-                dialogBinding.timePicker.currentMinute
-            }
-
-            val reminder = Reminder(nextReminderId++, hour, minute)
-            reminders.add(reminder)
-            saveReminders()
-            adapter.notifyDataSetChanged()
-            scheduleReminder(reminder)
-            dialog.dismiss()
-        }
-
-        dialogBinding.cancelButton.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-    private fun showEditReminderDialog(reminder: Reminder) {
-        val dialog = Dialog(requireContext())
-        val dialogBinding = DialogAddReminderBinding.inflate(layoutInflater)
-        dialog.setContentView(dialogBinding.root)
-        dialogBinding.root.findViewById<TextView>(R.id.reminderTitle).text = "Edit Reminder"
-
-        // Setup TimePicker
-        dialogBinding.timePicker.setIs24HourView(true)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            dialogBinding.timePicker.hour = reminder.hour
-            dialogBinding.timePicker.minute = reminder.minute
-        } else {
-            dialogBinding.timePicker.currentHour = reminder.hour
-            dialogBinding.timePicker.currentMinute = reminder.minute
-        }
-
-        dialogBinding.saveButton.setOnClickListener {
-            // Check notification permission before saving
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    android.Manifest.permission.POST_NOTIFICATIONS
-                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
-            ) {
-                Toast.makeText(context, "Notification permission required to save reminder", Toast.LENGTH_LONG).show()
-                requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-                return@setOnClickListener
-            }
-
-            val hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dialogBinding.timePicker.hour
-            } else {
-                dialogBinding.timePicker.currentHour
-            }
-            val minute = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dialogBinding.timePicker.minute
-            } else {
-                dialogBinding.timePicker.currentMinute
-            }
-
-            val updatedReminder = Reminder(reminder.id, hour, minute)
-            val index = reminders.indexOfFirst { it.id == reminder.id }
-            reminders[index] = updatedReminder
-            saveReminders()
-            adapter.notifyDataSetChanged()
-            cancelReminder(reminder)
-            scheduleReminder(updatedReminder)
-            dialog.dismiss()
-        }
-
-        dialogBinding.cancelButton.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
     private fun deleteReminder(reminder: Reminder) {
         cancelReminder(reminder)
         reminders.remove(reminder)
@@ -275,7 +189,7 @@ class ReminderFragment : Fragment() {
     private fun scheduleReminder(reminder: Reminder) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            Toast.makeText(context, "Exact alarm permission required", Toast.LENGTH_LONG).show()
+            android.widget.Toast.makeText(context, "Exact alarm permission required", android.widget.Toast.LENGTH_LONG).show()
             val intent = Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
             requestExactAlarmPermissionLauncher.launch(intent)
             return
@@ -286,7 +200,7 @@ class ReminderFragment : Fragment() {
                 android.Manifest.permission.POST_NOTIFICATIONS
             ) != android.content.pm.PackageManager.PERMISSION_GRANTED
         ) {
-            Toast.makeText(context, "Notification permission required", Toast.LENGTH_LONG).show()
+            android.widget.Toast.makeText(context, "Notification permission required", android.widget.Toast.LENGTH_LONG).show()
             requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
             return
         }
@@ -341,7 +255,7 @@ class ReminderFragment : Fragment() {
                 requireContext().sendBroadcast(intent)
             }
         } catch (e: SecurityException) {
-            Toast.makeText(context, "Exact alarm permission required", Toast.LENGTH_LONG).show()
+            android.widget.Toast.makeText(context, "Exact alarm permission required", android.widget.Toast.LENGTH_LONG).show()
             Log.e("ReminderFragment", "Failed to set alarm for reminder ${reminder.id}: ${e.message}")
             val intent = Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
             requestExactAlarmPermissionLauncher.launch(intent)
