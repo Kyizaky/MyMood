@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class Activity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val iconRes: Int
+    val iconRes: Int,
+    val selectedIconRes: Int
 )

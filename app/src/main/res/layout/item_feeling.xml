@@ -3,16 +3,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_margin="3dp"
-    android:background="@drawable/circle_background3">
+    android:layout_margin="3dp">
 
     <TextView
         android:id="@+id/textFeeling"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Feeling"
-        android:layout_margin="10dp"
         android:textSize="16sp"
-        android:padding="3dp"
+        android:padding="10dp"
         android:textColor="@color/black"/>
 </LinearLayout>

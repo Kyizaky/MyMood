@@ -59,6 +59,7 @@
             android:id="@+id/action_pengaturanFragment_to_reminderFragment"
             app:destination="@id/reminderFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/isiRiwayatFragment"
         android:name="com.example.skripsta.IsiRiwayatFragment"
@@ -75,6 +76,7 @@
             android:id="@+id/action_isiRiwayatFragment_to_editMoodFragment"
             app:destination="@id/editMoodFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/riwayatTanggalFragment"
         android:name="com.example.skripsta.RiwayatTanggalFragment"
@@ -91,6 +93,7 @@
             android:id="@+id/action_riwayatTanggalFragment_to_isiRiwayatFragment"
             app:destination="@id/isiRiwayatFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/editMoodFragment"
         android:name="com.example.skripsta.EditMoodFragment"
@@ -101,7 +104,14 @@
         <action
             android:id="@+id/action_editMoodFragment_to_isiRiwayatFragment"
             app:destination="@id/isiRiwayatFragment" />
+        <action
+            android:id="@+id/action_editMoodFragment_to_selectActivityFragment"
+            app:destination="@id/selectActivityFragment" />
+        <action
+            android:id="@+id/action_editMoodFragment_to_selectFeelingFragment"
+            app:destination="@id/selectFeelingFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/statFragment"
         android:name="com.example.skripsta.StatFragment"

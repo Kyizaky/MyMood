@@ -28,16 +28,19 @@ class FeelingAdapter(
         val feeling = feelings[position]
         holder.textFeeling.text = feeling
 
-        // Ubah tampilan jika dipilih
-        holder.textFeeling.setBackgroundResource(
-            if (feeling == selectedFeeling) R.drawable.circle_background4
-            else R.drawable.rounded_background
-        )
+        // Ganti background sesuai status dipilih
+        val bgRes = if (feeling == selectedFeeling)
+            R.drawable.feeling_background_selected
+        else
+            R.drawable.feeling_background_default
+
+        holder.textFeeling.setBackgroundResource(bgRes)
 
         holder.itemView.setOnClickListener {
-            selectedFeeling = feeling
+            // Jika klik ulang pada feeling yang sama, deselect
+            selectedFeeling = if (selectedFeeling == feeling) null else feeling
             notifyDataSetChanged()
-            onFeelingSelected(feeling)
+            selectedFeeling?.let { onFeelingSelected(it) }
         }
     }
 

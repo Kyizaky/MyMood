@@ -4,8 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="#D2DBE6"
     tools:context=".HomeFragment">
+
+    <View
+        android:id="@+id/statusBarSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="@android:color/transparent" />
 
     <!-- Header Layout -->
     <LinearLayout
@@ -23,7 +30,7 @@
             android:id="@+id/appNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SkripsiTA"
+            android:text="Eunoia "
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#000000" />

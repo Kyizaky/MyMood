@@ -1,4 +1,4 @@
-package com.example.skripsta
+package com.example.skripsta.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.skripsta.R
 import com.example.skripsta.data.Item
 
 class ItemAdapter(
@@ -18,8 +19,9 @@ class ItemAdapter(
         private val text: TextView = itemView.findViewById(R.id.item_text)
 
         fun bind(item: Item) {
-            icon.setImageResource(item.drawableId)
-            text.text = item.text
+            // Set drawable berdasarkan status isSelected
+            icon.setImageResource(if (item.isSelected) item.selectedDrawableId else item.drawableId)
+            text.text = item.getDisplayName()
 
             // Ubah tampilan berdasarkan status pemilihan
             if (item.isSelected) {

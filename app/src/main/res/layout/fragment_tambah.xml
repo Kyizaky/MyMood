@@ -12,25 +12,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Header Calendar Section -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="20dp">
 
             <ImageView
                 android:id="@+id/ic_back"
                 android:layout_width="44dp"
                 android:layout_height="42dp"
-                android:src="@drawable/ic_back"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.043"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:src="@drawable/ic_back" />
 
             <EditText
                 android:id="@+id/btn_cal"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:drawableStart="@drawable/ic_calendar"
                 android:drawableEnd="@drawable/ic_drop"
                 android:focusable="false"
@@ -38,12 +39,7 @@
                 android:fontFamily="@font/nunitoregular"
                 android:inputType="text|number"
                 android:textColor="@color/vista"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.142"
-                app:layout_constraintStart_toEndOf="@+id/ic_back"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                android:layout_marginStart="10dp" />
 
             <EditText
                 android:id="@+id/btn_clock"
@@ -58,189 +54,175 @@
                 android:fontFamily="@font/nunitoregular"
                 android:inputType="text|number"
                 android:textColor="@color/vista"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.873"
-                app:layout_constraintStart_toEndOf="@+id/ic_back"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                android:layout_marginStart="10dp" />
+        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Mood Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:orientation="vertical"
+            android:paddingTop="20dp">
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:layout_marginStart="24dp"
-                android:gravity=""
-                android:text="Bagaimana\nmood kamu saat ini?"
-                android:textColor="#000000"
-                android:fontFamily="@font/nunitoregular"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <ImageView
-                android:layout_width="156dp"
-                android:layout_height="129dp"
-                android:src="@drawable/img_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.921"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/nunitoregular"
+            android:text="How are you \nfeeling today?"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/cvMood"
+            app:layout_constraintEnd_toStartOf="@+id/imageView3"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.844" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvMood"
-                android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2">
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="156dp"
+            android:layout_height="129dp"
+            android:layout_gravity="end"
+            android:src="@drawable/img_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.937"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/clMood"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageButton
-                        android:id="@+id/mood1"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:layout_marginStart="2dp"
-                        android:background="@drawable/ripple_effect"
-                        android:contentDescription="Terrible"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/mood1" />
-
-                    <ImageButton
-                        android:id="@+id/mood2"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:layout_marginStart="2dp"
-                        android:background="@drawable/ripple_effect"
-                        android:contentDescription="Bad"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/mood1"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/mood2" />
-
-                    <ImageButton
-                        android:id="@+id/mood3"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:layout_marginStart="2dp"
-                        android:background="@drawable/ripple_effect"
-                        android:contentDescription="Neutral"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/mood2"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/mood3" />
-
-                    <ImageButton
-                        android:id="@+id/mood4"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:layout_marginStart="2dp"
-                        android:background="@drawable/ripple_effect"
-                        android:contentDescription="Good"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/mood3"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/mood4" />
-
-                    <ImageButton
-                        android:id="@+id/mood5"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:layout_marginStart="2dp"
-                        android:background="@drawable/ripple_effect"
-                        android:contentDescription="Amazing"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/mood4"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/mood5" />
-
-                    <ImageButton
-                        android:id="@+id/mood6"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:layout_marginStart="2dp"
-                        android:background="@drawable/ripple_effect"
-                        android:contentDescription="Excellent"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@id/mood5"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/mood6" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvMood"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="110dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tvFeelings"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginStart="24dp"
-                android:gravity=""
-                android:fontFamily="@font/nunitoregular"
-                android:text="Perasaan"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <LinearLayout
+                android:id="@+id/clMood"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="8dp">
 
-            <ImageView
-                android:id="@+id/edit_feelings_button"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_medi"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.028"
-                app:layout_constraintStart_toEndOf="@+id/tvFeelings"
-                tools:layout_editor_absoluteY="16dp" />
+                <ImageButton
+                    android:id="@+id/mood1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_effect"
+                    android:contentDescription="Terrible"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mood1_nocolor" />
+
+                <ImageButton
+                    android:id="@+id/mood2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_effect"
+                    android:contentDescription="Bad"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mood2_nocolor" />
+
+                <ImageButton
+                    android:id="@+id/mood3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_effect"
+                    android:contentDescription="Neutral"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mood3_nocolor" />
+
+                <ImageButton
+                    android:id="@+id/mood4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_effect"
+                    android:contentDescription="Good"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mood4_nocolor" />
+
+                <ImageButton
+                    android:id="@+id/mood5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_effect"
+                    android:contentDescription="Amazing"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mood5_nocolor" />
+
+                <ImageButton
+                    android:id="@+id/mood6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_effect"
+                    android:contentDescription="Excellent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mood6_nocolor" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!-- Feelings Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:id="@+id/tvFeelings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Feelings"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/nunitoregular" />
+
+                <ImageView
+                    android:id="@+id/edit_feelings_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_edit" />
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvFeelings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:layout_marginHorizontal="30dp"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="8dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvFeelings">
+                app:cardCornerRadius="15dp"
+                app:cardElevation="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clFeelings"
@@ -251,59 +233,51 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_feelings"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
+                        android:layout_height="wrap_content" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Activities Section -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvAktivitas"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginStart="24dp"
-                android:gravity=""
-                android:fontFamily="@font/nunitoregular"
-                android:text="Aktivitas"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
 
-            <ImageView
-                android:id="@+id/edit_activities_button"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_alarm"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.035"
-                app:layout_constraintStart_toEndOf="@+id/tvAktivitas"
-                tools:layout_editor_absoluteY="16dp" />
+                <TextView
+                    android:id="@+id/tvAktivitas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activities"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/nunitoregular" />
+
+                <ImageView
+                    android:id="@+id/edit_activities_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_edit" />
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvAktivitas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="20dp"
                 app:cardCornerRadius="15dp"
-                app:cardElevation="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAktivitas">
+                app:cardElevation="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clAktivitas"
@@ -314,114 +288,88 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
+                        android:layout_height="wrap_content"
+                        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Journal Section -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvJurnal"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginStart="24dp"
-                android:gravity=""
-                android:fontFamily="@font/nunitoregular"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:text="Jurnal"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:fontFamily="@font/nunitoregular" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvJournal"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp"
                 app:cardCornerRadius="15dp"
-                app:cardElevation="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvJurnal">
+                app:cardElevation="0dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <EditText
-                        android:id="@+id/tvJurnaling"
+                        android:id="@+id/title_jurnal_save"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginTop="20dp"
-                        android:fontFamily="@font/nunitoregular"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/rounded_background2"
-                        android:padding="12dp"
                         android:hint="Judul Jurnal"
+                        android:padding="12dp"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:fontFamily="@font/nunitoregular" />
 
                     <EditText
-                        android:id="@+id/etJornal"
+                        android:id="@+id/isi_jurnal_save"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginHorizontal="20dp"
+                        android:layout_height="200dp"
                         android:layout_marginTop="10dp"
-                        android:fontFamily="@font/nunitoregular"
                         android:background="#00FFFAFA"
-                        android:ems="10"
-                        android:gravity="start"
+                        android:gravity="top|start"
                         android:hint="Ada cerita apa hari ini.."
                         android:inputType="textMultiLine"
                         android:padding="10dp"
                         android:textColor="#000000"
                         android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvJurnaling"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                        android:fontFamily="@font/nunitoregular" />
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <!-- Save Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingVertical="20dp">
 
             <Button
                 android:id="@+id/btn_save"
                 android:layout_width="200dp"
-                android:layout_marginBottom="20dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="100dp"
-                android:elevation="4dp"
-                android:padding="8dp"
-                android:fontFamily="@font/nunitoregular"
                 android:text="Simpan"
                 android:textColor="@android:color/white"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:elevation="4dp"
+                android:padding="8dp"
+                android:fontFamily="@font/nunitoregular" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

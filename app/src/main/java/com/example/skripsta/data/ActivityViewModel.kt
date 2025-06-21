@@ -17,10 +17,6 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
         allActivities = repository.allActivities
     }
 
-    fun addActivity(activity: Activity) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertActivity(activity)
-    }
-
     fun addAllActivities(activities: List<Activity>) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertAllActivities(activities)
     }

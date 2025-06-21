@@ -1,6 +1,7 @@
 package com.example.skripsta
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,8 +47,13 @@ class IsiRiwayatFragment : Fragment() {
         }
 
         binding.btnEdit.setOnClickListener {
-            val action = IsiRiwayatFragmentDirections.actionIsiRiwayatFragmentToEditMoodFragment(args.currentUser)
-            findNavController().navigate(action)
+            if (args.currentUser != null) {
+                val action = IsiRiwayatFragmentDirections.actionIsiRiwayatFragmentToEditMoodFragment(args.currentUser)
+                findNavController().navigate(action)
+            } else {
+                Log.e("IsiRiwayatFragment", "currentUser is null, cannot navigate to EditMoodFragment")
+                Toast.makeText(requireContext(), "Error: No user data available", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root
@@ -66,17 +72,6 @@ class IsiRiwayatFragment : Fragment() {
         builder.setTitle("Delete this data?")
         builder.setMessage("Are you sure?")
         builder.create().show()
-    }
-
-    private fun formatTanggal(tanggal: String): String {
-        return try {
-            val inputFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-            val outputFormat = java.text.SimpleDateFormat("dd MMMM", java.util.Locale.getDefault())
-            val date = inputFormat.parse(tanggal)
-            outputFormat.format(date!!)
-        } catch (e: Exception) {
-            tanggal // fallback ke format asli kalau gagal parsing
-        }
     }
 
 

@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
 import com.example.skripsta.data.Item
-import com.example.skripsta.getDisplayName
 
 class ActivityAdapter(
     private val items: List<Item>,
@@ -29,14 +28,16 @@ class ActivityAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.imageView.setImageResource(item.drawableId)
+        holder.imageView.setImageResource(if (item.isSelected) item.drawableId else item.selectedDrawableId)
         holder.textView.text = item.getDisplayName()
-        holder.itemView.isSelected = selectedItem == item
+        holder.itemView.isSelected = item.isSelected
 
         holder.itemView.setOnClickListener {
             selectedItem?.let { prevItem ->
+                prevItem.isSelected = false
                 notifyItemChanged(items.indexOf(prevItem))
             }
+            item.isSelected = true
             selectedItem = item
             notifyItemChanged(position)
             onItemSelected(item)

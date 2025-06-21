@@ -6,17 +6,18 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.adapter.FeelingAdapter
+import com.example.skripsta.adapter.getDisplayName
 import com.example.skripsta.data.Item
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
@@ -38,6 +39,7 @@ class TambahFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
     private var selectedFeelingText: String? = null
     private var selectedActivityItem: Item? = null
+    private var selectedMoodButton: ImageButton? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,12 +107,10 @@ class TambahFragment : Fragment() {
         setupRecyclerView(view)
         setupFeelingRecyclerView(view)
 
-        // Add click listener to pencil icon for activities
         view.findViewById<ImageView>(R.id.edit_activities_button).setOnClickListener {
             findNavController().navigate(R.id.action_tambahFragment_to_selectActivityFragment)
         }
 
-        // Add click listener to pencil icon for feelings
         view.findViewById<ImageView>(R.id.edit_feelings_button).setOnClickListener {
             findNavController().navigate(R.id.action_tambahFragment_to_selectFeelingFragment)
         }
@@ -132,7 +132,6 @@ class TambahFragment : Fragment() {
 
     private fun setupRecyclerView(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
-
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
@@ -140,10 +139,22 @@ class TambahFragment : Fragment() {
         }
 
         mActivityViewModel.allActivities.observe(viewLifecycleOwner, Observer { activities ->
-            Log.d("TambahFragment", "Observed activities: $activities") // Debug log
-            val selectedNames = sharedPreferences.getStringSet("selected_activity_names", emptySet()) ?: emptySet()
-            val displayedActivities = activities.filter { it.name in selectedNames }.map { Item(it.iconRes, it.name) }
-            Log.d("TambahFragment", "Displayed activities: $displayedActivities") // Debug log
+            Log.d("TambahFragment", "Total activities in database: ${activities.size}")
+            Log.d("TambahFragment", "Activities: $activities")
+            var selectedNames = sharedPreferences.getStringSet("selected_activity_names", emptySet()) ?: emptySet()
+            Log.d("TambahFragment", "Selected activity names from SharedPreferences: $selectedNames")
+
+            if (selectedNames.isEmpty() && activities.isNotEmpty()) {
+                Log.w("TambahFragment", "Selected activity names empty, using all activities")
+                selectedNames = activities.map { it.name }.toSet()
+                sharedPreferences.edit().putStringSet("selected_activity_names", selectedNames).apply()
+                Log.d("TambahFragment", "Updated selected activity names: $selectedNames")
+            }
+
+            val displayedActivities = activities.filter { it.name in selectedNames }.map {
+                Item(it.iconRes, it.selectedIconRes, it.name)
+            }
+            Log.d("TambahFragment", "Displayed activities: $displayedActivities")
             recyclerView.adapter = ActivityAdapter(displayedActivities) { selectedItem ->
                 selectedActivityItem = selectedItem
                 Log.d("TambahFragment", "Selected Activity: ${selectedItem.getDisplayName()}, Drawable ID: ${selectedItem.drawableId}")
@@ -153,25 +164,36 @@ class TambahFragment : Fragment() {
 
     private fun setupFeelingRecyclerView(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_feelings)
-
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
-            justifyContent = JustifyContent.FLEX_START
         }
 
         mFeelingViewModel.allFeelings.observe(viewLifecycleOwner, Observer { feelings ->
-            val selectedNames = sharedPreferences.getStringSet("selected_feeling_names", emptySet()) ?: emptySet()
+            Log.d("TambahFragment", "Total feelings in database: ${feelings.size}")
+            Log.d("TambahFragment", "Feelings: $feelings")
+            var selectedNames = sharedPreferences.getStringSet("selected_feeling_names", emptySet()) ?: emptySet()
+            Log.d("TambahFragment", "Selected feeling names from SharedPreferences: $selectedNames")
+
+            if (selectedNames.isEmpty() && feelings.isNotEmpty()) {
+                Log.w("TambahFragment", "Selected feeling names empty, using all feelings")
+                selectedNames = feelings.map { it.name }.toSet()
+                sharedPreferences.edit().putStringSet("selected_feeling_names", selectedNames).apply()
+                Log.d("TambahFragment", "Updated selected feeling names: $selectedNames")
+            }
+
             val displayedFeelings = feelings.filter { it.name in selectedNames }.map { it.name }
+            Log.d("TambahFragment", "Displayed feelings: $displayedFeelings")
             recyclerView.adapter = FeelingAdapter(displayedFeelings) { selectedFeeling ->
                 selectedFeelingText = selectedFeeling
+                Log.d("TambahFragment", "Selected Feeling: $selectedFeeling")
             }
         })
     }
 
     private fun insertDataToDatabase(view: View) {
-        val journalContent = view.findViewById<EditText>(R.id.etJornal)?.text.toString().ifBlank { "No story today" }
-        val titleJournal = view.findViewById<EditText>(R.id.tvJurnaling)?.text.toString().ifBlank { "Today" }
+        val journalContent = view.findViewById<EditText>(R.id.title_jurnal_save)?.text.toString().ifBlank { "No story today" }
+        val titleJournal = view.findViewById<EditText>(R.id.isi_jurnal_save)?.text.toString().ifBlank { "Today" }
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = selectedFeelingText
         val selectedActivity = selectedActivityItem
@@ -181,44 +203,61 @@ class TambahFragment : Fragment() {
         if (moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
-        } else {
-            val user = User(
-                id = 0,
-                mood = moodType.toInt(),
-                activities = selectedActivity.getDisplayName(),
-                activityIcon = selectedActivity.drawableId,
-                perasaan = selectedFeeling,
-                judul = titleJournal,
-                jurnal = journalContent,
-                tanggal = selectedDate,
-                jam = selectedTime
-            )
-
-            Log.d("TambahFragment", "Saving User - Activity: ${user.activities}, Icon: ${user.activityIcon}")
-            mUserViewModel.addUser(user)
-            val action = TambahFragmentDirections.actionTambahFragmentToValidationFragment(moodType)
-            findNavController().navigate(action)
         }
+
+        val user = User(
+            id = 0,
+            mood = moodType,
+            activities = selectedActivity.getDisplayName(),
+            activityIcon = selectedActivity.drawableId,
+            perasaan = selectedFeeling,
+            judul = titleJournal,
+            jurnal = journalContent,
+            tanggal = selectedDate,
+            jam = selectedTime
+        )
+
+        Log.d("TambahFragment", "Saving User - Activity: ${user.activities}, Icon: ${user.activityIcon}")
+        mUserViewModel.addUser(user)
+        val action = TambahFragmentDirections.actionTambahFragmentToValidationFragment(moodType)
+        findNavController().navigate(action)
     }
 
     private fun getSelectedMoodType(view: View): Int? {
         val moodButtons = listOf(
             R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
-            R.id.mood4 to 4, R.id.mood5 to 5, R.id.mood6 to 6
+            R.id.mood4 to 4,
+            R.id.mood5 to 5,
+            R.id.mood6 to 6
         )
-        return moodButtons.firstOrNull { view.findViewById<ImageButton>(it.first).isSelected }?.second
+        return moodButtons.firstOrNull { view.findViewById<ImageButton>(it.first)?.isSelected == true }?.second
     }
 
-    private fun updateMoodSelection(button: ImageButton, allButtons: List<ImageButton>) {
+    private fun updateMoodSelection(button: ImageButton, allButtons: List<ImageButton>): Boolean {
+        val moodDrawables = mapOf(
+            R.id.mood1 to Pair(R.drawable.mood1_nocolor, R.drawable.mood1),
+            R.id.mood2 to Pair(R.drawable.mood2_nocolor, R.drawable.mood2),
+            R.id.mood3 to Pair(R.drawable.mood3_nocolor, R.drawable.mood3),
+            R.id.mood4 to Pair(R.drawable.mood4_nocolor, R.drawable.mood4),
+            R.id.mood5 to Pair(R.drawable.mood5_nocolor, R.drawable.mood5),
+            R.id.mood6 to Pair(R.drawable.mood6_nocolor, R.drawable.mood6)
+        )
+
+        if (selectedMoodButton == button) {
+            button.isSelected = false
+            moodDrawables[button.id]?.first?.let { button.setImageResource(it) }
+            selectedMoodButton = null
+            return false
+        }
+
         allButtons.forEach {
             it.isSelected = false
-            it.setBackgroundColor(resources.getColor(R.color.white))
+            moodDrawables[it.id]?.first?.let { drawable -> it.setImageResource(drawable) }
         }
-        button.isSelected = true
-        button.setBackgroundColor(resources.getColor(R.color.vista))
-    }
 
-    private fun getSelectedActivity(view: View): Item? {
-        return selectedActivityItem
+        button.isSelected = true
+        moodDrawables[button.id]?.second?.let { button.setImageResource(it) }
+        selectedMoodButton = button
+        return true
     }
 }

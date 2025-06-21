@@ -8,6 +8,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -178,6 +180,16 @@ class HomeFragment : Fragment() {
         // Listener untuk tombol Riwayat
         binding.riwayatButton.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_riwayatFragment)
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            binding.headerLayout.setPadding(
+                binding.headerLayout.paddingLeft,
+                statusBarHeight,
+                binding.headerLayout.paddingRight,
+                binding.headerLayout.paddingBottom
+            )
+            insets
         }
 
         return binding.root

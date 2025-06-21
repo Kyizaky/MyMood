@@ -18,10 +18,6 @@ class FeelingViewModel(application: Application) : AndroidViewModel(application)
         allFeelings = repository.allFeelings
     }
 
-    fun addFeeling(feeling: Feeling) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertFeeling(feeling)
-    }
-
     fun addAllFeelings(feelings: List<Feeling>) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertAllFeelings(feelings)
     }
