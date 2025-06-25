@@ -33,7 +33,7 @@ class MoodLegendAdapter(private val moodData: List<Pair<Int, String>>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val (moodType, percentage) = moodData[position]
-        holder.moodIcon.setImageResource(moodIcons[moodType] ?: R.drawable.ic_mood)
+        holder.moodIcon.setImageResource(moodIcons[moodType] ?: R.drawable.ic_medi)
         holder.moodPercentage.text = percentage
     }
 

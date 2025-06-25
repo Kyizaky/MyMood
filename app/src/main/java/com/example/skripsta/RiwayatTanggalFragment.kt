@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.skripsta.adapter.JournalAdapter
@@ -31,6 +32,10 @@ class RiwayatTanggalFragment : Fragment() {
         mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+
+        binding.backIsiDate.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         // Konfigurasi RecyclerView
         binding.tvCal.text = formatDateToDayMonth(args.selectedDate)

@@ -1,18 +1,15 @@
 package com.example.skripsta.adapter
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
 import com.example.skripsta.data.User
 
-class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<RiwayatAdapter.MyViewHolder>() {
+class RiwayatAdapter() : RecyclerView.Adapter<RiwayatAdapter.MyViewHolder>() {
 
     private var userList = emptyList<User>()
 
@@ -21,7 +18,6 @@ class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Riwa
         val feeling: TextView = itemView.findViewById(R.id.textViewStory)
         val tgl: TextView = itemView.findViewById(R.id.tv_cal)
         val jam: TextView = itemView.findViewById(R.id.tv_jam)
-        val cvMood: ConstraintLayout = itemView.findViewById(R.id.consMood)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -47,11 +43,6 @@ class RiwayatAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Riwa
             5 -> R.drawable.mood5
             else -> R.drawable.mood6
         }
-    }
-
-    fun setData(user: List<User>) {
-        this.userList = user
-        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = userList.size

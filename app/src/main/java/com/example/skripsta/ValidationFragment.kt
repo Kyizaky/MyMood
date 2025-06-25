@@ -76,7 +76,7 @@ class ValidationFragment : Fragment() {
                 imagebigline.setImageResource(R.drawable.bigline6)
                 iv_word.setImageResource(R.drawable.word6)
             }
-            else -> imagemood.setImageResource(R.drawable.ic_mood)
+            else -> imagemood.setImageResource(R.drawable.ic_medi)
         }
 
         return view

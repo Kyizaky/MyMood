@@ -24,7 +24,7 @@ object MoodUtils {
             4 -> R.drawable.mood4
             5 -> R.drawable.mood5
             6 -> R.drawable.mood6
-            else -> R.drawable.ic_mood
+            else -> R.drawable.ic_medi
         }
     }
 }

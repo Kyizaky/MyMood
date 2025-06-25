@@ -104,6 +104,10 @@ class RiwayatFragment : Fragment() {
             }
         }
 
+        binding.backHistory.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         // Button untuk memilih bulan
         binding.monthButton.setOnClickListener {
             showPickerDialog("Pilih Bulan", monthsList) { selected ->
