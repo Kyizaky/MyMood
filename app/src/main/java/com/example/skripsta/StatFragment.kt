@@ -1,24 +1,15 @@
 package com.example.skripsta
 
-import android.R.attr.textColor
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.GridLayout
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.NumberPicker
-import android.widget.ProgressBar
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -33,18 +24,12 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 class StatFragment : Fragment() {
 
@@ -56,19 +41,13 @@ class StatFragment : Fragment() {
     private lateinit var activityRankingAdapter: ActivityRankingAdapter
     private lateinit var feelingRankingAdapter: FeelingRankingAdapter
 
-    private lateinit var btnMonthActivity: Button
-    private lateinit var btnYearActivity: Button
-    private lateinit var btnMonthFeeling: Button
-    private lateinit var btnYearFeeling: Button
+    private lateinit var btnDateActivity: Button
+    private lateinit var btnDateFeeling: Button
+    private lateinit var btnDateLineChart: Button
+    private lateinit var btnDateCalendar: Button
     private lateinit var monthSpinnerPie: Spinner
     private lateinit var pieChart: PieChart
-
-    private lateinit var btnMonthTrend: Button
-    private lateinit var btnYearTrend: Button
     private lateinit var lineChartTrend: LineChart
-
-    private lateinit var btnMonthCalendar: Button
-    private lateinit var btnYearCalendar: Button
 
     private lateinit var progressBar: ProgressBar
     private lateinit var containerStat: LinearLayout
@@ -76,13 +55,21 @@ class StatFragment : Fragment() {
 
     private var selectedMonthActivity: String = ""
     private var selectedYearActivity: String = ""
+
     private var selectedMonthFeeling: String = ""
     private var selectedYearFeeling: String = ""
+
+    private var selectedMonthLineChart: String = ""
+    private var selectedYearLineChart: String = ""
+
     private var selectedMonthPie: String = ""
-    private var selectedMonthTrend: String = ""
-    private var selectedYearTrend: String = ""
-    private var selectedMonthCalendar: String = ""
+    private var selectedYearPie: String = ""
     private var selectedYearCalendar: String = ""
+
+    private val months = listOf(
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,22 +83,18 @@ class StatFragment : Fragment() {
         recyclerViewRanking.layoutManager = LinearLayoutManager(requireContext())
         activityRankingAdapter = ActivityRankingAdapter(emptyList())
         recyclerViewRanking.adapter = activityRankingAdapter
-        btnMonthActivity = view.findViewById(R.id.btn_month)
-        btnYearActivity = view.findViewById(R.id.btn_year)
+        btnDateActivity = view.findViewById(R.id.btn_date_activity)
 
         recyclerViewFeelingRanking = view.findViewById(R.id.recycler_view_feeling_ranking)
         recyclerViewFeelingRanking.layoutManager = LinearLayoutManager(requireContext())
         feelingRankingAdapter = FeelingRankingAdapter(emptyList())
         recyclerViewFeelingRanking.adapter = feelingRankingAdapter
-        btnMonthFeeling = view.findViewById(R.id.btn_month_feeling)
-        btnYearFeeling = view.findViewById(R.id.btn_year_feeling)
+        btnDateFeeling = view.findViewById(R.id.btn_date_feeling)
 
-        btnMonthTrend = view.findViewById(R.id.btn_month_trend)
-        btnYearTrend = view.findViewById(R.id.btn_year_trend)
+        btnDateLineChart = view.findViewById(R.id.btn_date_trend)
         lineChartTrend = view.findViewById(R.id.line_chart_trend)
 
-        btnMonthCalendar = view.findViewById(R.id.btn_month_calendar)
-        btnYearCalendar = view.findViewById(R.id.btn_year_calendar)
+        btnDateCalendar = view.findViewById(R.id.btn_date_calendar)
 
         progressBar = view.findViewById(R.id.progress_bar)
         containerStat = view.findViewById(R.id.container_stat)
@@ -122,43 +105,32 @@ class StatFragment : Fragment() {
         legendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         monthSpinnerPie = view.findViewById(R.id.spinner_month_pie)
 
-        val months = listOf(
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        )
         val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
         val currentYear = Calendar.getInstance().get(Calendar.YEAR).toString()
 
         selectedMonthActivity = months[currentMonth]
         selectedYearActivity = currentYear
-        btnMonthActivity.text = selectedMonthActivity
-        btnYearActivity.text = selectedYearActivity
+        btnDateActivity.text = "${months[currentMonth]}/$currentYear"
 
         selectedMonthFeeling = months[currentMonth]
         selectedYearFeeling = currentYear
-        btnMonthFeeling.text = selectedMonthFeeling
-        btnYearFeeling.text = selectedYearFeeling
+        btnDateFeeling.text = "${months[currentMonth]}/$currentYear"
 
-        selectedMonthTrend = months[currentMonth]
-        selectedYearTrend = currentYear
-        btnMonthTrend.text = selectedMonthTrend
-        btnYearTrend.text = selectedYearTrend
+        selectedMonthLineChart = months[currentMonth]
+        selectedYearLineChart = currentYear
+        btnDateLineChart.text = "${months[currentMonth]}/$currentYear"
 
-        selectedMonthCalendar = months[currentMonth]
+        selectedMonthPie = months[currentMonth]
+        selectedYearPie = currentYear
         selectedYearCalendar = currentYear
-        btnMonthCalendar.text = selectedMonthCalendar
-        btnYearCalendar.text = selectedYearCalendar
+        btnDateCalendar.text = currentYear
 
-        showLoading(true)
-
-        setupRankingButtons()
-        setupTrendButtons()
-        setupCalendarButtons()
+        setupDateButtons()
         setupSpinnerPie()
         observeDataRanking()
         observeDataFeelingRanking()
+        observeDataLineChart()
         observeMoodData()
-
         return view
     }
 
@@ -174,17 +146,7 @@ class StatFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        showLoading(true)
-        observeMoodData()
-    }
-
     private fun setupSpinnerPie() {
-        val months = listOf(
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        )
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         monthSpinnerPie.adapter = adapter
@@ -206,22 +168,32 @@ class StatFragment : Fragment() {
     private fun observeDataPie() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCount = mutableMapOf<Int, Int>()
-            val dateFormat = SimpleDateFormat("MMMM", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val monthFormat = SimpleDateFormat("MM", Locale("id"))
+            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val targetMonth = "%02d".format(months.indexOf(selectedMonthPie) + 1)
+            val targetYear = selectedYearPie
 
             users.forEach { user ->
                 val dateString = user.tanggal
                 val date = try {
-                    SimpleDateFormat("MM/dd/yyyy", Locale("id")).parse(dateString)
+                    parseFormat.parse(dateString)
                 } catch (e: Exception) {
+                    Log.e("StatFragment", "Failed to parse date: $dateString, error: $e")
                     null
                 }
 
-                if (date != null && dateFormat.format(date) == selectedMonthPie) {
-                    val mood = user.mood
-                    moodCount[mood] = moodCount.getOrDefault(mood, 0) + 1
+                if (date != null) {
+                    val formattedMonth = monthFormat.format(date)
+                    val formattedYear = yearFormat.format(date)
+                    if (formattedMonth == targetMonth && formattedYear == targetYear) {
+                        val mood = user.mood
+                        moodCount[mood] = moodCount.getOrDefault(mood, 0) + 1
+                    }
                 }
             }
 
+            Log.d("StatFragment", "Pie Chart Data: $moodCount")
             updatePieChart(moodCount)
             updateLegend(moodCount)
         }
@@ -237,6 +209,7 @@ class StatFragment : Fragment() {
         if (entries.isEmpty()) {
             pieChart.data = null
             pieChart.invalidate()
+            Log.d("StatFragment", "No data for pie chart")
             return
         }
 
@@ -278,124 +251,60 @@ class StatFragment : Fragment() {
         legendRecyclerView.adapter = MoodLegendAdapter(moodData)
     }
 
-    private fun setupRankingButtons() {
-        val months = listOf(
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        )
+    private fun setupDateButtons() {
         val years = (2020..2025).map { it.toString() }
 
-        selectedMonthActivity = months[Calendar.getInstance().get(Calendar.MONTH)]
-        selectedYearActivity = Calendar.getInstance().get(Calendar.YEAR).toString()
-        btnMonthActivity.text = selectedMonthActivity
-        btnYearActivity.text = selectedYearActivity
-
-        selectedMonthFeeling = months[Calendar.getInstance().get(Calendar.MONTH)]
-        selectedYearFeeling = Calendar.getInstance().get(Calendar.YEAR).toString()
-        btnMonthFeeling.text = selectedMonthFeeling
-        btnYearFeeling.text = selectedYearFeeling
-
-        btnMonthActivity.setOnClickListener {
-            showPickerDialog(isMonth = true, months, years, section = "activity")
+        btnDateActivity.setOnClickListener {
+            showPickerDialog(months, years, section = "activity")
         }
 
-        btnYearActivity.setOnClickListener {
-            showPickerDialog(isMonth = false, months, years, section = "activity")
+        btnDateFeeling.setOnClickListener {
+            showPickerDialog(months, years, section = "feeling")
         }
 
-        btnMonthFeeling.setOnClickListener {
-            showPickerDialog(isMonth = true, months, years, section = "feeling")
+        btnDateLineChart.setOnClickListener {
+            showPickerDialog(months, years, section = "LineChart")
         }
 
-        btnYearFeeling.setOnClickListener {
-            showPickerDialog(isMonth = false, months, years, section = "feeling")
+        btnDateCalendar.setOnClickListener {
+            showCalendarPickerDialog(years)
         }
     }
 
-    private fun setupCalendarButtons() {
-        val months = listOf(
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        )
-        val years = (2020..2025).map { it.toString() }
-
-        selectedMonthCalendar = months[Calendar.getInstance().get(Calendar.MONTH)]
-        selectedYearCalendar = Calendar.getInstance().get(Calendar.YEAR).toString()
-        btnMonthCalendar.text = selectedMonthCalendar
-        btnYearCalendar.text = selectedYearCalendar
-
-        btnMonthCalendar.setOnClickListener {
-            showPickerDialog(isMonth = true, months, years, section = "calendar")
-        }
-
-        btnYearCalendar.setOnClickListener {
-            showPickerDialog(isMonth = false, months, years, section = "calendar")
-        }
-    }
-
-    private fun showPickerDialog(isMonth: Boolean, months: List<String>, years: List<String>, section: String) {
+    private fun showPickerDialog(months: List<String>, years: List<String>, section: String) {
         val dialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.bottom_sheet_picker, null)
         dialog.setContentView(view)
 
-        val numberPicker = view.findViewById<NumberPicker>(R.id.number_picker)
+        val monthPicker = view.findViewById<NumberPicker>(R.id.month_picker)
+        val yearPicker = view.findViewById<NumberPicker>(R.id.year_picker)
         val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
         val btnConfirm = view.findViewById<Button>(R.id.btn_confirm)
 
-        numberPicker.wrapSelectorWheel = false
+        // Setup NumberPickers
+        monthPicker.apply {
+            wrapSelectorWheel = false
+            minValue = 0
+            maxValue = months.size - 1
+            displayedValues = months.toTypedArray()
+            value = when (section) {
+                "activity" -> months.indexOf(selectedMonthActivity).coerceAtLeast(0)
+                "feeling" -> months.indexOf(selectedMonthFeeling).coerceAtLeast(0)
+                "LineChart" -> months.indexOf(selectedMonthLineChart).coerceAtLeast(0)
+                else -> 0
+            }
+        }
 
-        when (section) {
-            "activity" -> {
-                if (isMonth) {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = months.size - 1
-                    numberPicker.displayedValues = months.toTypedArray()
-                    numberPicker.value = months.indexOf(selectedMonthActivity).coerceAtLeast(0)
-                } else {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = years.size - 1
-                    numberPicker.displayedValues = years.toTypedArray()
-                    numberPicker.value = years.indexOf(selectedYearActivity).coerceAtLeast(0)
-                }
-            }
-            "feeling" -> {
-                if (isMonth) {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = months.size - 1
-                    numberPicker.displayedValues = months.toTypedArray()
-                    numberPicker.value = months.indexOf(selectedMonthFeeling).coerceAtLeast(0)
-                } else {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = years.size - 1
-                    numberPicker.displayedValues = years.toTypedArray()
-                    numberPicker.value = years.indexOf(selectedYearFeeling).coerceAtLeast(0)
-                }
-            }
-            "trend" -> {
-                if (isMonth) {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = months.size - 1
-                    numberPicker.displayedValues = months.toTypedArray()
-                    numberPicker.value = months.indexOf(selectedMonthTrend).coerceAtLeast(0)
-                } else {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = years.size - 1
-                    numberPicker.displayedValues = years.toTypedArray()
-                    numberPicker.value = years.indexOf(selectedYearTrend).coerceAtLeast(0)
-                }
-            }
-            "calendar" -> {
-                if (isMonth) {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = months.size - 1
-                    numberPicker.displayedValues = months.toTypedArray()
-                    numberPicker.value = months.indexOf(selectedMonthCalendar).coerceAtLeast(0)
-                } else {
-                    numberPicker.minValue = 0
-                    numberPicker.maxValue = years.size - 1
-                    numberPicker.displayedValues = years.toTypedArray()
-                    numberPicker.value = years.indexOf(selectedYearCalendar).coerceAtLeast(0)
-                }
+        yearPicker.apply {
+            wrapSelectorWheel = false
+            minValue = 0
+            maxValue = years.size - 1
+            displayedValues = years.toTypedArray()
+            value = when (section) {
+                "activity" -> years.indexOf(selectedYearActivity).coerceAtLeast(0)
+                "feeling" -> years.indexOf(selectedYearFeeling).coerceAtLeast(0)
+                "LineChart" -> years.indexOf(selectedYearLineChart).coerceAtLeast(0)
+                else -> 0
             }
         }
 
@@ -406,50 +315,56 @@ class StatFragment : Fragment() {
         btnConfirm.setOnClickListener {
             when (section) {
                 "activity" -> {
-                    if (isMonth) {
-                        selectedMonthActivity = months[numberPicker.value]
-                        btnMonthActivity.text = selectedMonthActivity
-                        observeDataRanking()
-                    } else {
-                        selectedYearActivity = years[numberPicker.value]
-                        btnYearActivity.text = selectedYearActivity
-                        observeDataRanking()
-                    }
+                    selectedMonthActivity = months[monthPicker.value]
+                    selectedYearActivity = years[yearPicker.value]
+                    btnDateActivity.text = "${selectedMonthActivity}/${selectedYearActivity}"
+                    observeDataRanking()
                 }
                 "feeling" -> {
-                    if (isMonth) {
-                        selectedMonthFeeling = months[numberPicker.value]
-                        btnMonthFeeling.text = selectedMonthFeeling
-                        observeDataFeelingRanking()
-                    } else {
-                        selectedYearFeeling = years[numberPicker.value]
-                        btnYearFeeling.text = selectedYearFeeling
-                        observeDataFeelingRanking()
-                    }
+                    selectedMonthFeeling = months[monthPicker.value]
+                    selectedYearFeeling = years[yearPicker.value]
+                    btnDateFeeling.text = "${selectedMonthFeeling}/${selectedYearFeeling}"
+                    observeDataFeelingRanking()
                 }
-                "trend" -> {
-                    if (isMonth) {
-                        selectedMonthTrend = months[numberPicker.value]
-                        btnMonthTrend.text = selectedMonthTrend
-                        observeDataTrend()
-                    } else {
-                        selectedYearTrend = years[numberPicker.value]
-                        btnYearTrend.text = selectedYearTrend
-                        observeDataTrend()
-                    }
-                }
-                "calendar" -> {
-                    if (isMonth) {
-                        selectedMonthCalendar = months[numberPicker.value]
-                        btnMonthCalendar.text = selectedMonthCalendar
-                        observeMoodData()
-                    } else {
-                        selectedYearCalendar = years[numberPicker.value]
-                        btnYearCalendar.text = selectedYearCalendar
-                        observeMoodData()
-                    }
+                "LineChart" -> {
+                    selectedMonthLineChart = months[monthPicker.value]
+                    selectedYearLineChart = years[yearPicker.value]
+                    btnDateLineChart.text = "${selectedMonthLineChart}/${selectedYearLineChart}"
+                    observeDataLineChart()
                 }
             }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun showCalendarPickerDialog(years: List<String>) {
+        val dialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_calendar_picker, null)
+        dialog.setContentView(view)
+
+        val yearPicker = view.findViewById<NumberPicker>(R.id.year_picker)
+        val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
+        val btnConfirm = view.findViewById<Button>(R.id.btn_confirm)
+
+        // Setup Year Picker
+        yearPicker.apply {
+            wrapSelectorWheel = false
+            minValue = 0
+            maxValue = years.size - 1
+            displayedValues = years.toTypedArray()
+            value = years.indexOf(selectedYearCalendar).coerceAtLeast(0)
+        }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnConfirm.setOnClickListener {
+            selectedYearCalendar = years[yearPicker.value]
+            btnDateCalendar.text = selectedYearCalendar
+            observeMoodData()
             dialog.dismiss()
         }
 
@@ -459,27 +374,29 @@ class StatFragment : Fragment() {
     private fun observeDataRanking() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val activityCount = mutableMapOf<String, Pair<Int, Int>>()
-            val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val monthFormat = SimpleDateFormat("MM", Locale("id"))
+            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val targetMonth = "%02d".format(months.indexOf(selectedMonthActivity) + 1)
+            val targetYear = selectedYearActivity
+
+            Log.d("StatFragment", "Ranking Target Month: $targetMonth, Year: $targetYear")
 
             users.forEach { user ->
                 val dateString = user.tanggal
                 val date = try {
                     parseFormat.parse(dateString)
                 } catch (e: Exception) {
+                    Log.e("StatFragment", "Failed to parse date: $dateString, error: $e")
                     null
                 }
 
                 if (date != null) {
-                    val formattedDate = dateFormat.format(date)
-                    val dateMonthYear = formattedDate.split(" ")
-                    val dateMonth = dateMonthYear[0]
-                    val dateYear = dateMonthYear[1]
-
-                    if (dateMonth == selectedMonthActivity && dateYear == selectedYearActivity) {
+                    val formattedMonth = monthFormat.format(date)
+                    val formattedYear = yearFormat.format(date)
+                    if (formattedMonth == targetMonth && formattedYear == targetYear) {
                         val activity = user.activities.trim()
                         val iconResId = user.activityIcon
-
                         val currentData = activityCount[activity]
                         if (currentData != null) {
                             activityCount[activity] = Pair(currentData.first + 1, currentData.second)
@@ -495,6 +412,7 @@ class StatFragment : Fragment() {
                 .take(3)
                 .map { Triple(it.first, it.second.first, it.second.second) }
 
+            Log.d("StatFragment", "Ranking Activities: $sortedActivities")
             activityRankingAdapter.updateData(sortedActivities)
         }
     }
@@ -502,26 +420,28 @@ class StatFragment : Fragment() {
     private fun observeDataFeelingRanking() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val feelingCount = mutableMapOf<String, Pair<Int, Int>>()
-            val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val monthFormat = SimpleDateFormat("MM", Locale("id"))
+            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val targetMonth = "%02d".format(months.indexOf(selectedMonthFeeling) + 1)
+            val targetYear = selectedYearFeeling
+
+            Log.d("StatFragment", "Feeling Ranking Target Month: $targetMonth, Year: $targetYear")
 
             users.forEach { user ->
                 val dateString = user.tanggal
                 val date = try {
                     parseFormat.parse(dateString)
                 } catch (e: Exception) {
+                    Log.e("StatFragment", "Failed to parse date: $dateString, error: $e")
                     null
                 }
 
                 if (date != null) {
-                    val formattedDate = dateFormat.format(date)
-                    val dateMonthYear = formattedDate.split(" ")
-                    val dateMonth = dateMonthYear[0]
-                    val dateYear = dateMonthYear[1]
-
-                    if (dateMonth == selectedMonthFeeling && dateYear == selectedYearFeeling) {
+                    val formattedMonth = monthFormat.format(date)
+                    val formattedYear = yearFormat.format(date)
+                    if (formattedMonth == targetMonth && formattedYear == targetYear) {
                         val feeling = user.perasaan.trim()
-
                         val currentData = feelingCount[feeling]
                         if (currentData != null) {
                             feelingCount[feeling] = Pair(currentData.first + 1, currentData.second)
@@ -537,99 +457,56 @@ class StatFragment : Fragment() {
                 .take(3)
                 .map { Triple(it.first, it.second.first, it.second.second) }
 
+            Log.d("StatFragment", "Feeling Rankings: $sortedFeelings")
             feelingRankingAdapter.updateData(sortedFeelings)
         }
     }
 
-    private fun setupTrendButtons() {
-        val months = listOf(
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        )
-        val years = (2020..2025).map { it.toString() }
-
-        selectedMonthTrend = months[Calendar.getInstance().get(Calendar.MONTH)]
-        selectedYearTrend = Calendar.getInstance().get(Calendar.YEAR).toString()
-        btnMonthTrend.text = selectedMonthTrend
-        btnYearTrend.text = selectedYearTrend
-
-        btnMonthTrend.setOnClickListener {
-            showPickerDialog(isMonth = true, months, years, section = "trend")
-        }
-
-        btnYearTrend.setOnClickListener {
-            showPickerDialog(isMonth = false, months, years, section = "trend")
-        }
-
-        lineChartTrend.apply {
-            description.isEnabled = false
-            legend.isEnabled = false
-            setTouchEnabled(false)
-            setDrawGridBackground(false)
-            axisRight.isEnabled = false
-            xAxis.position = XAxis.XAxisPosition.BOTTOM
-            xAxis.setDrawGridLines(true)
-            xAxis.gridColor = Color.parseColor("#2A3637")
-            xAxis.setDrawLabels(true)
-            xAxis.setDrawAxisLine(true)
-            xAxis.textColor = Color.BLACK
-            axisLeft.setDrawGridLines(false)
-            axisLeft.setDrawLabels(true)
-            axisLeft.setDrawAxisLine(true)
-            axisLeft.textColor = Color.BLACK
-            setNoDataText("No chart data available.")
-            setNoDataTextColor(Color.parseColor("#FFC107"))
-        }
-
-        observeDataTrend()
-    }
-
-    private fun observeDataTrend() {
+    private fun observeDataLineChart() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
-            val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val dayFormat = SimpleDateFormat("dd", Locale("id"))
+            val monthFormat = SimpleDateFormat("MM", Locale("id"))
+            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
 
-            val filteredData = users
-                .mapNotNull { user ->
-                    val date = try {
-                        parseFormat.parse(user.tanggal)
-                    } catch (e: Exception) {
-                        println("Failed to parse date: ${user.tanggal}, error: $e")
-                        null
-                    }
-                    if (date != null) {
-                        val formattedDate = dateFormat.format(date)
-                        val dateMonthYear = formattedDate.split(" ")
-                        val dateMonth = dateMonthYear[0]
-                        val dateYear = dateMonthYear[1]
-                        if (dateMonth == selectedMonthTrend && dateYear == selectedYearTrend) {
-                            Pair(date, user.mood)
-                        } else {
-                            null
-                        }
-                    } else {
-                        null
-                    }
+            val targetMonth = "%02d".format(months.indexOf(selectedMonthLineChart) + 1)
+            val targetYear = selectedYearLineChart
+
+            val filteredData = users.mapNotNull { user ->
+                val date = try {
+                    parseFormat.parse(user.tanggal)
+                } catch (e: Exception) {
+                    Log.e("StatFragment", "Failed to parse date: ${user.tanggal}, error: $e")
+                    null
                 }
+                if (date != null) {
+                    val month = monthFormat.format(date)
+                    val year = yearFormat.format(date)
+                    if (month == targetMonth && year == targetYear) {
+                        Pair(date, user.mood)
+                    } else null
+                } else null
+            }
 
             if (filteredData.isEmpty()) {
                 lineChartTrend.data = null
-                lineChartTrend.setNoDataText("No chart data available.")
+                lineChartTrend.setNoDataText("No chart data available for $targetMonth/$targetYear")
                 lineChartTrend.setNoDataTextColor(Color.parseColor("#FFC107"))
                 lineChartTrend.invalidate()
                 return@observe
             }
 
+            // Group by day, ambil mood paling sering
             val groupedByDate = filteredData
-                .groupBy { parseFormat.format(it.first).split("/")[1] }
+                .groupBy { dayFormat.format(it.first) }
                 .mapValues { entry ->
-                    val moodCounts = entry.value.groupBy { it.second }.mapValues { it.value.size }
-                    val maxCount = moodCounts.values.maxOrNull() ?: 0
-                    val mostFrequentMoods = moodCounts.filter { it.value == maxCount }.keys
-                    val mood = if (mostFrequentMoods.size > 1) {
+                    val moodsCount = entry.value.groupBy { it.second }.mapValues { it.value.size }
+                    val maxCount = moodsCount.values.maxOrNull() ?: 0
+                    val mostFrequent = moodsCount.filter { it.value == maxCount }.keys
+                    val mood = if (mostFrequent.size > 1) {
                         entry.value.last().second
                     } else {
-                        mostFrequentMoods.first()
+                        mostFrequent.first()
                     }
                     Pair(entry.value.first().first, mood)
                 }
@@ -645,7 +522,6 @@ class StatFragment : Fragment() {
                 return@observe
             }
 
-            val firstDate = dataDates.first()
             val lastDate = dataDates.last()
 
             val calendar = Calendar.getInstance().apply { time = lastDate }
@@ -658,6 +534,7 @@ class StatFragment : Fragment() {
             val hPlusFiveDate = calendar.time
             val maxDate = if (hPlusFiveDate > maxDateInMonth) maxDateInMonth else hPlusFiveDate
 
+            // Buat daftar tanggal sampai H+5
             val displayDates = dataDates.toMutableList()
             calendar.time = lastDate
             calendar.add(Calendar.DAY_OF_MONTH, 1)
@@ -666,7 +543,11 @@ class StatFragment : Fragment() {
                 calendar.add(Calendar.DAY_OF_MONTH, 1)
             }
 
-            val dateLabels = displayDates.map { parseFormat.format(it).split("/")[1] }
+            val calendarTmp = Calendar.getInstance()
+            val dateLabels = displayDates.map {
+                calendarTmp.time = it
+                calendarTmp.get(Calendar.DAY_OF_MONTH).toString()
+            }
 
             val entries = sortedData.mapIndexed { index, entry ->
                 Entry(index.toFloat(), entry.value.second.toFloat())
@@ -699,6 +580,25 @@ class StatFragment : Fragment() {
                 setDrawAxisLine(true)
                 labelRotationAngle = 0f
             }
+            lineChartTrend.apply {
+                description.isEnabled = false
+                legend.isEnabled = false
+                setTouchEnabled(false)
+                setDrawGridBackground(false)
+                axisRight.isEnabled = false
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                xAxis.setDrawGridLines(true)
+                xAxis.gridColor = Color.parseColor("#2A3637")
+                xAxis.setDrawLabels(true)
+                xAxis.setDrawAxisLine(true)
+                xAxis.textColor = Color.BLACK
+                axisLeft.setDrawGridLines(false)
+                axisLeft.setDrawLabels(true)
+                axisLeft.setDrawAxisLine(true)
+                axisLeft.textColor = Color.BLACK
+                setNoDataText("No chart data available.")
+                setNoDataTextColor(Color.parseColor("#FFC107"))
+            }
 
             lineChartTrend.axisLeft.apply {
                 axisMinimum = 0.5f
@@ -707,12 +607,12 @@ class StatFragment : Fragment() {
                 valueFormatter = object : ValueFormatter() {
                     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
                         return when (value.toInt()) {
-                            1 -> "😡" // Marah
-                            2 -> "🤢" // Jijik
-                            3 -> "😨" // Takut
-                            4 -> "😢" // Sedih
-                            5 -> "😊" // Bahagia
-                            6 -> "😐" // Netral
+                            1 -> "😡"
+                            2 -> "🤢"
+                            3 -> "😨"
+                            4 -> "😢"
+                            5 -> "😊"
+                            6 -> "😐"
                             else -> ""
                         }
                     }
@@ -730,22 +630,31 @@ class StatFragment : Fragment() {
     private fun observeMoodData() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCountPerDay = mutableMapOf<String, Int>()
-            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val targetYear = selectedYearCalendar
+
+            Log.d("StatFragment", "Calendar Target Year: $targetYear")
 
             users.forEach { user ->
                 val date = try {
-                    dateFormat.parse(user.tanggal)
+                    parseFormat.parse(user.tanggal)
                 } catch (e: Exception) {
+                    Log.e("StatFragment", "Failed to parse date: ${user.tanggal}, error: $e")
                     null
                 }
 
                 if (date != null) {
-                    val key = SimpleDateFormat("dd/MM", Locale("id")).format(date)
-                    moodCountPerDay[key] = user.mood
+                    val formattedYear = yearFormat.format(date)
+                    if (formattedYear == targetYear) {
+                        val key = SimpleDateFormat("dd/MM/yyyy", Locale("id")).format(date)
+                        moodCountPerDay[key] = user.mood
+                    }
                 }
             }
+
+            Log.d("StatFragment", "Calendar Mood Data: $moodCountPerDay")
             generateMoodCalendar(moodCountPerDay)
-            showLoading(false)  // Saat mulai generate
         }
     }
 
@@ -758,15 +667,12 @@ class StatFragment : Fragment() {
         gridLayout.columnCount = columnCount
         gridLayout.rowCount = rowCount
 
-        // Gunakan post untuk memastikan lebar gridLayout tersedia
         gridLayout.post {
-            // Lebar aktual GridLayout (setelah layout diukur)
             val availableWidth = gridLayout.width
-            val marginBetweenCells = 1 // Margin antar sel (kiri dan kanan masing-masing 1dp)
-            val totalMargin = (columnCount - 1) * marginBetweenCells * 2 // Total margin antar sel
-            val cellSize = maxOf((availableWidth - totalMargin) / columnCount, 20) // Minimal 20dp untuk visibilitas
+            val marginBetweenCells = 1
+            val totalMargin = (columnCount - 1) * marginBetweenCells * 2
+            val cellSize = maxOf((availableWidth - totalMargin) / columnCount, 20)
 
-            // Sesuaikan ukuran teks berdasarkan lebar sel
             val textSize = when {
                 cellSize < 25 -> 5f
                 cellSize < 30 -> 6f
@@ -775,9 +681,9 @@ class StatFragment : Fragment() {
                 else -> 12f
             }
 
-            val months = listOf(" ", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
+            val monthAbbreviations = listOf(" ", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
 
-            // Header (baris 0)
+            // Header
             for (col in 0 until columnCount) {
                 val params = GridLayout.LayoutParams().apply {
                     width = cellSize
@@ -788,7 +694,7 @@ class StatFragment : Fragment() {
                 }
 
                 val tv = TextView(requireContext()).apply {
-                    text = months[col]
+                    text = monthAbbreviations[col]
                     gravity = Gravity.CENTER
                     this.textSize = textSize
                     setTypeface(null, Typeface.BOLD)
@@ -799,10 +705,9 @@ class StatFragment : Fragment() {
                 gridLayout.addView(tv)
             }
 
-            // Isi grid: baris 1–31 (hari ke-1 s.d. 31)
+            // Days
             for (day in 1..31) {
                 val row = day
-
                 for (col in 0 until columnCount) {
                     val params = GridLayout.LayoutParams().apply {
                         width = cellSize
@@ -813,7 +718,6 @@ class StatFragment : Fragment() {
                     }
 
                     if (col == 0) {
-                        // Kolom angka hari
                         val tv = TextView(requireContext()).apply {
                             text = day.toString()
                             gravity = Gravity.CENTER
@@ -823,7 +727,8 @@ class StatFragment : Fragment() {
                         }
                         gridLayout.addView(tv)
                     } else {
-                        val key = "%02d/%02d".format(day, col)
+                        val monthIndex = col
+                        val key = "%02d/%02d/%s".format(day, monthIndex, selectedYearCalendar)
                         val moodColor = moodData[key]?.let { getMoodColor(it) } ?: Color.TRANSPARENT
 
                         val view = View(requireContext()).apply {
@@ -839,10 +744,9 @@ class StatFragment : Fragment() {
                 }
             }
 
-            // Footer (baris ke-32, index 32 karena 0-based)
+            // Footer
             for (col in 0 until columnCount) {
-                val footerText = if (col == 0) "" else months[col]
-
+                val footerText = if (col == 0) "" else monthAbbreviations[col]
                 val params = GridLayout.LayoutParams().apply {
                     width = cellSize
                     height = cellSize
