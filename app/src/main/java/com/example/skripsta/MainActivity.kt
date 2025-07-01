@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var feelingViewModel: FeelingViewModel
     private lateinit var activityViewModel: ActivityViewModel
+    private val pinLockViewModel = PinLockViewModel()
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -71,7 +72,10 @@ class MainActivity : AppCompatActivity() {
             R.id.pengaturanFragment,
             R.id.kegiatanFragment
         )
-
+        // Check if PIN is set and navigate to PinLockFragment if needed
+        if (pinLockViewModel.hasPin(this) && navController.currentDestination?.id != R.id.pinLockFragment) {
+            navController.navigate(R.id.action_global_pinLockFragment)
+        }
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomNavigationView.visibility =
                 if (destination.id in visibleFragments) View.VISIBLE else View.GONE

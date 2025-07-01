@@ -23,6 +23,12 @@ class PengaturanFragment : Fragment() {
             val action = PengaturanFragmentDirections.actionPengaturanFragmentToReminderFragment()
             findNavController().navigate(action)
         }
+
+        binding.btnPin.setOnClickListener {
+            val action = PengaturanFragmentDirections.actionPengaturanFragmentToPinLockFragment()
+            findNavController().navigate(action)
+        }
+
         return binding.root
     }
 

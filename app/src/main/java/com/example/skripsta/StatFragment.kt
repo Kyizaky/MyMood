@@ -1,5 +1,6 @@
 package com.example.skripsta
 
+import android.R.attr.textColor
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -561,7 +562,6 @@ class StatFragment : Fragment() {
         }
 
         lineChartTrend.apply {
-            setBackgroundColor(Color.parseColor("#1C2526"))
             description.isEnabled = false
             legend.isEnabled = false
             setTouchEnabled(false)
@@ -572,11 +572,11 @@ class StatFragment : Fragment() {
             xAxis.gridColor = Color.parseColor("#2A3637")
             xAxis.setDrawLabels(true)
             xAxis.setDrawAxisLine(true)
-            xAxis.textColor = Color.WHITE
+            xAxis.textColor = Color.BLACK
             axisLeft.setDrawGridLines(false)
             axisLeft.setDrawLabels(true)
             axisLeft.setDrawAxisLine(true)
-            axisLeft.textColor = Color.WHITE
+            axisLeft.textColor = Color.BLACK
             setNoDataText("No chart data available.")
             setNoDataTextColor(Color.parseColor("#FFC107"))
         }
@@ -697,7 +697,6 @@ class StatFragment : Fragment() {
                 axisMaximum = (dateLabels.size - 1).toFloat()
                 setDrawLabels(true)
                 setDrawAxisLine(true)
-                textColor = Color.WHITE
                 labelRotationAngle = 0f
             }
 
@@ -731,31 +730,22 @@ class StatFragment : Fragment() {
     private fun observeMoodData() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCountPerDay = mutableMapOf<String, Int>()
-            val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
 
             users.forEach { user ->
                 val date = try {
-                    parseFormat.parse(user.tanggal)
+                    dateFormat.parse(user.tanggal)
                 } catch (e: Exception) {
-                    println("Failed to parse date: ${user.tanggal}, error: $e")
                     null
                 }
 
                 if (date != null) {
-                    val formattedDate = dateFormat.format(date)
-                    val dateMonthYear = formattedDate.split(" ")
-                    val dateMonth = dateMonthYear[0]
-                    val dateYear = dateMonthYear[1]
-
-                    if (dateMonth == selectedMonthCalendar && dateYear == selectedYearCalendar) {
-                        val key = SimpleDateFormat("dd", Locale("id")).format(date)
-                        moodCountPerDay[key] = user.mood
-                    }
+                    val key = SimpleDateFormat("dd/MM", Locale("id")).format(date)
+                    moodCountPerDay[key] = user.mood
                 }
             }
             generateMoodCalendar(moodCountPerDay)
-            showLoading(false)
+            showLoading(false)  // Saat mulai generate
         }
     }
 
@@ -763,31 +753,20 @@ class StatFragment : Fragment() {
         val gridLayout = requireView().findViewById<GridLayout>(R.id.moodCalendarGrid)
         gridLayout.removeAllViews()
 
-        val months = listOf(
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        )
-        val monthIndex = months.indexOf(selectedMonthCalendar).coerceAtLeast(0)
-        val year = selectedYearCalendar.toIntOrNull() ?: Calendar.getInstance().get(Calendar.YEAR)
-
-        val calendar = Calendar.getInstance().apply {
-            set(year, monthIndex, 1)
-        }
-        val maxDayInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-
-        val columnCount = 7 // 7 hari dalam seminggu
-        val rowCount = 7 // 1 header + maksimum 6 baris
-
+        val columnCount = 13 // 1 untuk angka hari + 12 bulan
+        val rowCount = 33    // 1 header + 31 hari + 1 footer
         gridLayout.columnCount = columnCount
         gridLayout.rowCount = rowCount
 
+        // Gunakan post untuk memastikan lebar gridLayout tersedia
         gridLayout.post {
+            // Lebar aktual GridLayout (setelah layout diukur)
             val availableWidth = gridLayout.width
-            val marginBetweenCells = 1
-            val totalMargin = (columnCount - 1) * marginBetweenCells * 2
-            val cellSize = maxOf((availableWidth - totalMargin) / columnCount, 20)
+            val marginBetweenCells = 1 // Margin antar sel (kiri dan kanan masing-masing 1dp)
+            val totalMargin = (columnCount - 1) * marginBetweenCells * 2 // Total margin antar sel
+            val cellSize = maxOf((availableWidth - totalMargin) / columnCount, 20) // Minimal 20dp untuk visibilitas
 
+            // Sesuaikan ukuran teks berdasarkan lebar sel
             val textSize = when {
                 cellSize < 25 -> 5f
                 cellSize < 30 -> 6f
@@ -796,8 +775,9 @@ class StatFragment : Fragment() {
                 else -> 12f
             }
 
-            val daysOfWeek = listOf("Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min")
+            val months = listOf(" ", "J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
 
+            // Header (baris 0)
             for (col in 0 until columnCount) {
                 val params = GridLayout.LayoutParams().apply {
                     width = cellSize
@@ -808,7 +788,7 @@ class StatFragment : Fragment() {
                 }
 
                 val tv = TextView(requireContext()).apply {
-                    text = daysOfWeek[col]
+                    text = months[col]
                     gravity = Gravity.CENTER
                     this.textSize = textSize
                     setTypeface(null, Typeface.BOLD)
@@ -819,11 +799,11 @@ class StatFragment : Fragment() {
                 gridLayout.addView(tv)
             }
 
-            for (row in 1 until rowCount) {
-                for (col in 0 until columnCount) {
-                    val dayIndex = (row - 1) * columnCount + col
-                    val dayOfMonth = dayIndex - (firstDayOfWeek - 2 + 7) % 7 + 1
+            // Isi grid: baris 1–31 (hari ke-1 s.d. 31)
+            for (day in 1..31) {
+                val row = day
 
+                for (col in 0 until columnCount) {
                     val params = GridLayout.LayoutParams().apply {
                         width = cellSize
                         height = cellSize
@@ -832,37 +812,55 @@ class StatFragment : Fragment() {
                         setMargins(marginBetweenCells, marginBetweenCells, marginBetweenCells, marginBetweenCells)
                     }
 
-                    val cornerRadius = when {
-                        cellSize < 25 -> 1f
-                        cellSize < 30 -> 2f
-                        else -> 4f
-                    }
-
-                    if (dayOfMonth in 1..maxDayInMonth) {
-                        val key = "%02d".format(dayOfMonth)
+                    if (col == 0) {
+                        // Kolom angka hari
+                        val tv = TextView(requireContext()).apply {
+                            text = day.toString()
+                            gravity = Gravity.CENTER
+                            this.textSize = textSize
+                            setTextColor(Color.BLACK)
+                            layoutParams = params
+                        }
+                        gridLayout.addView(tv)
+                    } else {
+                        val key = "%02d/%02d".format(day, col)
                         val moodColor = moodData[key]?.let { getMoodColor(it) } ?: Color.TRANSPARENT
 
                         val view = View(requireContext()).apply {
                             background = GradientDrawable().apply {
                                 setColor(moodColor)
                                 setStroke(1, Color.LTGRAY)
-                                this.cornerRadius = cornerRadius
-                            }
-                            layoutParams = params
-                        }
-                        gridLayout.addView(view)
-                    } else {
-                        val view = View(requireContext()).apply {
-                            background = GradientDrawable().apply {
-                                setColor(Color.BLACK)
-                                setStroke(1, Color.LTGRAY)
-                                this.cornerRadius = cornerRadius
+                                cornerRadius = if (cellSize < 25) 1f else if (cellSize < 30) 2f else 4f
                             }
                             layoutParams = params
                         }
                         gridLayout.addView(view)
                     }
                 }
+            }
+
+            // Footer (baris ke-32, index 32 karena 0-based)
+            for (col in 0 until columnCount) {
+                val footerText = if (col == 0) "" else months[col]
+
+                val params = GridLayout.LayoutParams().apply {
+                    width = cellSize
+                    height = cellSize
+                    rowSpec = GridLayout.spec(rowCount - 1)
+                    columnSpec = GridLayout.spec(col)
+                    setMargins(marginBetweenCells, marginBetweenCells, marginBetweenCells, marginBetweenCells)
+                }
+
+                val tv = TextView(requireContext()).apply {
+                    text = footerText
+                    gravity = Gravity.CENTER
+                    this.textSize = textSize
+                    setTypeface(null, Typeface.BOLD_ITALIC)
+                    setTextColor(Color.BLACK)
+                    layoutParams = params
+                }
+
+                gridLayout.addView(tv)
             }
         }
     }

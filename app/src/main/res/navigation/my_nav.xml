@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_riwayatFragment"
             app:destination="@id/riwayatFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_pinLockFragment"
+            app:destination="@id/pinLockFragment" />
     </fragment>
 
     <fragment
@@ -58,6 +61,9 @@
         <action
             android:id="@+id/action_pengaturanFragment_to_reminderFragment"
             app:destination="@id/reminderFragment" />
+        <action
+            android:id="@+id/action_pengaturanFragment_to_pinLockFragment"
+            app:destination="@id/pinLockFragment" />
     </fragment>
 
     <fragment
@@ -85,7 +91,6 @@
         <argument
             android:name="selectedDate"
             app:argType="string" />
-
         <action
             android:id="@+id/action_riwayatTanggalFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
@@ -117,6 +122,7 @@
         android:name="com.example.skripsta.StatFragment"
         android:label="fragment_stat"
         tools:layout="@layout/fragment_stat" />
+
     <fragment
         android:id="@+id/validationFragment"
         android:name="com.example.skripsta.ValidationFragment"
@@ -129,6 +135,7 @@
             android:id="@+id/action_validationFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/reminderFragment"
         android:name="com.example.skripsta.ReminderFragment"
@@ -140,6 +147,7 @@
             android:id="@+id/action_reminderFragment_to_addReminderFragment"
             app:destination="@id/addReminderFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/addReminderFragment"
         android:name="com.example.skripsta.AddReminderFragment"
@@ -153,6 +161,7 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+
     <fragment
         android:id="@+id/selectFeelingFragment"
         android:name="com.example.skripsta.SelectFeelingFragment"
@@ -161,6 +170,7 @@
             android:id="@+id/action_selectFeelingFragment_to_tambahFragment"
             app:destination="@id/tambahFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/selectActivityFragment"
         android:name="com.example.skripsta.SelectActivityFragment"
@@ -169,4 +179,24 @@
             android:id="@+id/action_selectActivityFragment_to_tambahFragment"
             app:destination="@id/tambahFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/pinLockFragment"
+        android:name="com.example.skripsta.PinLockFragment"
+        android:label="PinLockFragment" >
+        <action
+            android:id="@+id/action_pinLockFragment_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment" />
+        <action
+            android:id="@+id/action_pinLockFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <!-- Global action for PIN lock -->
+    <action
+        android:id="@+id/action_global_pinLockFragment"
+        app:destination="@id/pinLockFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
 </navigation>
