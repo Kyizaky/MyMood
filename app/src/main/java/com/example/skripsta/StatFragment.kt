@@ -215,7 +215,7 @@ class StatFragment : Fragment() {
 
         val colorMap = mapOf(
             1 to Color.parseColor("#FF6242"), // Marah
-            2 to Color.parseColor("#82DF45"), // Jijik
+            2 to Color.parseColor("#82DF45"),
             3 to Color.parseColor("#D19DFF"), // Takut
             4 to Color.parseColor("#B0DDFF"), // Sedih
             5 to Color.parseColor("#FFEE56"), // Bahagia
