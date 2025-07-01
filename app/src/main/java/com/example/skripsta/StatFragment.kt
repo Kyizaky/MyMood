@@ -134,17 +134,17 @@ class StatFragment : Fragment() {
         return view
     }
 
-    private fun showLoading(show: Boolean) {
-        if (show) {
-            containerStat.visibility = View.GONE
-            containerLegend.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
-        } else {
-            containerLegend.visibility = View.VISIBLE
-            containerStat.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
-        }
-    }
+    // private fun showLoading(show: Boolean) {
+    //    if (show) {
+    //        containerStat.visibility = View.GONE
+    //        containerLegend.visibility = View.GONE
+    //        progressBar.visibility = View.VISIBLE
+    //    } else {
+    //        containerLegend.visibility = View.VISIBLE
+    //        containerStat.visibility = View.VISIBLE
+    //        progressBar.visibility = View.GONE
+    //    }
+    //}
 
     private fun setupSpinnerPie() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
