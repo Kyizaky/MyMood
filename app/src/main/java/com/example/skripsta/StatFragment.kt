@@ -1,6 +1,5 @@
 package com.example.skripsta
 
-import android.R.attr.textColor
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -63,8 +62,8 @@ class StatFragment : Fragment() {
     private lateinit var monthSpinnerPie: Spinner
     private lateinit var pieChart: PieChart
 
-    private lateinit var btnMonthTrend: Button
-    private lateinit var btnYearTrend: Button
+    private lateinit var btnMonthLineChart: Button
+    private lateinit var btnYearLineChart: Button
     private lateinit var lineChartTrend: LineChart
 
     private lateinit var btnMonthCalendar: Button
@@ -106,8 +105,8 @@ class StatFragment : Fragment() {
         btnMonthFeeling = view.findViewById(R.id.btn_month_feeling)
         btnYearFeeling = view.findViewById(R.id.btn_year_feeling)
 
-        btnMonthTrend = view.findViewById(R.id.btn_month_trend)
-        btnYearTrend = view.findViewById(R.id.btn_year_trend)
+        btnMonthLineChart = view.findViewById(R.id.btn_month_trend)
+        btnYearLineChart = view.findViewById(R.id.btn_year_trend)
         lineChartTrend = view.findViewById(R.id.line_chart_trend)
 
         btnMonthCalendar = view.findViewById(R.id.btn_month_calendar)
@@ -141,8 +140,8 @@ class StatFragment : Fragment() {
 
         selectedMonthTrend = months[currentMonth]
         selectedYearTrend = currentYear
-        btnMonthTrend.text = selectedMonthTrend
-        btnYearTrend.text = selectedYearTrend
+        btnMonthLineChart.text = selectedMonthTrend
+        btnYearLineChart.text = selectedYearTrend
 
         selectedMonthCalendar = months[currentMonth]
         selectedYearCalendar = currentYear
@@ -152,7 +151,7 @@ class StatFragment : Fragment() {
         showLoading(true)
 
         setupRankingButtons()
-        setupTrendButtons()
+        setupLineChartButtons()
         setupCalendarButtons()
         setupSpinnerPie()
         observeDataRanking()
@@ -430,12 +429,12 @@ class StatFragment : Fragment() {
                 "trend" -> {
                     if (isMonth) {
                         selectedMonthTrend = months[numberPicker.value]
-                        btnMonthTrend.text = selectedMonthTrend
-                        observeDataTrend()
+                        btnMonthLineChart.text = selectedMonthTrend
+                        observeDataLineChart()
                     } else {
                         selectedYearTrend = years[numberPicker.value]
-                        btnYearTrend.text = selectedYearTrend
-                        observeDataTrend()
+                        btnYearLineChart.text = selectedYearTrend
+                        observeDataLineChart()
                     }
                 }
                 "calendar" -> {
@@ -541,7 +540,7 @@ class StatFragment : Fragment() {
         }
     }
 
-    private fun setupTrendButtons() {
+    private fun setupLineChartButtons() {
         val months = listOf(
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -550,14 +549,14 @@ class StatFragment : Fragment() {
 
         selectedMonthTrend = months[Calendar.getInstance().get(Calendar.MONTH)]
         selectedYearTrend = Calendar.getInstance().get(Calendar.YEAR).toString()
-        btnMonthTrend.text = selectedMonthTrend
-        btnYearTrend.text = selectedYearTrend
+        btnMonthLineChart.text = selectedMonthTrend
+        btnYearLineChart.text = selectedYearTrend
 
-        btnMonthTrend.setOnClickListener {
+        btnMonthLineChart.setOnClickListener {
             showPickerDialog(isMonth = true, months, years, section = "trend")
         }
 
-        btnYearTrend.setOnClickListener {
+        btnYearLineChart.setOnClickListener {
             showPickerDialog(isMonth = false, months, years, section = "trend")
         }
 
@@ -581,10 +580,10 @@ class StatFragment : Fragment() {
             setNoDataTextColor(Color.parseColor("#FFC107"))
         }
 
-        observeDataTrend()
+        observeDataLineChart()
     }
 
-    private fun observeDataTrend() {
+    private fun observeDataLineChart() {
         mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("id"))
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
@@ -645,7 +644,6 @@ class StatFragment : Fragment() {
                 return@observe
             }
 
-            val firstDate = dataDates.first()
             val lastDate = dataDates.last()
 
             val calendar = Calendar.getInstance().apply { time = lastDate }
