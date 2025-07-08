@@ -1,5 +1,6 @@
 package com.example.skripsta
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -175,6 +176,12 @@ class HomeFragment : Fragment() {
             val currentVisibleMonth = calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
             updateMoodCacheForMonth(currentVisibleMonth)
             binding.calendarView.notifyCalendarChanged()
+
+            // Update points display
+            val sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+            val userId = sharedPreferences.getInt("current_user_id", 0)
+            val user = userList.find { it.id == userId }
+            binding.pointsText.text = user?.let { "Poin: ${it.points}" } ?: "Poin: 0"
         }
 
         // Listener untuk tombol Riwayat

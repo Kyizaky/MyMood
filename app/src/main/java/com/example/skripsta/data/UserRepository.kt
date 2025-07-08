@@ -6,15 +6,15 @@ class UserRepository(private val userDao: UserDao) {
 
     val readALlData: LiveData<List<User>> = userDao.readAllData()
 
-    suspend fun addUser(user: User){
+    suspend fun addUser(user: User) {
         userDao.addUser(user)
     }
 
-    suspend fun deleteUser(user: User){
+    suspend fun deleteUser(user: User) {
         userDao.deleteUser(user)
     }
 
-    suspend fun updateUser(user: User){
+    suspend fun updateUser(user: User) {
         userDao.updateUser(user)
     }
 
@@ -22,4 +22,12 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getJournalsByDate(selectedDate)
     }
 
+    // Fungsi baru untuk mendukung gamifikasi
+    suspend fun getUserById(userId: Int): User? {
+        return userDao.getUserById(userId)
+    }
+
+    suspend fun updatePointsAndLastLogin(userId: Int, points: Int, lastLoginDate: String) {
+        userDao.updatePointsAndLastLogin(userId, points, lastLoginDate)
+    }
 }

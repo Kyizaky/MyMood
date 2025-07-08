@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,17 +16,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.skripsta.data.*
 import com.example.skripsta.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var userViewModel: UserViewModel
     private lateinit var feelingViewModel: FeelingViewModel
     private lateinit var activityViewModel: ActivityViewModel
     private val pinLockViewModel = PinLockViewModel()
@@ -49,22 +53,45 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         feelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
         activityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
 
-        // Cek dan minta izin battery optimization
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
-                val intent = Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                intent.data = Uri.parse("package:$packageName")
-                startActivity(intent)
-            }
+        // Ensure a valid userId is set
+        val userId = sharedPreferences.getInt("current_user_id", -1)
+        if (userId == -1) {
+            // Set a default userId (e.g., 1) for the first user
+            sharedPreferences.edit().putInt("current_user_id", 1).apply()
+            Log.d("MainActivity", "Set default userId to 1")
         }
 
         // Setup navigasi
         val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragmentContainer) as NavHostFragment
         navController = navHost.navController
         binding.bottomNavigationView.setupWithNavController(navController)
+
+        val textColorStateList = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(-android.R.attr.state_checked)
+            ),
+            intArrayOf(
+                ContextCompat.getColor(this, android.R.color.transparent),
+                ContextCompat.getColor(this, R.color.black)
+            )
+        )
+        binding.bottomNavigationView.itemTextColor = textColorStateList
+
+        val iconColorStateList = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(-android.R.attr.state_checked)
+            ),
+            intArrayOf(
+                ContextCompat.getColor(this, R.color.black),
+                ContextCompat.getColor(this, R.color.unselected_icon_color)
+            )
+        )
+        binding.bottomNavigationView.itemIconTintList = iconColorStateList
 
         val visibleFragments = setOf(
             R.id.homeFragment,
@@ -84,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         // Inisialisasi data berdasarkan isi database
         initializeFeelingData()
         initializeActivityData()
+        checkDailyLogin()
 
         // Minta izin notifikasi untuk Android 13+
         val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
@@ -102,6 +130,39 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         navController = findNavController(R.id.navHostFragmentContainer)
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    private fun checkDailyLogin() {
+        val userId = sharedPreferences.getInt("current_user_id", 1)
+        Log.d("MainActivity", "Checking daily login for userId: $userId")
+        lifecycleScope.launch {
+            if (userViewModel.canAwardDailyPoints(userId)) {
+                val user = userViewModel.readAllData.value?.find { it.id == userId }
+                Log.d("MainActivity", "Existing user: $user")
+                if (user == null) {
+                    val newUser = User(
+                        id = userId,
+                        mood = 0,
+                        activities = "",
+                        activityIcon = 0,
+                        perasaan = "",
+                        judul = "",
+                        jurnal = "",
+                        tanggal = "",
+                        jam = "",
+                        points = 0,
+                        lastLoginDate = null
+                    )
+                    userViewModel.addUser(newUser)
+                    Log.d("MainActivity", "Created new user with ID: $userId")
+                }
+                userViewModel.awardDailyLoginPoints(userId, 10)
+                Log.d("MainActivity", "Awarded 10 points for userId: $userId")
+                Toast.makeText(this@MainActivity, "Anda mendapatkan 10 poin untuk login harian!", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d("MainActivity", "Poin login harian sudah diberikan hari ini untuk userId: $userId")
+            }
+        }
     }
 
     private fun initializeFeelingData() {

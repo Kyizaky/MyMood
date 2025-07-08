@@ -25,4 +25,12 @@ interface UserDao {
 
     @Query("SELECT * FROM user_table WHERE tanggal = :selectedDate ORDER BY jam ASC")
     fun getJournalsByDate(selectedDate: String): LiveData<List<User>>
+
+    // Fungsi baru untuk mengambil pengguna berdasarkan ID
+    @Query("SELECT * FROM user_table WHERE id = :userId")
+    suspend fun getUserById(userId: Int): User?
+
+    // Fungsi baru untuk memperbarui poin dan tanggal login
+    @Query("UPDATE user_table SET points = points + :points, lastLoginDate = :lastLoginDate WHERE id = :userId")
+    suspend fun updatePointsAndLastLogin(userId: Int, points: Int, lastLoginDate: String)
 }

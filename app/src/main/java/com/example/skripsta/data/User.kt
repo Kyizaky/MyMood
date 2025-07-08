@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "user_table")
-data class User (
+data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val mood: Int,
@@ -17,5 +17,7 @@ data class User (
     val judul: String,
     val jurnal: String,
     val tanggal: String, // Format: MM/dd/yyyy
-    val jam: String // Format: HH:mm
-): Parcelable
+    val jam: String, // Format: HH:mm
+    val points: Int = 0, // Kolom baru untuk menyimpan total poin
+    val lastLoginDate: String? = null // Kolom baru untuk menyimpan tanggal login terakhir
+) : Parcelable

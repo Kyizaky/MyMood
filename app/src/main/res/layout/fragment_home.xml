@@ -35,6 +35,16 @@
             android:textStyle="bold"
             android:textColor="#000000" />
 
+        <!-- Points Display (Center) -->
+        <TextView
+            android:id="@+id/pointsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Poin: 0"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_marginStart="16dp" />
+
         <!-- Spacer to push Riwayat to the right -->
         <View
             android:layout_width="0dp"
