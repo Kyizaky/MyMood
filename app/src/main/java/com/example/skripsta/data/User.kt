@@ -18,6 +18,8 @@ data class User(
     val jurnal: String,
     val tanggal: String, // Format: MM/dd/yyyy
     val jam: String, // Format: HH:mm
-    val points: Int = 0, // Kolom baru untuk menyimpan total poin
-    val lastLoginDate: String? = null // Kolom baru untuk menyimpan tanggal login terakhir
+    val points: Int = 0, // Kolom untuk menyimpan total poin
+    val lastLoginDate: String? = null, // Tanggal login terakhir
+    val streakCount: Int = 0, // Kolom baru untuk jumlah hari streak
+    val lastClaimDate: String? = null // Kolom baru untuk tanggal terakhir claim poin
 ) : Parcelable

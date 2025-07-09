@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -19,7 +21,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val userDao = AppDatabase.getDatabase(application).userDao()
         repository = UserRepository(userDao)
-        readAllData = repository.readALlData // Fixed typo: readALlData -> readAllData
+        readAllData = repository.readAllData
     }
 
     fun addUser(user: User) {
@@ -47,21 +49,44 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         return repository.getJournalsByDate(selectedDate)
     }
 
-    suspend fun canAwardDailyPoints(userId: Int): Boolean {
-        val user = repository.getUserById(userId)
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        Log.d("UserViewModel", "User ID: $userId, User: $user, Current Date: $currentDate, Last Login: ${user?.lastLoginDate}")
-        return user == null || user.lastLoginDate != currentDate
+    suspend fun getUserById(userId: Int): User? {
+        return repository.getUserById(userId)
     }
 
-    fun awardDailyLoginPoints(userId: Int, pointsToAward: Int) {
+    fun canClaimStreakPoints(userId: Int): Boolean {
+        return runBlocking(Dispatchers.IO) {
+            val lastClaimDate = repository.getLastClaimDate(userId)
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            Log.d("UserViewModel", "User ID: $userId, Last Claim Date: $lastClaimDate, Today: $today")
+            lastClaimDate != today
+        }
+    }
+
+    fun claimStreakPoints(userId: Int, pointsPerDay: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            Log.d("UserViewModel", "Awarding $pointsToAward points to userId: $userId, Date: $currentDate")
-            repository.updatePointsAndLastLogin(userId, pointsToAward, currentDate)
+            val user = repository.getUserById(userId)
+            if (user == null) {
+                Log.d("UserViewModel", "User with ID $userId not found")
+                return@launch
+            }
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            val yesterday = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
+                Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }.time
+            )
+
+            val newStreak = when {
+                user.lastClaimDate == yesterday || user.lastClaimDate == null -> user.streakCount + 1
+                user.lastClaimDate != today -> 1
+                else -> user.streakCount
+            }
+
+            val newPoints = pointsPerDay * newStreak
+            Log.d("UserViewModel", "Awarding $newPoints points to userId: $userId, New Streak: $newStreak, Date: $today")
+            repository.updateStreakAndPoints(userId, newStreak, newPoints, today)
+
             // Verify update
             val updatedUser = repository.getUserById(userId)
-            Log.d("UserViewModel", "After awarding points, user: $updatedUser")
+            Log.d("UserViewModel", "After claiming points, user: $updatedUser")
         }
     }
 }

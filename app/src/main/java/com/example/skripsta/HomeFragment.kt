@@ -9,10 +9,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.skripsta.data.User
 import com.example.skripsta.data.UserViewModel
@@ -21,9 +23,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class HomeFragment : Fragment() {
 
@@ -31,12 +35,17 @@ class HomeFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private var usersWithData: List<User> = emptyList()
     private val dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+    private val dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val moodDates = mutableSetOf<LocalDate>()
     private val monthsList = listOf(
         "Januari", "Februari", "Maret", "April", "Mei", "Juni",
         "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     )
     private val moodCache = mutableMapOf<LocalDate, Int?>() // Cache untuk mood per tanggal
+    private val dayIcons = listOf(
+        R.id.ic_back, R.id.ic_back, R.id.ic_back, R.id.ic_back,
+        R.id.ic_back, R.id.ic_back, R.id.ic_back
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -108,13 +117,11 @@ class HomeFragment : Fragment() {
         // Tambahkan listener untuk TextView monthYearText
         monthYearText.setOnClickListener {
             val currentVisibleMonth = calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
-            showMonthYearPickerDialog(currentVisibleMonth) { selectedMonth, selectedYear ->
+            showMonthYearPickerDialog(currentMonth) { selectedMonth, selectedYear ->
                 val selectedYearMonth = YearMonth.of(selectedYear, selectedMonth)
-                calendarView.scrollToMonth(selectedYearMonth) // Directly jump to selected month
+                calendarView.scrollToMonth(selectedYearMonth)
                 updateMonthHeader(selectedYearMonth)
-                // Perbarui cache untuk bulan yang dipilih
                 updateMoodCacheForMonth(selectedYearMonth)
-                // Pastikan data diperbarui untuk bulan yang dipilih
                 binding.calendarView.notifyMonthChanged(selectedYearMonth)
             }
         }
@@ -161,7 +168,9 @@ class HomeFragment : Fragment() {
             }
         }
 
-        // Observe data dari database untuk memperbarui moodDates dan cache
+        // Observe data dari database untuk memperbarui moodDates, cache, poin, dan streak
+        val sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("current_user_id", 1)
         userViewModel.readAllData.observe(viewLifecycleOwner) { userList ->
             usersWithData = userList
             moodDates.clear()
@@ -177,17 +186,36 @@ class HomeFragment : Fragment() {
             updateMoodCacheForMonth(currentVisibleMonth)
             binding.calendarView.notifyCalendarChanged()
 
-            // Update points display
-            val sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-            val userId = sharedPreferences.getInt("current_user_id", 0)
+            // Update points and streak display
             val user = userList.find { it.id == userId }
             binding.pointsText.text = user?.let { "Poin: ${it.points}" } ?: "Poin: 0"
+            binding.streakText.text = user?.let { "${it.streakCount}" } ?: "0"
+            // Update weekly status
+            updateWeeklyStatus(user?.lastClaimDate)
+        }
+
+        binding.btnClaim.setOnClickListener {
+            lifecycleScope.launch {
+                userViewModel.claimStreakPoints(userId, 10)
+                binding.btnClaim.isEnabled = false
+                val user = userViewModel.getUserById(userId)
+                Toast.makeText(
+                    requireContext(),
+                    "Claimed ${user?.streakCount?.times(10)} points! Streak: ${user?.streakCount}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                // Update points, streak, and weekly status
+                binding.pointsText.text = user?.let { "Poin: ${it.points}" } ?: "Poin: 0"
+                binding.streakText.text = user?.let { "${it.streakCount}" } ?: "0"
+                updateWeeklyStatus(user?.lastClaimDate)
+            }
         }
 
         // Listener untuk tombol Riwayat
         binding.riwayatButton.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_riwayatFragment)
         }
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             binding.headerLayout.setPadding(
@@ -200,6 +228,52 @@ class HomeFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Check claim eligibility every time the fragment becomes visible
+        val sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("current_user_id", 1)
+        lifecycleScope.launch {
+            binding.btnClaim.isEnabled = userViewModel.canClaimStreakPoints(userId)
+        }
+    }
+
+    private fun updateWeeklyStatus(lastClaimDate: String?) {
+        // Reset semua ikon ke status tidak diklaim
+        dayIcons.forEach { iconId ->
+            binding.root.findViewById<ImageView>(iconId)?.setImageResource(R.drawable.ic_back)
+        }
+
+        // Jika tidak ada lastClaimDate, biarkan semua ikon tetap ic_back
+        if (lastClaimDate == null) return
+
+        try {
+            val lastClaim = LocalDate.parse(lastClaimDate, dbDateFormatter)
+            val today = LocalDate.now()
+            val weekStart = today.minusDays(today.dayOfWeek.value.toLong() - 1) // Senin sebagai hari pertama
+            val weekEnd = weekStart.plusDays(6) // Minggu
+
+            // Periksa tanggal claim dalam minggu ini
+            val claimDates = mutableListOf<LocalDate>()
+            var currentDate = lastClaim
+            while (currentDate >= weekStart && currentDate <= weekEnd) {
+                claimDates.add(currentDate)
+                currentDate = currentDate.minusDays(1)
+            }
+
+            // Update ikon untuk hari yang diklaim
+            claimDates.forEach { date ->
+                val dayIndex = ChronoUnit.DAYS.between(weekStart, date).toInt()
+                if (dayIndex in 0..6) {
+                    binding.root.findViewById<ImageView>(dayIcons[dayIndex])?.setImageResource(R.drawable.ic_back)
+                }
+            }
+        } catch (e: Exception) {
+            // Tangani error parsing tanggal
+            Toast.makeText(requireContext(), "Error parsing claim date", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showMonthYearPickerDialog(currentMonth: YearMonth, onConfirm: (Int, Int) -> Unit) {
@@ -216,18 +290,16 @@ class HomeFragment : Fragment() {
         monthPicker.minValue = 0
         monthPicker.maxValue = monthsList.size - 1
         monthPicker.displayedValues = monthsList.toTypedArray()
-        // Set default to current displayed month
         monthPicker.value = currentMonth.monthValue - 1
-        monthPicker.wrapSelectorWheel = false // Nonaktifkan looping untuk bulan
+        monthPicker.wrapSelectorWheel = false
 
         // Setup NumberPicker untuk tahun
         val yearPicker = dialogView.findViewById<NumberPicker>(R.id.yearPicker)
         yearPicker.minValue = 0
         yearPicker.maxValue = yearsList.size - 1
         yearPicker.displayedValues = yearsList.toTypedArray()
-        // Set default to current displayed year
         yearPicker.value = yearsList.indexOf(currentMonth.year.toString())
-        yearPicker.wrapSelectorWheel = false // Nonaktifkan looping untuk tahun
+        yearPicker.wrapSelectorWheel = false
 
         // Listener untuk tombol Setuju
         dialogView.findViewById<Button>(R.id.confirmButton).setOnClickListener {

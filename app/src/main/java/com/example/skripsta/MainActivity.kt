@@ -136,31 +136,28 @@ class MainActivity : AppCompatActivity() {
         val userId = sharedPreferences.getInt("current_user_id", 1)
         Log.d("MainActivity", "Checking daily login for userId: $userId")
         lifecycleScope.launch {
-            if (userViewModel.canAwardDailyPoints(userId)) {
-                val user = userViewModel.readAllData.value?.find { it.id == userId }
-                Log.d("MainActivity", "Existing user: $user")
-                if (user == null) {
-                    val newUser = User(
-                        id = userId,
-                        mood = 0,
-                        activities = "",
-                        activityIcon = 0,
-                        perasaan = "",
-                        judul = "",
-                        jurnal = "",
-                        tanggal = "",
-                        jam = "",
-                        points = 0,
-                        lastLoginDate = null
-                    )
-                    userViewModel.addUser(newUser)
-                    Log.d("MainActivity", "Created new user with ID: $userId")
-                }
-                userViewModel.awardDailyLoginPoints(userId, 10)
-                Log.d("MainActivity", "Awarded 10 points for userId: $userId")
-                Toast.makeText(this@MainActivity, "Anda mendapatkan 10 poin untuk login harian!", Toast.LENGTH_SHORT).show()
+            val user = userViewModel.getUserById(userId)
+            Log.d("MainActivity", "Existing user: $user")
+            if (user == null) {
+                val newUser = User(
+                    id = userId,
+                    mood = 0,
+                    activities = "",
+                    activityIcon = 0,
+                    perasaan = "",
+                    judul = "",
+                    jurnal = "",
+                    tanggal = "",
+                    jam = "",
+                    points = 0,
+                    lastLoginDate = null,
+                    streakCount = 0,
+                    lastClaimDate = null
+                )
+                userViewModel.addUser(newUser)
+                Log.d("MainActivity", "Created new user with ID: $userId")
             } else {
-                Log.d("MainActivity", "Poin login harian sudah diberikan hari ini untuk userId: $userId")
+                Log.d("MainActivity", "Current streak for userId: $userId is ${user.streakCount}")
             }
         }
     }

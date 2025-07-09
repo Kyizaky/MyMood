@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 
 class UserRepository(private val userDao: UserDao) {
 
-    val readALlData: LiveData<List<User>> = userDao.readAllData()
+    val readAllData: LiveData<List<User>> = userDao.readAllData()
 
     suspend fun addUser(user: User) {
         userDao.addUser(user)
@@ -22,12 +22,15 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getJournalsByDate(selectedDate)
     }
 
-    // Fungsi baru untuk mendukung gamifikasi
     suspend fun getUserById(userId: Int): User? {
         return userDao.getUserById(userId)
     }
 
-    suspend fun updatePointsAndLastLogin(userId: Int, points: Int, lastLoginDate: String) {
-        userDao.updatePointsAndLastLogin(userId, points, lastLoginDate)
+    suspend fun getLastClaimDate(userId: Int): String? {
+        return userDao.getLastClaimDate(userId)
+    }
+
+    suspend fun updateStreakAndPoints(userId: Int, streakCount: Int, points: Int, lastClaimDate: String) {
+        userDao.updateStreakAndPoints(userId, streakCount, points, lastClaimDate)
     }
 }
