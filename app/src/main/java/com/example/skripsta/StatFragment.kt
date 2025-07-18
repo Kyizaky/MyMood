@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.adapter.ActivityRankingAdapter
 import com.example.skripsta.adapter.FeelingRankingAdapter
 import com.example.skripsta.adapter.MoodLegendAdapter
-import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.data.MoodEntryViewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.AxisBase
@@ -33,7 +33,7 @@ import java.util.*
 
 class StatFragment : Fragment() {
 
-    private lateinit var mUserViewModel: UserViewModel
+    private lateinit var mMoodEntryViewModel: MoodEntryViewModel
 
     private lateinit var legendRecyclerView: RecyclerView
     private lateinit var recyclerViewRanking: RecyclerView
@@ -77,7 +77,7 @@ class StatFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_stat, container, false)
 
-        mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        mMoodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
 
         recyclerViewRanking = view.findViewById(R.id.recycler_view_ranking)
         recyclerViewRanking.layoutManager = LinearLayoutManager(requireContext())
@@ -154,7 +154,7 @@ class StatFragment : Fragment() {
     }
 
     private fun observeDataPie() {
-        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+        mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCount = mutableMapOf<Int, Int>()
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
             val monthFormat = SimpleDateFormat("MM", Locale("id"))
@@ -360,7 +360,7 @@ class StatFragment : Fragment() {
     }
 
     private fun observeDataRanking() {
-        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+        mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val activityCount = mutableMapOf<String, Pair<Int, Int>>()
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
             val monthFormat = SimpleDateFormat("MM", Locale("id"))
@@ -406,7 +406,7 @@ class StatFragment : Fragment() {
     }
 
     private fun observeDataFeelingRanking() {
-        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+        mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val feelingCount = mutableMapOf<String, Pair<Int, Int>>()
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
             val monthFormat = SimpleDateFormat("MM", Locale("id"))
@@ -451,7 +451,7 @@ class StatFragment : Fragment() {
     }
 
     private fun observeDataLineChart() {
-        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+        mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
             val dayFormat = SimpleDateFormat("dd", Locale("id"))
             val monthFormat = SimpleDateFormat("MM", Locale("id"))
@@ -616,7 +616,7 @@ class StatFragment : Fragment() {
     }
 
     private fun observeMoodData() {
-        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
+        mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCountPerDay = mutableMapOf<String, Int>()
             val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
             val yearFormat = SimpleDateFormat("yyyy", Locale("id"))

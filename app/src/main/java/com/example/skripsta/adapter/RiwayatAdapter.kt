@@ -7,11 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
-import com.example.skripsta.data.User
+import com.example.skripsta.data.MoodEntry
 
 class RiwayatAdapter() : RecyclerView.Adapter<RiwayatAdapter.MyViewHolder>() {
 
-    private var userList = emptyList<User>()
+    private var moodList = emptyList<MoodEntry>()
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageMood: ImageView = itemView.findViewById(R.id.imageViewIcon)
@@ -26,7 +26,7 @@ class RiwayatAdapter() : RecyclerView.Adapter<RiwayatAdapter.MyViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currentItem = userList[position]
+        val currentItem = moodList[position]
         holder.tgl.text = currentItem.tanggal
         holder.jam.text = currentItem.jam
         holder.imageMood.setImageResource(convertMoodToImage(currentItem.mood))
@@ -45,5 +45,5 @@ class RiwayatAdapter() : RecyclerView.Adapter<RiwayatAdapter.MyViewHolder>() {
         }
     }
 
-    override fun getItemCount(): Int = userList.size
+    override fun getItemCount(): Int = moodList.size
 }

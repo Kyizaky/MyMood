@@ -224,7 +224,7 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="0dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <FrameLayout
                     android:id="@+id/clFeelings"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -234,7 +234,7 @@
                         android:id="@+id/recycler_view_feelings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </FrameLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
@@ -279,7 +279,7 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="0dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <FrameLayout
                     android:id="@+id/clAktivitas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -290,7 +290,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </FrameLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 

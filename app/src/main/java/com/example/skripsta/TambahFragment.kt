@@ -5,7 +5,6 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +18,11 @@ import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.adapter.FeelingAdapter
 import com.example.skripsta.adapter.getDisplayName
 import com.example.skripsta.data.Item
-import com.example.skripsta.data.User
-import com.example.skripsta.data.UserViewModel
 import com.example.skripsta.data.ActivityViewModel
 import com.example.skripsta.data.FeelingViewModel
+import com.example.skripsta.data.MoodEntry
+import com.example.skripsta.data.MoodEntryViewModel
+import com.example.skripsta.data.UserViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -33,6 +33,7 @@ import java.util.Locale
 
 class TambahFragment : Fragment() {
 
+    private lateinit var mMoodEntryViewModel: MoodEntryViewModel
     private lateinit var mUserViewModel: UserViewModel
     private lateinit var mFeelingViewModel: FeelingViewModel
     private lateinit var mActivityViewModel: ActivityViewModel
@@ -47,11 +48,12 @@ class TambahFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_tambah, container, false)
 
+        mMoodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
         mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
         mFeelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
         mActivityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
         sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-
+        val currentUserId = sharedPreferences.getInt("current_user_id", 1)
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
         view.findViewById<ImageView>(R.id.ic_back).setOnClickListener {
@@ -60,6 +62,7 @@ class TambahFragment : Fragment() {
 
         view.findViewById<Button>(R.id.btn_save).setOnClickListener {
             insertDataToDatabase(view)
+            mUserViewModel.recordMoodEntry(currentUserId)
         }
 
         val btnCal: EditText = view.findViewById(R.id.btn_cal)
@@ -139,25 +142,18 @@ class TambahFragment : Fragment() {
         }
 
         mActivityViewModel.allActivities.observe(viewLifecycleOwner, Observer { activities ->
-            Log.d("TambahFragment", "Total activities in database: ${activities.size}")
-            Log.d("TambahFragment", "Activities: $activities")
             var selectedNames = sharedPreferences.getStringSet("selected_activity_names", emptySet()) ?: emptySet()
-            Log.d("TambahFragment", "Selected activity names from SharedPreferences: $selectedNames")
 
             if (selectedNames.isEmpty() && activities.isNotEmpty()) {
-                Log.w("TambahFragment", "Selected activity names empty, using all activities")
                 selectedNames = activities.map { it.name }.toSet()
                 sharedPreferences.edit().putStringSet("selected_activity_names", selectedNames).apply()
-                Log.d("TambahFragment", "Updated selected activity names: $selectedNames")
             }
 
             val displayedActivities = activities.filter { it.name in selectedNames }.map {
                 Item(it.iconRes, it.selectedIconRes, it.name)
             }
-            Log.d("TambahFragment", "Displayed activities: $displayedActivities")
             recyclerView.adapter = ActivityAdapter(displayedActivities) { selectedItem ->
                 selectedActivityItem = selectedItem
-                Log.d("TambahFragment", "Selected Activity: ${selectedItem.getDisplayName()}, Drawable ID: ${selectedItem.drawableId}")
             }
         })
     }
@@ -170,23 +166,16 @@ class TambahFragment : Fragment() {
         }
 
         mFeelingViewModel.allFeelings.observe(viewLifecycleOwner, Observer { feelings ->
-            Log.d("TambahFragment", "Total feelings in database: ${feelings.size}")
-            Log.d("TambahFragment", "Feelings: $feelings")
             var selectedNames = sharedPreferences.getStringSet("selected_feeling_names", emptySet()) ?: emptySet()
-            Log.d("TambahFragment", "Selected feeling names from SharedPreferences: $selectedNames")
 
             if (selectedNames.isEmpty() && feelings.isNotEmpty()) {
-                Log.w("TambahFragment", "Selected feeling names empty, using all feelings")
                 selectedNames = feelings.map { it.name }.toSet()
                 sharedPreferences.edit().putStringSet("selected_feeling_names", selectedNames).apply()
-                Log.d("TambahFragment", "Updated selected feeling names: $selectedNames")
             }
 
             val displayedFeelings = feelings.filter { it.name in selectedNames }.map { it.name }
-            Log.d("TambahFragment", "Displayed feelings: $displayedFeelings")
             recyclerView.adapter = FeelingAdapter(displayedFeelings) { selectedFeeling ->
                 selectedFeelingText = selectedFeeling
-                Log.d("TambahFragment", "Selected Feeling: $selectedFeeling")
             }
         })
     }
@@ -205,7 +194,7 @@ class TambahFragment : Fragment() {
             return
         }
 
-        val user = User(
+        val moodEntry = MoodEntry(
             id = 0,
             mood = moodType,
             activities = selectedActivity.getDisplayName(),
@@ -217,8 +206,7 @@ class TambahFragment : Fragment() {
             jam = selectedTime
         )
 
-        Log.d("TambahFragment", "Saving User - Activity: ${user.activities}, Icon: ${user.activityIcon}")
-        mUserViewModel.addUser(user)
+        mMoodEntryViewModel.addMoodEntry(moodEntry)
         val action = TambahFragmentDirections.actionTambahFragmentToValidationFragment(moodType)
         findNavController().navigate(action)
     }
@@ -238,9 +226,9 @@ class TambahFragment : Fragment() {
             R.id.mood1 to Pair(R.drawable.mood1_nocolor, R.drawable.mood1),
             R.id.mood2 to Pair(R.drawable.mood2_nocolor, R.drawable.mood2),
             R.id.mood3 to Pair(R.drawable.mood3_nocolor, R.drawable.mood3),
-            R.id.mood4 to Pair(R.drawable.mood4_nocolor, R.drawable.mood4),
-            R.id.mood5 to Pair(R.drawable.mood5_nocolor, R.drawable.mood5),
-            R.id.mood6 to Pair(R.drawable.mood6_nocolor, R.drawable.mood6)
+            R.id.mood4 to Pair(R.drawable.mood6_nocolor, R.drawable.mood6),
+            R.id.mood5 to Pair(R.drawable.mood4_nocolor, R.drawable.mood4),
+            R.id.mood6 to Pair(R.drawable.mood5_nocolor, R.drawable.mood5)
         )
 
         if (selectedMoodButton == button) {

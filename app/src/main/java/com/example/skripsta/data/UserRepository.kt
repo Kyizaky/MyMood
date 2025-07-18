@@ -10,27 +10,32 @@ class UserRepository(private val userDao: UserDao) {
         userDao.addUser(user)
     }
 
-    suspend fun deleteUser(user: User) {
-        userDao.deleteUser(user)
-    }
 
     suspend fun updateUser(user: User) {
         userDao.updateUser(user)
-    }
-
-    fun getJournalsByDate(selectedDate: String): LiveData<List<User>> {
-        return userDao.getJournalsByDate(selectedDate)
     }
 
     suspend fun getUserById(userId: Int): User? {
         return userDao.getUserById(userId)
     }
 
-    suspend fun getLastClaimDate(userId: Int): String? {
-        return userDao.getLastClaimDate(userId)
-    }
-
     suspend fun updateStreakAndPoints(userId: Int, streakCount: Int, points: Int, lastClaimDate: String) {
         userDao.updateStreakAndPoints(userId, streakCount, points, lastClaimDate)
+    }
+
+    suspend fun updateLastLoginDate(userId: Int, lastLoginDate: String) {
+        userDao.updateLastLoginDate(userId, lastLoginDate)
+    }
+
+    suspend fun updateLastMoodEntryDate(userId: Int, lastMoodEntryDate: String) {
+        userDao.updateLastMoodEntryDate(userId, lastMoodEntryDate)
+    }
+
+    suspend fun updateUnlockedPets(userId: Int, unlockedPets: String, currentPetIndex: Int) {
+        userDao.updateUnlockedPets(userId, unlockedPets, currentPetIndex)
+    }
+
+    suspend fun updateCurrentPetIndex(userId: Int, currentPetIndex: Int) {
+        userDao.updateCurrentPetIndex(userId, currentPetIndex)
     }
 }

@@ -19,6 +19,10 @@
         <action
             android:id="@+id/action_homeFragment_to_pinLockFragment"
             app:destination="@id/pinLockFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_dailyLoginFragment"
+            app:destination="@id/dailyLoginFragment" />
+
     </fragment>
 
     <fragment
@@ -29,6 +33,9 @@
         <action
             android:id="@+id/action_riwayatFragment_to_isiRiwayatFragment"
             app:destination="@id/isiRiwayatFragment" />
+        <action
+            android:id="@+id/action_riwayatFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -72,8 +79,8 @@
         android:label="fragment_isi_riwayat"
         tools:layout="@layout/fragment_isi_riwayat" >
         <argument
-            android:name="currentUser"
-            app:argType="com.example.skripsta.data.User"
+            android:name="moodEntry"
+            app:argType="com.example.skripsta.data.MoodEntry"
             app:nullable="false"/>
         <action
             android:id="@+id/action_isiRiwayatFragment_to_riwayatTanggalFragment"
@@ -104,8 +111,8 @@
         android:name="com.example.skripsta.EditMoodFragment"
         android:label="EditMoodFragment" >
         <argument
-            android:name="currentUser"
-            app:argType="com.example.skripsta.data.User" />
+            android:name="moodEntry"
+            app:argType="com.example.skripsta.data.MoodEntry" />
         <action
             android:id="@+id/action_editMoodFragment_to_isiRiwayatFragment"
             app:destination="@id/isiRiwayatFragment" />
@@ -192,11 +199,18 @@
             app:destination="@id/homeFragment" />
     </fragment>
 
-    <!-- Global action for PIN lock -->
     <action
         android:id="@+id/action_global_pinLockFragment"
         app:destination="@id/pinLockFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/dailyLoginFragment"
+        android:name="com.example.skripsta.DailyLoginFragment"
+        android:label="DailyLoginFragment" >
+        <action
+            android:id="@+id/action_dailyLoginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
 </navigation>

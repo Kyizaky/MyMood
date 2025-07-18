@@ -7,12 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
-import com.example.skripsta.data.User
+import com.example.skripsta.data.MoodEntry
 import com.example.skripsta.model.HistorySection
 
 class HistorySectionAdapter(
     private var sections: List<HistorySection>,
-    private val onItemClick: (User) -> Unit
+    private val onItemClick: (MoodEntry) -> Unit
 ) : RecyclerView.Adapter<HistorySectionAdapter.SectionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionViewHolder {
@@ -29,7 +29,7 @@ class HistorySectionAdapter(
 
     class SectionViewHolder(
         itemView: View,
-        private val onItemClick: (User) -> Unit
+        private val onItemClick: (MoodEntry) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val dateHeaderText: TextView = itemView.findViewById(R.id.dateHeaderText)
         private val moodRecyclerView: RecyclerView = itemView.findViewById(R.id.moodRecyclerView)

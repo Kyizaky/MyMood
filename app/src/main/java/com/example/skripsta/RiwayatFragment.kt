@@ -14,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.skripsta.adapter.HistorySectionAdapter
-import com.example.skripsta.data.User
-import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.data.MoodEntry
+import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.databinding.FragmentRiwayatBinding
 import com.example.skripsta.model.HistorySection
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -26,13 +26,13 @@ import java.util.Locale
 class RiwayatFragment : Fragment() {
 
     private lateinit var binding: FragmentRiwayatBinding
-    private lateinit var mUserViewModel: UserViewModel
+    private lateinit var moodEntryViewModel: MoodEntryViewModel
     private lateinit var historyAdapter: HistorySectionAdapter
     private val monthsList = listOf(
         "Januari", "Februari", "Maret", "April", "Mei", "Juni",
         "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     )
-    private val yearsList = (2020..2030).map { it.toString() } // Rentang tahun
+    private val yearsList = (2025..2030).map { it.toString() }
     private val datesList = mutableListOf<String>()
     private var lastCheckedMonth: String? = null
     private var selectedYear: String? = null
@@ -42,7 +42,7 @@ class RiwayatFragment : Fragment() {
     private val checkDateRunnable = object : Runnable {
         override fun run() {
             updateButtonsIfNeeded()
-            handler.postDelayed(this, 60_000) // Check every minute
+            handler.postDelayed(this, 60_000)
         }
     }
 
@@ -51,9 +51,8 @@ class RiwayatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRiwayatBinding.inflate(inflater, container, false)
-        mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        moodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
 
-        // Inisialisasi tahun, bulan, dan tanggal default
         val currentDate = LocalDate.now()
         selectedYear = currentDate.year.toString()
         selectedMonth = monthsList[currentDate.monthValue - 1]
@@ -62,16 +61,12 @@ class RiwayatFragment : Fragment() {
         binding.monthButton.text = selectedMonth
         binding.dateButton.text = selectedDate
 
-        // Set up the Buttons
         setupButtons()
-
-        // Set up the RecyclerView
         setupRecyclerView()
 
-        // Observe the User data and update the RecyclerView
-        mUserViewModel.readAllData.observe(viewLifecycleOwner) { users ->
-            updateDateList(users)
-            updateRecyclerView(users)
+        moodEntryViewModel.readAllData.observe(viewLifecycleOwner) { entries ->
+            updateDateList(entries)
+            updateRecyclerView(entries)
         }
 
         return binding.root
@@ -79,13 +74,11 @@ class RiwayatFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Start checking for date changes
         handler.post(checkDateRunnable)
     }
 
     override fun onPause() {
         super.onPause()
-        // Stop checking for date changes
         handler.removeCallbacks(checkDateRunnable)
     }
 
@@ -95,17 +88,17 @@ class RiwayatFragment : Fragment() {
             showPickerDialog("Pilih Tahun", yearsList) { selected ->
                 selectedYear = selected
                 binding.yearButton.text = selected
-                mUserViewModel.readAllData.value?.let { users ->
-                    updateDateList(users)
+                moodEntryViewModel.readAllData.value?.let { entries ->
+                    updateDateList(entries)
                     selectedDate = "All" // Reset tanggal ke "All"
                     binding.dateButton.text = selectedDate
-                    updateRecyclerView(users)
+                    updateRecyclerView(entries)
                 }
             }
         }
 
         binding.backHistory.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.action_riwayatFragment_to_homeFragment)
         }
 
         // Button untuk memilih bulan
@@ -113,11 +106,11 @@ class RiwayatFragment : Fragment() {
             showPickerDialog("Pilih Bulan", monthsList) { selected ->
                 selectedMonth = selected
                 binding.monthButton.text = selected
-                mUserViewModel.readAllData.value?.let { users ->
-                    updateDateList(users)
+                moodEntryViewModel.readAllData.value?.let { entries ->
+                    updateDateList(entries)
                     selectedDate = "All" // Reset tanggal ke "All"
                     binding.dateButton.text = selectedDate
-                    updateRecyclerView(users)
+                    updateRecyclerView(entries)
                 }
             }
         }
@@ -127,8 +120,8 @@ class RiwayatFragment : Fragment() {
             showPickerDialog("Pilih Tanggal", datesList) { selected ->
                 selectedDate = selected
                 binding.dateButton.text = selected
-                mUserViewModel.readAllData.value?.let { users ->
-                    updateRecyclerView(users)
+                moodEntryViewModel.readAllData.value?.let { entries ->
+                    updateRecyclerView(entries)
                 }
             }
         }
@@ -139,17 +132,13 @@ class RiwayatFragment : Fragment() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_number_picker, null)
         dialog.setContentView(dialogView)
 
-        // Set judul
         dialogView.findViewById<TextView>(R.id.dialogTitle).text = title
-
-        // Set NumberPicker
         val numberPicker = dialogView.findViewById<NumberPicker>(R.id.numberPicker)
         numberPicker.minValue = 0
         numberPicker.maxValue = options.size - 1
         numberPicker.displayedValues = options.toTypedArray()
         numberPicker.wrapSelectorWheel = true
 
-        // Set default selection
         val defaultIndex = when (title) {
             "Pilih Tahun" -> yearsList.indexOf(selectedYear ?: yearsList.first())
             "Pilih Bulan" -> monthsList.indexOf(selectedMonth ?: monthsList.first())
@@ -158,7 +147,6 @@ class RiwayatFragment : Fragment() {
         }
         numberPicker.value = defaultIndex
 
-        // Set listener untuk tombol konfirmasi
         dialogView.findViewById<Button>(R.id.confirmButton).setOnClickListener {
             val selectedValue = options[numberPicker.value]
             onItemSelected(selectedValue)
@@ -168,32 +156,24 @@ class RiwayatFragment : Fragment() {
         dialog.show()
     }
 
-    private fun updateDateList(users: List<User>) {
-        // Pastikan tahun dan bulan sudah dipilih
+    private fun updateDateList(entries: List<MoodEntry>) {
         if (selectedYear == null || selectedMonth == null) return
 
-        // Parse tahun dan bulan yang dipilih
         val selectedYearInt = selectedYear!!.toInt()
-        val selectedMonthIndex = monthsList.indexOf(selectedMonth) + 1 // 1-12
-        val tempDate = LocalDate.of(selectedYearInt, selectedMonthIndex, 1)
+        val selectedMonthIndex = monthsList.indexOf(selectedMonth) + 1
 
-        // Filter users untuk tahun dan bulan yang dipilih
-        val filteredUsers = users.filter { user ->
-            val userDate = LocalDate.parse(user.tanggal, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
-            userDate.monthValue == selectedMonthIndex && userDate.year == selectedYearInt
+        val filteredEntries = entries.filter { entry ->
+            val entryDate = LocalDate.parse(entry.tanggal, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+            entryDate.monthValue == selectedMonthIndex && entryDate.year == selectedYearInt
         }
 
-        // Get unique dates, sort them, then format them
         val displayFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale("in", "ID"))
-        val uniqueDates = filteredUsers
-            .map { user ->
-                LocalDate.parse(user.tanggal, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
-            }
+        val uniqueDates = filteredEntries
+            .map { LocalDate.parse(it.tanggal, DateTimeFormatter.ofPattern("MM/dd/yyyy")) }
             .distinct()
             .sortedByDescending { it }
             .map { it.format(displayFormatter) }
 
-        // Update the dates list
         datesList.clear()
         datesList.add("All")
         datesList.addAll(uniqueDates)
@@ -214,7 +194,7 @@ class RiwayatFragment : Fragment() {
             binding.dateButton.text = selectedDate
 
             // Update RecyclerView dengan bulan saat ini
-            mUserViewModel.readAllData.value?.let { users ->
+            moodEntryViewModel.readAllData.value?.let { users ->
                 updateDateList(users)
                 updateRecyclerView(users)
             }
@@ -224,18 +204,20 @@ class RiwayatFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        historyAdapter = HistorySectionAdapter(emptyList()) { user ->
-            // Navigate ke IsiRiwayatFragment saat item diklik
-            val action = RiwayatFragmentDirections.actionRiwayatFragmentToIsiRiwayatFragment(user)
-            findNavController().navigate(action)
-        }
+        historyAdapter = HistorySectionAdapter(
+            emptyList(),
+            onItemClick = { moodEntry ->
+                val action = RiwayatFragmentDirections.actionRiwayatFragmentToIsiRiwayatFragment(moodEntry)
+                findNavController().navigate(action)
+            }
+        )
         binding.historyRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = historyAdapter
         }
     }
 
-    private fun updateRecyclerView(users: List<User>) {
+    private fun updateRecyclerView(moodEntry: List<MoodEntry>) {
         // Pastikan tahun dan bulan sudah dipilih
         if (selectedYear == null || selectedMonth == null) return
 
@@ -244,7 +226,7 @@ class RiwayatFragment : Fragment() {
         val selectedMonthIndex = monthsList.indexOf(selectedMonth) + 1 // 1-12
 
         // Filter users untuk tahun dan bulan yang dipilih
-        var filteredUsers = users.filter { user ->
+        var filteredUsers = moodEntry.filter { user ->
             val userDate = LocalDate.parse(user.tanggal, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
             userDate.monthValue == selectedMonthIndex && userDate.year == selectedYearInt
         }

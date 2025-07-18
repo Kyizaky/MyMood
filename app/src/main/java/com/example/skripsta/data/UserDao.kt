@@ -23,21 +23,21 @@ interface UserDao {
     @Delete
     suspend fun deleteUser(user: User)
 
-    @Query("SELECT * FROM user_table WHERE tanggal = :selectedDate ORDER BY jam ASC")
-    fun getJournalsByDate(selectedDate: String): LiveData<List<User>>
-
     @Query("SELECT * FROM user_table WHERE id = :userId")
     suspend fun getUserById(userId: Int): User?
 
-    // Fungsi untuk memperbarui poin dan tanggal login (dari kode asli)
-    @Query("UPDATE user_table SET points = points + :points, lastLoginDate = :lastLoginDate WHERE id = :userId")
-    suspend fun updatePointsAndLastLogin(userId: Int, points: Int, lastLoginDate: String)
-
-    // Fungsi baru untuk memeriksa kelayakan claim berdasarkan lastClaimDate
-    @Query("SELECT lastClaimDate FROM user_table WHERE id = :userId")
-    suspend fun getLastClaimDate(userId: Int): String?
-
-    // Fungsi baru untuk memperbarui streak, poin, dan tanggal claim
-    @Query("UPDATE user_table SET streakCount = :streakCount, points = points + :points, lastClaimDate = :lastClaimDate WHERE id = :userId")
+    @Query("UPDATE user_table SET streakCount = :streakCount, points = :points, lastClaimDate = :lastClaimDate WHERE id = :userId")
     suspend fun updateStreakAndPoints(userId: Int, streakCount: Int, points: Int, lastClaimDate: String)
+
+    @Query("UPDATE user_table SET lastLoginDate = :lastLoginDate WHERE id = :userId")
+    suspend fun updateLastLoginDate(userId: Int, lastLoginDate: String)
+
+    @Query("UPDATE user_table SET lastMoodEntryDate = :lastMoodEntryDate WHERE id = :userId")
+    suspend fun updateLastMoodEntryDate(userId: Int, lastMoodEntryDate: String)
+
+    @Query("UPDATE user_table SET unlockedPets = :unlockedPets, currentPetIndex = :currentPetIndex WHERE id = :userId")
+    suspend fun updateUnlockedPets(userId: Int, unlockedPets: String, currentPetIndex: Int)
+
+    @Query("UPDATE user_table SET currentPetIndex = :currentPetIndex WHERE id = :userId")
+    suspend fun updateCurrentPetIndex(userId: Int, currentPetIndex: Int)
 }

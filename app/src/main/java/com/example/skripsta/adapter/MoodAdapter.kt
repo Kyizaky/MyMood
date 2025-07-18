@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
-import com.example.skripsta.data.User
+import com.example.skripsta.data.MoodEntry
 import com.example.skripsta.utils.MoodUtils
 
 class MoodAdapter(
-    private var entries: List<User>,
-    private val onItemClick: (User) -> Unit
+    private var entries: List<MoodEntry>,
+    private val onItemClick: (MoodEntry) -> Unit
 ) : RecyclerView.Adapter<MoodAdapter.MoodViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoodViewHolder {
@@ -30,31 +30,31 @@ class MoodAdapter(
 
     class MoodViewHolder(
         itemView: View,
-        private val onItemClick: (User) -> Unit
+        private val onItemClick: (MoodEntry) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val moodIcon: ImageView = itemView.findViewById(R.id.moodIcon)
         private val moodText: TextView = itemView.findViewById(R.id.moodText)
         private val timeText: TextView = itemView.findViewById(R.id.timeText)
         private val moodCard: CardView = itemView.findViewById(R.id.moodCardView)
 
-        fun bind(user: User) {
+        fun bind(moodEntry: MoodEntry) {
             // Map mood integer to string and icon
-            moodText.text = user.perasaan
-            moodIcon.setImageResource(MoodUtils.getMoodIcon(user.mood))
+            moodText.text = moodEntry.perasaan
+            moodIcon.setImageResource(MoodUtils.getMoodIcon(moodEntry.mood))
 
-            timeText.text = user.jam
-            val colorResId = when (user.mood) {
+            timeText.text = moodEntry.jam
+            val colorResId = when (moodEntry.mood) {
                 1 -> R.color.mood_1
                 2 -> R.color.mood_2
                 3 -> R.color.mood_3
-                4 -> R.color.mood_4
-                5 -> R.color.mood_5
-                6 -> R.color.mood_6
+                4 -> R.color.mood_6
+                5 -> R.color.mood_4
+                6 -> R.color.mood_5
                 else -> R.color.transparent
             }
             moodCard.setCardBackgroundColor(itemView.context.getColor(colorResId))
 
-            itemView.setOnClickListener { onItemClick(user) }
+            itemView.setOnClickListener { onItemClick(moodEntry) }
         }
     }
 }

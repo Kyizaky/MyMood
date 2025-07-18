@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
 import com.example.skripsta.RiwayatTanggalFragmentDirections
-import com.example.skripsta.data.User
+import com.example.skripsta.data.MoodEntry
 
-class JournalAdapter : ListAdapter<User, JournalAdapter.JournalViewHolder>(DiffCallback()) {
+class JournalAdapter : ListAdapter<MoodEntry, JournalAdapter.JournalViewHolder>(DiffCallback()) {
 
     class JournalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageMood: ImageView = itemView.findViewById(R.id.imageViewIcon)
@@ -50,8 +50,8 @@ class JournalAdapter : ListAdapter<User, JournalAdapter.JournalViewHolder>(DiffC
             else -> R.drawable.mood6
         }
     }
-    class DiffCallback : DiffUtil.ItemCallback<User>() {
-        override fun areItemsTheSame(oldItem: User, newItem: User) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: User, newItem: User) = oldItem == newItem
+    class DiffCallback : DiffUtil.ItemCallback<MoodEntry>() {
+        override fun areItemsTheSame(oldItem: MoodEntry, newItem: MoodEntry) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: MoodEntry, newItem: MoodEntry) = oldItem == newItem
     }
 }

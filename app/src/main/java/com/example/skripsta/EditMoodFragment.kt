@@ -6,12 +6,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -21,8 +21,8 @@ import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.adapter.FeelingAdapter
 import com.example.skripsta.adapter.getDisplayName
 import com.example.skripsta.data.Item
-import com.example.skripsta.data.User
-import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.data.MoodEntry
+import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.data.ActivityViewModel
 import com.example.skripsta.data.FeelingViewModel
 import com.example.skripsta.databinding.FragmentEditMoodBinding
@@ -37,7 +37,7 @@ import java.util.Locale
 class EditMoodFragment : Fragment() {
 
     private val args by navArgs<EditMoodFragmentArgs>()
-    private lateinit var mUserViewModel: UserViewModel
+    private lateinit var mMoodEntryViewModel: MoodEntryViewModel
     private lateinit var mActivityViewModel: ActivityViewModel
     private lateinit var mFeelingViewModel: FeelingViewModel
     private lateinit var sharedPreferences: SharedPreferences
@@ -49,8 +49,8 @@ class EditMoodFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        mUserViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+    ): View {
+        mMoodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
         mActivityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
         mFeelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
         sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
@@ -59,12 +59,13 @@ class EditMoodFragment : Fragment() {
 
         binding = FragmentEditMoodBinding.inflate(inflater, container, false)
 
-        binding.btnCal.setText(args.currentUser.tanggal)
-        binding.btnClock.setText(args.currentUser.jam)
-        binding.tvJurnaling.setText(args.currentUser.judul)
-        binding.etJornal.setText(args.currentUser.jurnal)
+        val moodEntry = args.moodEntry
+        binding.btnCal.setText(moodEntry.tanggal) //edit text
+        binding.btnClock.setText(moodEntry.jam)
+        binding.tvJurnaling.setText(moodEntry.judul)
+        binding.etJornal.setText(moodEntry.jurnal)
 
-        // Format tanggal
+
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -106,12 +107,10 @@ class EditMoodFragment : Fragment() {
             updateDataToDatabase(binding.root)
         }
 
-        // Tambahkan click listener untuk ikon pensil untuk activities
         binding.editActivitiesButton.setOnClickListener {
             findNavController().navigate(R.id.action_editMoodFragment_to_selectActivityFragment)
         }
 
-        // Tambahkan click listener untuk ikon pensil untuk feelings
         binding.editFeelingsButton.setOnClickListener {
             findNavController().navigate(R.id.action_editMoodFragment_to_selectFeelingFragment)
         }
@@ -191,9 +190,9 @@ class EditMoodFragment : Fragment() {
             R.id.mood1 to Pair(R.drawable.mood1_nocolor, R.drawable.mood1),
             R.id.mood2 to Pair(R.drawable.mood2_nocolor, R.drawable.mood2),
             R.id.mood3 to Pair(R.drawable.mood3_nocolor, R.drawable.mood3),
-            R.id.mood4 to Pair(R.drawable.mood4_nocolor, R.drawable.mood4),
-            R.id.mood5 to Pair(R.drawable.mood5_nocolor, R.drawable.mood5),
-            R.id.mood6 to Pair(R.drawable.mood6_nocolor, R.drawable.mood6)
+            R.id.mood4 to Pair(R.drawable.mood6_nocolor, R.drawable.mood6),
+            R.id.mood5 to Pair(R.drawable.mood4_nocolor, R.drawable.mood4),
+            R.id.mood6 to Pair(R.drawable.mood5_nocolor, R.drawable.mood5)
         )
 
         // Jika tombol yang sama ditekan lagi, deselect
@@ -232,9 +231,9 @@ class EditMoodFragment : Fragment() {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
         } else {
-            val updatedUser = User(
-                id = args.currentUser.id,
-                mood = moodType.toInt(),
+            val updatedMood = MoodEntry(
+                id = args.moodEntry.id,
+                mood = moodType,
                 activities = selectedActivity.getDisplayName(),
                 activityIcon = selectedActivity.drawableId,
                 perasaan = selectedFeeling,
@@ -244,9 +243,9 @@ class EditMoodFragment : Fragment() {
                 jam = selectedTime
             )
 
-            mUserViewModel.updateUser(updatedUser)
+            mMoodEntryViewModel.updateMoodEntry(updatedMood)
             Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
-            val action = EditMoodFragmentDirections.actionEditMoodFragmentToIsiRiwayatFragment(updatedUser)
+            val action = EditMoodFragmentDirections.actionEditMoodFragmentToIsiRiwayatFragment(updatedMood)
             findNavController().navigate(action)
         }
     }

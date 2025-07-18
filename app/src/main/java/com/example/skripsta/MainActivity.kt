@@ -1,14 +1,10 @@
 package com.example.skripsta
 
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -54,7 +50,6 @@ class MainActivity : AppCompatActivity() {
         feelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
         activityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-
 
         // Ensure a valid userId is set
         val userId = sharedPreferences.getInt("current_user_id", -1)
@@ -134,25 +129,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkDailyLogin() {
         val userId = sharedPreferences.getInt("current_user_id", 1)
-        Log.d("MainActivity", "Checking daily login for userId: $userId")
         lifecycleScope.launch {
             val user = userViewModel.getUserById(userId)
-            Log.d("MainActivity", "Existing user: $user")
-            if (user == null) {
+           if (user == null) {
                 val newUser = User(
                     id = userId,
-                    mood = 0,
-                    activities = "",
-                    activityIcon = 0,
-                    perasaan = "",
-                    judul = "",
-                    jurnal = "",
-                    tanggal = "",
-                    jam = "",
                     points = 0,
-                    lastLoginDate = null,
                     streakCount = 0,
-                    lastClaimDate = null
+                    lastClaimDate = null,
+                    lastLoginDate = null,
+                    lastMoodEntryDate = null,
+                    unlockedPets = "img_3",
+                    currentPetIndex = 0
                 )
                 userViewModel.addUser(newUser)
                 Log.d("MainActivity", "Created new user with ID: $userId")
