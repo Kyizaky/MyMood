@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_riwayatFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_riwayatFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -58,7 +61,11 @@
         android:id="@+id/kegiatanFragment"
         android:name="com.example.skripsta.KegiatanFragment"
         android:label="Kegiatan"
-        tools:layout="@layout/fragment_kegiatan" />
+        tools:layout="@layout/fragment_kegiatan" >
+        <action
+            android:id="@+id/action_kegiatanFragment_to_groundMeditationFragment"
+            app:destination="@id/groundMeditationFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/pengaturanFragment"
@@ -104,6 +111,9 @@
         <action
             android:id="@+id/action_riwayatTanggalFragment_to_isiRiwayatFragment"
             app:destination="@id/isiRiwayatFragment" />
+        <action
+            android:id="@+id/action_riwayatTanggalFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -211,6 +221,15 @@
         <action
             android:id="@+id/action_dailyLoginFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/groundMeditationFragment"
+        android:name="com.example.skripsta.GroundMeditationFragment"
+        android:label="fragment_ground_meditation"
+        tools:layout="@layout/fragment_ground_meditation" >
+        <action
+            android:id="@+id/action_groundMeditationFragment_to_kegiatanFragment"
+            app:destination="@id/kegiatanFragment" />
     </fragment>
 
 </navigation>

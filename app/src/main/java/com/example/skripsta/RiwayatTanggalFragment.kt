@@ -34,8 +34,9 @@ class RiwayatTanggalFragment : Fragment() {
 
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
-        binding.backIsiDate.setOnClickListener {
-            findNavController().popBackStack()
+        binding.icBack.setOnClickListener {
+            val action = RiwayatTanggalFragmentDirections.actionRiwayatTanggalFragmentToHomeFragment()
+            findNavController().navigate(action)
         }
 
         // Konfigurasi RecyclerView
@@ -65,9 +66,9 @@ class RiwayatTanggalFragment : Fragment() {
     // Function to format the date to "21 Mei"
     private fun formatDateToDayMonth(dateString: String): String {
         return try {
-            val inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault())
+            val inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
             val date = LocalDate.parse(dateString, inputFormatter)
-            val outputFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale("in", "ID"))
+            val outputFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH)
             date.format(outputFormatter)
         } catch (e: Exception) {
             dateString

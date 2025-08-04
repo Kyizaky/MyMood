@@ -42,12 +42,12 @@ class JournalAdapter : ListAdapter<MoodEntry, JournalAdapter.JournalViewHolder>(
 
     private fun convertMoodToImage(dataMood: Int?): Int {
         return when (dataMood) {
-            1 -> R.drawable.mood1
-            2 -> R.drawable.mood2
-            3 -> R.drawable.mood3
-            4 -> R.drawable.mood4
-            5 -> R.drawable.mood5
-            else -> R.drawable.mood6
+            1 -> R.drawable.para1
+            2 -> R.drawable.para2
+            3 -> R.drawable.para3
+            4 -> R.drawable.para4
+            5 -> R.drawable.para5
+            else -> R.drawable.ic_breathe
         }
     }
     class DiffCallback : DiffUtil.ItemCallback<MoodEntry>() {

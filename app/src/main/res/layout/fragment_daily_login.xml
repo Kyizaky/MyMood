@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_back"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
         android:text="Day Streak"
         android:textSize="20sp"
         android:fontFamily="@font/nunitoregular"
@@ -36,6 +37,7 @@
         android:layout_below="@+id/tv_streak_day"
         android:layout_centerHorizontal="true"
         android:text="305"
+        android:textColor="@color/black"
         android:fontFamily="@font/nunitoregular"
         android:textSize="30sp"
         android:textStyle="bold" />
@@ -80,8 +82,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ikky"
+        android:fontFamily="@font/nunitoregular"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/black"
         android:layout_marginTop="8dp"
         android:layout_gravity="center"/>
 
@@ -111,6 +115,7 @@
         android:id="@+id/tv_points"
         android:text="28 poin untuk membuka tampilan berikutnya"
         android:textSize="14sp"
+        android:fontFamily="@font/nunitoregular"
         android:layout_gravity="center"
         android:layout_marginTop="4dp"/>
 
@@ -136,11 +141,14 @@
                 android:layout_height="wrap_content"
                 android:text="Tumbuhkan Pet Anda"
                 android:textSize="18sp"
+                android:fontFamily="@font/nunitoregular"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/nunitoregular"
                 android:text="Wajib"/>
 
             <!-- Item checklist -->
@@ -159,6 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Login aplikasi (+2)"
+                    android:fontFamily="@font/nunitoregular"
                     android:layout_marginStart="8dp"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -178,6 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:text="Mengisi mood sekal (+3)"
+                    android:fontFamily="@font/nunitoregular"
                     android:layout_marginStart="8dp"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -185,6 +195,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/nunitoregular"
                 android:text="Bonus"/>
 
             <LinearLayout
@@ -203,6 +214,7 @@
                     android:layout_height="wrap_content"
                     android:text="menyalakan streak daily (+5)"
                     android:layout_marginStart="8dp"
+                    android:fontFamily="@font/nunitoregular"
                     android:textSize="14sp"/>
             </LinearLayout>
 
@@ -212,6 +224,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="90dp"
                 android:layout_marginTop="5dp"
+                android:fontFamily="@font/nunitoregular"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_btn"
                 android:text="Claim"/>
 
         </LinearLayout>

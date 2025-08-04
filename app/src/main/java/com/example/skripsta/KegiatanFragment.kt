@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.navigation.fragment.findNavController
 
 class KegiatanFragment : Fragment() {
 
@@ -14,24 +15,27 @@ class KegiatanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_kegiatan, container, false)
 
-        // Find CardViews by ID
         val cardMeditation = view.findViewById<CardView>(R.id.meditation)
         val cardBreathe = view.findViewById<CardView>(R.id.breathe)
+        val cardGround = view.findViewById<CardView>(R.id.medi_ground)
 
-        // Set OnClickListener for CardView 1
         cardMeditation.setOnClickListener {
             val intent = Intent(activity, MeditationActivity::class.java)
             startActivity(intent)
         }
 
-        // Set OnClickListener for CardView 2
         cardBreathe.setOnClickListener {
             val intent = Intent(activity, BreatheActivity::class.java)
             startActivity(intent)
         }
+
+        cardGround.setOnClickListener {
+            val action = KegiatanFragmentDirections.actionKegiatanFragmentToGroundMeditationFragment()
+            findNavController().navigate(action)
+        }
+
 
         return view
     }

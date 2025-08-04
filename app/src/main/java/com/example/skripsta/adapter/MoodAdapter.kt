@@ -47,11 +47,11 @@ class MoodAdapter(
                 1 -> R.color.mood_1
                 2 -> R.color.mood_2
                 3 -> R.color.mood_3
-                4 -> R.color.mood_6
-                5 -> R.color.mood_4
-                6 -> R.color.mood_5
+                4 -> R.color.mood_4
+                5 -> R.color.mood_5
                 else -> R.color.transparent
             }
+
             moodCard.setCardBackgroundColor(itemView.context.getColor(colorResId))
 
             itemView.setOnClickListener { onItemClick(moodEntry) }

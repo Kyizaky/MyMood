@@ -26,8 +26,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:padding="10dp"
-            android:weightSum="6">
+            android:padding="8dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -39,13 +38,14 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/mood1" />
+                    android:src="@drawable/para1" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Angry"
-                    android:textSize="16sp"
+                    android:text="Terrible"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
             </LinearLayout>
@@ -60,13 +60,14 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/mood2" />
+                    android:src="@drawable/para2" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Disgust"
-                    android:textSize="15sp"
+                    android:text="Bad"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/nunitoregular"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
             </LinearLayout>
@@ -81,13 +82,14 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/mood3" />
+                    android:src="@drawable/para3" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Scary"
-                    android:textSize="16sp"
+                    android:text="Okay"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/nunitoregular"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
             </LinearLayout>
@@ -102,14 +104,15 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/mood6" />
+                    android:src="@drawable/para4" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Neutral"
-                    android:textSize="16sp"
+                    android:text="Good"
+                    android:textSize="14sp"
                     android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunitoregular"
                     android:gravity="center" />
             </LinearLayout>
 
@@ -123,35 +126,15 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/mood4" />
+                    android:src="@drawable/para5" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sad"
-                    android:textSize="16sp"
+                    android:text="Excellent"
+                    android:textSize="14sp"
                     android:layout_marginTop="8dp"
-                    android:gravity="center" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/mood5" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Happy"
-                    android:textSize="15sp"
-                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunitoregular"
                     android:gravity="center" />
             </LinearLayout>
         </LinearLayout>
@@ -160,7 +143,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="110dp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
         android:clipToPadding="true"
@@ -186,12 +169,38 @@
                     android:orientation="vertical"
                     android:padding="15dp">
 
-                    <Spinner
-                        android:id="@+id/spinner_month_pie"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:layout_marginBottom="8dp"/>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pie Chart"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/nunitoregular"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/btn_date_pie"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Date"
+                            android:textSize="14sp"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/nunitoregular"
+                            android:textColor="#FFFFFF"
+                            android:padding="8dp"
+                            android:background="@drawable/bg_btn_date" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -241,6 +250,7 @@
                             android:text="Mood Trend"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            android:fontFamily="@font/nunitoregular"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -255,7 +265,10 @@
                             android:text="Date"
                             android:textSize="14sp"
                             android:padding="8dp"
-                            android:background="@android:drawable/btn_default" />
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/nunitoregular"
+                            android:textColor="#FFFFFF"
+                            android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
 
                     <com.github.mikephil.charting.charts.LineChart
@@ -291,6 +304,7 @@
                             android:text="Mood Calendar"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            android:fontFamily="@font/nunitoregular"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -304,8 +318,11 @@
                             android:layout_height="wrap_content"
                             android:text="Date"
                             android:textSize="14sp"
+                            android:textColor="#FFFFFF"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/nunitoregular"
                             android:padding="8dp"
-                            android:background="@android:drawable/btn_default" />
+                            android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
 
                     <GridLayout
@@ -341,6 +358,7 @@
                             android:text="Ranking Activity"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            android:fontFamily="@font/nunitoregular"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -353,9 +371,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Date"
+                            android:textAllCaps="false"
                             android:textSize="14sp"
                             android:padding="8dp"
-                            android:background="@android:drawable/btn_default" />
+                            android:textColor="#FFFFFF"
+                            android:fontFamily="@font/nunitoregular"
+                            android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -392,6 +413,7 @@
                             android:text="Ranking Feeling"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            android:fontFamily="@font/nunitoregular"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -406,7 +428,10 @@
                             android:text="Date"
                             android:textSize="14sp"
                             android:padding="8dp"
-                            android:background="@android:drawable/btn_default" />
+                            android:textColor="#FFFFFF"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/nunitoregular"
+                            android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView

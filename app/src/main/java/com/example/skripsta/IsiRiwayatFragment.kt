@@ -43,8 +43,12 @@ class IsiRiwayatFragment : Fragment() {
         }
 
         binding.btnEdit.setOnClickListener {
-                val action = IsiRiwayatFragmentDirections.actionIsiRiwayatFragmentToEditMoodFragment(moodEntry)
-                findNavController().navigate(action)
+            val action = IsiRiwayatFragmentDirections.actionIsiRiwayatFragmentToEditMoodFragment(moodEntry)
+            findNavController().navigate(action)
+        }
+
+        binding.backIsisHistory.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         return binding.root
@@ -67,12 +71,12 @@ class IsiRiwayatFragment : Fragment() {
 
     private fun convertMoodToImage(mood: Int): Int {
         return when (mood) {
-            1 -> R.drawable.mood1
-            2 -> R.drawable.mood2
-            3 -> R.drawable.mood3
-            4 -> R.drawable.mood4
-            5 -> R.drawable.mood5
-            else -> R.drawable.mood6
+            1 -> R.drawable.para1
+            2 -> R.drawable.para2
+            3 -> R.drawable.para3
+            4 -> R.drawable.para4
+            5 -> R.drawable.para5
+            else -> R.drawable.ic_breathe
         }
     }
 }

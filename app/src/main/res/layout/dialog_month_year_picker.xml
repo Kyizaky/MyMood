@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Pilih Bulan dan Tahun"
+        android:fontFamily="@font/nunitoregular"
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingBottom="16dp" />
@@ -28,6 +29,7 @@
             android:id="@+id/monthPicker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:layout_weight="1" />
 
         <!-- NumberPicker for Year -->
@@ -35,6 +37,7 @@
             android:id="@+id/yearPicker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:layout_weight="1" />
 
     </LinearLayout>
@@ -45,7 +48,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#FF6242"
+        android:background="@drawable/bg_btn"
+        android:fontFamily="@font/nunitoregular"
         android:textColor="@android:color/white"
         android:text="Setuju"
         android:textSize="16sp" />

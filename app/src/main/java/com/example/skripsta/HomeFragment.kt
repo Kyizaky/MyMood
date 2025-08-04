@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -35,8 +37,8 @@ class HomeFragment : Fragment() {
     private val dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
     private val moodDates = mutableSetOf<LocalDate>()
     private val monthsList = listOf(
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
     )
     private val moodCache = mutableMapOf<LocalDate, Int?>()
     private val loginIcons = listOf(
@@ -205,6 +207,19 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_riwayatFragment)
         }
 
+        // Tambahan padding top untuk header agar tidak bentrok dengan status bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.headerLayout) { view, insets ->
+            val topInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            val paddingTop = topInset + (15 * resources.displayMetrics.density).toInt() // 15dp + status bar
+            view.setPadding(
+                view.paddingLeft,
+                paddingTop,
+                view.paddingRight,
+                view.paddingBottom
+            )
+            insets
+        }
+
         return binding.root
     }
 
@@ -278,12 +293,11 @@ class HomeFragment : Fragment() {
 
     fun getMoodEmojiDrawable(mood: Int): Int {
         return when (mood) {
-            1 -> R.drawable.mood1
-            2 -> R.drawable.mood2
-            3 -> R.drawable.mood3
-            4 -> R.drawable.mood4
-            5 -> R.drawable.mood5
-            6 -> R.drawable.mood6
+            1 -> R.drawable.para1
+            2 -> R.drawable.para2
+            3 -> R.drawable.para3
+            4 -> R.drawable.para4
+            5 -> R.drawable.para5
             else -> R.drawable.ic_medi
         }
     }

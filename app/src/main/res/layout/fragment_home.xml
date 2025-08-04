@@ -8,7 +8,6 @@
     android:background="#D2DBE6"
     tools:context=".HomeFragment">
 
-    <!-- Header Layout -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -17,11 +16,11 @@
         android:elevation="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- App Name (Left) -->
         <TextView
             android:id="@+id/appNameText"
             android:layout_width="wrap_content"
@@ -32,18 +31,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <!-- Points Display (Center) -->
-        <TextView
-            android:id="@+id/pointsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Poin: 0"
-            android:fontFamily="@font/nunitoregular"
-            android:textColor="#000000"
-            android:textSize="16sp" />
-
-        <!-- Spacer to push Riwayat to the right -->
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -56,7 +43,6 @@
             android:src="@drawable/ic_riwayat" />
     </LinearLayout>
 
-    <!-- CardView untuk Kalender -->
     <androidx.cardview.widget.CardView
         android:id="@+id/calendarCardView"
         android:layout_width="match_parent"
@@ -98,6 +84,7 @@
                     android:gravity="center"
                     android:text="Year"
                     android:fontFamily="@font/nunitoregular"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -134,30 +121,59 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <!-- Icon + Text -->
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start|center_vertical"
-                android:orientation="horizontal">
+                android:padding="8dp">
 
                 <ImageView
+                    android:id="@+id/fireIcon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:src="@drawable/ic_fire"
                     android:contentDescription="Fire Icon"
-                    android:src="@drawable/ic_fire" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <TextView
                     android:id="@+id/streakText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:text="19"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/nunitoregular"
                     android:textColor="#000000"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/fireIcon"
+                    app:layout_constraintTop_toTopOf="@id/fireIcon"
+                    app:layout_constraintBottom_toBottomOf="@id/fireIcon"/>
+
+                <TextView
+                    android:id="@+id/pointsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="36dp"
+                    android:fontFamily="@font/nunitoregular"
+                    android:text="Poin: 0"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/chev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chevron_right"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"

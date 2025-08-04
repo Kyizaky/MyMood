@@ -16,6 +16,7 @@
         android:text="Klik lingkaran untuk memulai"
         android:textSize="20sp"
         android:textColor="#000"
+        android:fontFamily="@font/nunitoregular"
         android:layout_alignParentTop="true"
         android:layout_marginTop="80dp" />
 
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Breath"
+        android:fontFamily="@font/nunitoregular"
         android:textSize="24sp"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />

@@ -14,6 +14,7 @@
         android:id="@+id/feelingName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/nunitoregular"
         android:layout_weight="1"
         android:text="Feeling Name"
         android:paddingStart="8dp" />

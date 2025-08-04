@@ -67,8 +67,8 @@ class EditMoodFragment : Fragment() {
 
 
         val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
         // Event untuk menampilkan TimePickerDialog
         binding.btnClock.setOnClickListener {
@@ -125,7 +125,7 @@ class EditMoodFragment : Fragment() {
     private fun setupMoodButtons(view: View) {
         val moodButtons = listOf(
             R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
-            R.id.mood4 to 4, R.id.mood5 to 5, R.id.mood6 to 6
+            R.id.mood4 to 4, R.id.mood5 to 5
         )
 
         moodButtons.forEach { (id, _) ->
@@ -136,7 +136,7 @@ class EditMoodFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_activities)
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
@@ -180,19 +180,18 @@ class EditMoodFragment : Fragment() {
     private fun getSelectedMoodType(view: View): Int? {
         val moodButtons = listOf(
             R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
-            R.id.mood4 to 4, R.id.mood5 to 5, R.id.mood6 to 6
+            R.id.mood4 to 4, R.id.mood5 to 5
         )
         return moodButtons.firstOrNull { view.findViewById<ImageButton>(it.first).isSelected }?.second
     }
 
     private fun updateMoodSelection(button: ImageButton, allButtons: List<ImageButton>) {
         val moodDrawables = mapOf(
-            R.id.mood1 to Pair(R.drawable.mood1_nocolor, R.drawable.mood1),
-            R.id.mood2 to Pair(R.drawable.mood2_nocolor, R.drawable.mood2),
-            R.id.mood3 to Pair(R.drawable.mood3_nocolor, R.drawable.mood3),
-            R.id.mood4 to Pair(R.drawable.mood6_nocolor, R.drawable.mood6),
-            R.id.mood5 to Pair(R.drawable.mood4_nocolor, R.drawable.mood4),
-            R.id.mood6 to Pair(R.drawable.mood5_nocolor, R.drawable.mood5)
+            R.id.mood1 to Pair(R.drawable.para1_nocolor, R.drawable.para1),
+            R.id.mood2 to Pair(R.drawable.para2_nocolor, R.drawable.para2),
+            R.id.mood3 to Pair(R.drawable.para3_nocolor, R.drawable.para3),
+            R.id.mood4 to Pair(R.drawable.para4_nocolor, R.drawable.para4),
+            R.id.mood5 to Pair(R.drawable.para5_nocolor, R.drawable.para5)
         )
 
         // Jika tombol yang sama ditekan lagi, deselect
@@ -245,8 +244,9 @@ class EditMoodFragment : Fragment() {
 
             mMoodEntryViewModel.updateMoodEntry(updatedMood)
             Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
-            val action = EditMoodFragmentDirections.actionEditMoodFragmentToIsiRiwayatFragment(updatedMood)
-            findNavController().navigate(action)
+            val navController = findNavController()
+            navController.popBackStack()
+
         }
     }
 }

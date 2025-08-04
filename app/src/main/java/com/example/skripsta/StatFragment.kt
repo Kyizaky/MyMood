@@ -30,6 +30,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.core.graphics.toColorInt
 
 class StatFragment : Fragment() {
 
@@ -45,7 +46,7 @@ class StatFragment : Fragment() {
     private lateinit var btnDateFeeling: Button
     private lateinit var btnDateLineChart: Button
     private lateinit var btnDateCalendar: Button
-    private lateinit var monthSpinnerPie: Spinner
+    private lateinit var btnDatePieChart: Button
     private lateinit var pieChart: PieChart
     private lateinit var lineChartTrend: LineChart
 
@@ -66,9 +67,9 @@ class StatFragment : Fragment() {
     private var selectedYearPie: String = ""
     private var selectedYearCalendar: String = ""
 
-    private val months = listOf(
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    val months = listOf(
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
     )
 
     override fun onCreateView(
@@ -100,25 +101,30 @@ class StatFragment : Fragment() {
         containerStat = view.findViewById(R.id.container_stat)
         containerLegend = view.findViewById(R.id.container_legend)
 
+        btnDatePieChart = view.findViewById(R.id.btn_date_pie)
+
         pieChart = view.findViewById(R.id.moodPieChart)
         legendRecyclerView = view.findViewById(R.id.recycler_view_mood_legend)
         legendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        monthSpinnerPie = view.findViewById(R.id.spinner_month_pie)
 
         val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
         val currentYear = Calendar.getInstance().get(Calendar.YEAR).toString()
 
+        selectedMonthPie = months[currentMonth]
+        selectedYearPie = currentYear
+        btnDatePieChart.text = "${formatMonthName(selectedMonthPie)} $currentYear"
+
         selectedMonthActivity = months[currentMonth]
         selectedYearActivity = currentYear
-        btnDateActivity.text = "${months[currentMonth]}/$currentYear"
+        btnDateActivity.text = "${formatMonthName(selectedMonthActivity)} $currentYear"
 
         selectedMonthFeeling = months[currentMonth]
         selectedYearFeeling = currentYear
-        btnDateFeeling.text = "${months[currentMonth]}/$currentYear"
+        btnDateFeeling.text = "${formatMonthName(selectedMonthFeeling)} $currentYear"
 
         selectedMonthLineChart = months[currentMonth]
         selectedYearLineChart = currentYear
-        btnDateLineChart.text = "${months[currentMonth]}/$currentYear"
+        btnDateLineChart.text = "${formatMonthName(selectedMonthLineChart)} $currentYear"
 
         selectedMonthPie = months[currentMonth]
         selectedYearPie = currentYear
@@ -126,7 +132,7 @@ class StatFragment : Fragment() {
         btnDateCalendar.text = currentYear
 
         setupDateButtons()
-        setupSpinnerPie()
+        observeDataPie()
         observeDataRanking()
         observeDataFeelingRanking()
         observeDataLineChart()
@@ -134,31 +140,16 @@ class StatFragment : Fragment() {
         return view
     }
 
-    private fun setupSpinnerPie() {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        monthSpinnerPie.adapter = adapter
-
-        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
-        monthSpinnerPie.setSelection(currentMonth)
-        selectedMonthPie = months[currentMonth]
-
-        monthSpinnerPie.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedMonthPie = months[position]
-                observeDataPie()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+    private fun formatMonthName(month: String): String {
+        return month.lowercase(Locale.ENGLISH).replaceFirstChar { it.titlecase(Locale.US) }
     }
 
     private fun observeDataPie() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCount = mutableMapOf<Int, Int>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-            val monthFormat = SimpleDateFormat("MM", Locale("id"))
-            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
+            val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetMonth = "%02d".format(months.indexOf(selectedMonthPie) + 1)
             val targetYear = selectedYearPie
 
@@ -202,12 +193,11 @@ class StatFragment : Fragment() {
         }
 
         val colorMap = mapOf(
-            1 to Color.parseColor("#FF6242"), // Marah
-            2 to Color.parseColor("#82DF45"),
-            3 to Color.parseColor("#D19DFF"), // Takut
-            4 to Color.parseColor("#B0DDFF"), // Sedih
-            5 to Color.parseColor("#FFEE56"), // Bahagia
-            6 to Color.parseColor("#FFF1D8")  // Netral
+            1 to Color.parseColor("#cf4e3b"), // Marah
+            2 to Color.parseColor("#f57e53"),
+            3 to Color.parseColor("#f5bc6f"), // Takut
+            4 to Color.parseColor("#d4d039"), // Sedih
+            5 to Color.parseColor("#8dc363") // Netral
         )
 
         val colors = entries.map { entry ->
@@ -240,7 +230,11 @@ class StatFragment : Fragment() {
     }
 
     private fun setupDateButtons() {
-        val years = (2020..2025).map { it.toString() }
+        val years = (2025..2030).map { it.toString() }
+
+        btnDatePieChart.setOnClickListener {
+            showPickerDialog(months, years, section = "pie")
+        }
 
         btnDateActivity.setOnClickListener {
             showPickerDialog(months, years, section = "activity")
@@ -269,7 +263,6 @@ class StatFragment : Fragment() {
         val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
         val btnConfirm = view.findViewById<Button>(R.id.btn_confirm)
 
-        // Setup NumberPickers
         monthPicker.apply {
             wrapSelectorWheel = false
             minValue = 0
@@ -279,6 +272,7 @@ class StatFragment : Fragment() {
                 "activity" -> months.indexOf(selectedMonthActivity).coerceAtLeast(0)
                 "feeling" -> months.indexOf(selectedMonthFeeling).coerceAtLeast(0)
                 "LineChart" -> months.indexOf(selectedMonthLineChart).coerceAtLeast(0)
+                "pie" -> months.indexOf(selectedMonthPie).coerceAtLeast(0)
                 else -> 0
             }
         }
@@ -292,6 +286,7 @@ class StatFragment : Fragment() {
                 "activity" -> years.indexOf(selectedYearActivity).coerceAtLeast(0)
                 "feeling" -> years.indexOf(selectedYearFeeling).coerceAtLeast(0)
                 "LineChart" -> years.indexOf(selectedYearLineChart).coerceAtLeast(0)
+                "pie" -> years.indexOf(selectedYearPie).coerceAtLeast(0)
                 else -> 0
             }
         }
@@ -302,27 +297,38 @@ class StatFragment : Fragment() {
 
         btnConfirm.setOnClickListener {
             when (section) {
+
+                "pie" -> {
+                    selectedMonthPie = months[monthPicker.value]
+                    selectedYearPie = years[yearPicker.value]
+                    btnDatePieChart.text = "${formatMonthName(selectedMonthPie)} ${selectedYearPie}"
+                    observeDataPie()
+                }
+
                 "activity" -> {
                     selectedMonthActivity = months[monthPicker.value]
                     selectedYearActivity = years[yearPicker.value]
-                    btnDateActivity.text = "${selectedMonthActivity}/${selectedYearActivity}"
+                    btnDateActivity.text = "${formatMonthName(selectedMonthActivity)} ${selectedYearActivity}"
                     observeDataRanking()
                 }
+
                 "feeling" -> {
                     selectedMonthFeeling = months[monthPicker.value]
                     selectedYearFeeling = years[yearPicker.value]
-                    btnDateFeeling.text = "${selectedMonthFeeling}/${selectedYearFeeling}"
+                    btnDateFeeling.text = "${formatMonthName(selectedMonthFeeling)} ${selectedYearFeeling}"
                     observeDataFeelingRanking()
                 }
+
                 "LineChart" -> {
                     selectedMonthLineChart = months[monthPicker.value]
                     selectedYearLineChart = years[yearPicker.value]
-                    btnDateLineChart.text = "${selectedMonthLineChart}/${selectedYearLineChart}"
+                    btnDateLineChart.text = "${formatMonthName(selectedMonthLineChart)} ${selectedYearLineChart}"
                     observeDataLineChart()
                 }
             }
             dialog.dismiss()
         }
+
 
         dialog.show()
     }
@@ -362,9 +368,9 @@ class StatFragment : Fragment() {
     private fun observeDataRanking() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val activityCount = mutableMapOf<String, Pair<Int, Int>>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-            val monthFormat = SimpleDateFormat("MM", Locale("id"))
-            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
+            val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetMonth = "%02d".format(months.indexOf(selectedMonthActivity) + 1)
             val targetYear = selectedYearActivity
 
@@ -408,9 +414,9 @@ class StatFragment : Fragment() {
     private fun observeDataFeelingRanking() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val feelingCount = mutableMapOf<String, Pair<Int, Int>>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-            val monthFormat = SimpleDateFormat("MM", Locale("id"))
-            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
+            val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetMonth = "%02d".format(months.indexOf(selectedMonthFeeling) + 1)
             val targetYear = selectedYearFeeling
 
@@ -452,10 +458,10 @@ class StatFragment : Fragment() {
 
     private fun observeDataLineChart() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-            val dayFormat = SimpleDateFormat("dd", Locale("id"))
-            val monthFormat = SimpleDateFormat("MM", Locale("id"))
-            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val dayFormat = SimpleDateFormat("dd", Locale.ENGLISH)
+            val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
+            val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
 
             val targetMonth = "%02d".format(months.indexOf(selectedMonthLineChart) + 1)
             val targetYear = selectedYearLineChart
@@ -618,8 +624,8 @@ class StatFragment : Fragment() {
     private fun observeMoodData() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCountPerDay = mutableMapOf<String, Int>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale("id"))
-            val yearFormat = SimpleDateFormat("yyyy", Locale("id"))
+            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetYear = selectedYearCalendar
 
             Log.d("StatFragment", "Calendar Target Year: $targetYear")
@@ -635,7 +641,7 @@ class StatFragment : Fragment() {
                 if (date != null) {
                     val formattedYear = yearFormat.format(date)
                     if (formattedYear == targetYear) {
-                        val key = SimpleDateFormat("dd/MM/yyyy", Locale("id")).format(date)
+                        val key = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(date)
                         moodCountPerDay[key] = user.mood
                     }
                 }
@@ -759,12 +765,11 @@ class StatFragment : Fragment() {
 
     private fun getMoodColor(mood: Int): Int {
         return when (mood) {
-            1 -> Color.parseColor("#FF6242") // Marah
-            2 -> Color.parseColor("#82DF45") // Jijik
-            3 -> Color.parseColor("#D19DFF") // Takut
-            4 -> Color.parseColor("#B0DDFF") // Sedih
-            5 -> Color.parseColor("#FFEE56") // Bahagia
-            6 -> Color.parseColor("#FFF1D8") // Netral
+            1 -> "#cf4e3b".toColorInt()
+            2 -> "#f57e53".toColorInt()
+            3 -> "#f5bc6f".toColorInt()
+            4 -> "#d4d039".toColorInt()
+            5 -> "#8dc363".toColorInt()
             else -> Color.TRANSPARENT
         }
     }

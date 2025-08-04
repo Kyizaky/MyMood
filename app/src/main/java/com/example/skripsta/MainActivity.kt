@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                 intArrayOf(-android.R.attr.state_checked)
             ),
             intArrayOf(
-                ContextCompat.getColor(this, R.color.black),
+                ContextCompat.getColor(this, R.color.white),
                 ContextCompat.getColor(this, R.color.unselected_icon_color)
             )
         )
@@ -158,12 +159,7 @@ class MainActivity : AppCompatActivity() {
                     Feeling(name = "Disgust"),
                     Feeling(name = "Scary"),
                     Feeling(name = "Sad"),
-                    Feeling(name = "Happy"),
-                    Feeling(name = "Neutral"),
-                    Feeling(name = "Excited"),
-                    Feeling(name = "Anxious"),
-                    Feeling(name = "Calm"),
-                    Feeling(name = "Surprised")
+                    Feeling(name = "Happy")
                 )
                 feelingViewModel.addAllFeelings(initialFeelings)
                 Log.d("MainActivity", "Inserted initial feelings")

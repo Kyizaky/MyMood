@@ -7,18 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
+import com.example.skripsta.utils.MoodUtils
 
 class MoodLegendAdapter(private val moodData: List<Pair<Int, String>>) :
     RecyclerView.Adapter<MoodLegendAdapter.ViewHolder>() {
-
-    private val moodIcons = mapOf(
-        1 to R.drawable.mood1,   // Ganti dengan icon sesuai
-        2 to R.drawable.mood2, // Ganti dengan icon sesuai
-        3 to R.drawable.mood3,    // Ganti dengan icon sesuai
-        4 to R.drawable.mood4,     // Ganti dengan icon sesuai
-        5 to R.drawable.mood5,   // Ganti dengan icon sesuai
-        6 to R.drawable.mood6  // Ganti dengan icon sesuai
-    )
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val moodIcon: ImageView = view.findViewById(R.id.mood_icon)
@@ -33,9 +25,9 @@ class MoodLegendAdapter(private val moodData: List<Pair<Int, String>>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val (moodType, percentage) = moodData[position]
-        holder.moodIcon.setImageResource(moodIcons[moodType] ?: R.drawable.ic_medi)
+        holder.moodIcon.setImageResource(MoodUtils.getMoodIcon(moodType))
         holder.moodPercentage.text = percentage
     }
 
-    override fun getItemCount() = moodData.size
+    override fun getItemCount(): Int = moodData.size
 }

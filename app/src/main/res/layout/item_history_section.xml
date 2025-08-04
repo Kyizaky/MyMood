@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:fontFamily="@font/nunitoregular"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#000000" />

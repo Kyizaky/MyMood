@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Add Reminder"
         android:textSize="20sp"
-        android:fontFamily="@font/nunitoextrabold"
+        android:fontFamily="@font/nunitoregular"
         android:textColor="#000000"
         android:gravity="center"
         android:layout_marginBottom="16dp" />
@@ -34,6 +34,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/bg_btn"
+            android:layout_marginHorizontal="8dp"
+            android:fontFamily="@font/nunitoregular"
+            android:textColor="#FFFFFF"
             android:text="Cancel" />
 
         <Button
@@ -41,6 +45,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Save" />
+            android:background="@drawable/bg_btn"
+            android:layout_marginHorizontal="8dp"
+            android:fontFamily="@font/nunitoregular"
+            android:text="Save"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 </LinearLayout>
