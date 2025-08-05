@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var feelingViewModel: FeelingViewModel
     private lateinit var activityViewModel: ActivityViewModel
+    private lateinit var iconViewModel: IconViewModel
     private val pinLockViewModel = PinLockViewModel()
 
     private val requestNotificationPermissionLauncher =
@@ -51,16 +52,16 @@ class MainActivity : AppCompatActivity() {
         feelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
         activityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        iconViewModel = ViewModelProvider(this).get(IconViewModel::class.java)
 
         // Ensure a valid userId is set
         val userId = sharedPreferences.getInt("current_user_id", -1)
         if (userId == -1) {
-            // Set a default userId (e.g., 1) for the first user
             sharedPreferences.edit().putInt("current_user_id", 1).apply()
             Log.d("MainActivity", "Set default userId to 1")
         }
 
-        // Setup navigasi
+        // Setup navigation
         val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragmentContainer) as NavHostFragment
         navController = navHost.navController
         binding.bottomNavigationView.setupWithNavController(navController)
@@ -95,7 +96,6 @@ class MainActivity : AppCompatActivity() {
             R.id.pengaturanFragment,
             R.id.kegiatanFragment
         )
-        // Check if PIN is set and navigate to PinLockFragment if needed
         if (pinLockViewModel.hasPin(this) && navController.currentDestination?.id != R.id.pinLockFragment) {
             navController.navigate(R.id.action_global_pinLockFragment)
         }
@@ -104,12 +104,15 @@ class MainActivity : AppCompatActivity() {
                 if (destination.id in visibleFragments) View.VISIBLE else View.GONE
         }
 
-        // Inisialisasi data berdasarkan isi database
-        initializeFeelingData()
-        initializeActivityData()
-        checkDailyLogin()
+        // Initialize data with a slight delay to ensure DB readiness
+        lifecycleScope.launch {
+            initializeFeelingData()
+            initializeIconData()
+            initializeActivityData()
+            checkDailyLogin()
+        }
 
-        // Minta izin notifikasi untuk Android 13+
+        // Request notification permission for Android 13+
         val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
         if (isFirstLaunch && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -132,7 +135,7 @@ class MainActivity : AppCompatActivity() {
         val userId = sharedPreferences.getInt("current_user_id", 1)
         lifecycleScope.launch {
             val user = userViewModel.getUserById(userId)
-           if (user == null) {
+            if (user == null) {
                 val newUser = User(
                     id = userId,
                     points = 0,
@@ -162,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                     Feeling(name = "Happy")
                 )
                 feelingViewModel.addAllFeelings(initialFeelings)
-                Log.d("MainActivity", "Inserted initial feelings")
+                Log.d("MainActivity", "Inserted initial feelings: ${initialFeelings.map { it.name }}")
 
                 val defaultSelectedNames = initialFeelings.take(5).map { it.name }.toSet()
                 sharedPreferences.edit()
@@ -174,20 +177,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initializeIconData() {
+        iconViewModel.allIcons.observe(this) { icons ->
+            if (icons.isNullOrEmpty()) {
+                val initialIcons = listOf(
+                    Icon(colorRes = R.drawable.activity1, noColorRes = R.drawable.activity1_nocolor),
+                    Icon(colorRes = R.drawable.activity2, noColorRes = R.drawable.activity2_nocolor),
+                    Icon(colorRes = R.drawable.activity3, noColorRes = R.drawable.activity3_nocolor),
+                    Icon(colorRes = R.drawable.activity4, noColorRes = R.drawable.activity4_nocolor),
+                    Icon(colorRes = R.drawable.activity5, noColorRes = R.drawable.activity5_nocolor)
+                )
+                iconViewModel.addAllIcons(initialIcons)
+                Log.d("MainActivity", "Inserted initial icons: ${initialIcons.map { it.colorRes }}")
+            } else {
+                Log.d("MainActivity", "Icons already initialized: ${icons.map { it.colorRes }}")
+            }
+        }
+    }
+
     private fun initializeActivityData() {
         activityViewModel.allActivities.observe(this) { activities ->
             if (activities.isNullOrEmpty()) {
                 val initialActivities = listOf(
-                    Activity(name = "Study", iconRes = R.drawable.activity1, selectedIconRes = R.drawable.activity1_nocolor),
-                    Activity(name = "Shop", iconRes = R.drawable.activity2, selectedIconRes = R.drawable.activity2_nocolor),
-                    Activity(name = "Work", iconRes = R.drawable.activity3, selectedIconRes = R.drawable.activity3_nocolor),
-                    Activity(name = "Vacation", iconRes = R.drawable.activity4, selectedIconRes = R.drawable.activity4_nocolor),
-                    Activity(name = "Eat", iconRes = R.drawable.activity5, selectedIconRes = R.drawable.activity5_nocolor),
-                    Activity(name = "Gym", iconRes = R.drawable.activity6, selectedIconRes = R.drawable.activity6_nocolor),
-                    Activity(name = "Swim", iconRes = R.drawable.activity7, selectedIconRes = R.drawable.activity7_nocolor)
+                    Activity(name = "Study", iconRes = R.drawable.activity1_nocolor, selectedIconRes = R.drawable.activity1),
+                    Activity(name = "Shop", iconRes = R.drawable.activity2_nocolor, selectedIconRes = R.drawable.activity2),
+                    Activity(name = "Work", iconRes = R.drawable.activity3_nocolor, selectedIconRes = R.drawable.activity3),
+                    Activity(name = "Vacation", iconRes = R.drawable.activity4_nocolor, selectedIconRes = R.drawable.activity4),
+                    Activity(name = "Eat", iconRes = R.drawable.activity5_nocolor, selectedIconRes = R.drawable.activity5),
+                    Activity(name = "Gym", iconRes = R.drawable.activity6_nocolor, selectedIconRes = R.drawable.activity6),
+                    Activity(name = "Swim", iconRes = R.drawable.activity7_nocolor, selectedIconRes = R.drawable.activity7)
                 )
                 activityViewModel.addAllActivities(initialActivities)
-                Log.d("MainActivity", "Inserted initial activities")
+                Log.d("MainActivity", "Inserted initial activities: ${initialActivities.map { it.name }}")
 
                 val defaultSelectedNames = initialActivities.take(5).map { it.name }.toSet()
                 sharedPreferences.edit()

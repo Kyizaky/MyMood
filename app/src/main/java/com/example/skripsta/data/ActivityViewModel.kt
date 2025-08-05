@@ -20,4 +20,26 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
     fun addAllActivities(activities: List<Activity>) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertAllActivities(activities)
     }
+
+    fun addActivity(activity: Activity) {
+        viewModelScope.launch {
+            repository.insert(activity)
+        }
+    }
+
+    fun updateActivity(activity: Activity) {
+        viewModelScope.launch {
+            repository.update(activity)
+        }
+    }
+
+    fun deleteActivity(activity: Activity) {
+        viewModelScope.launch {
+            repository.delete(activity)
+        }
+    }
+
+    suspend fun getActivityCount(): Int {
+        return repository.getActivityCount()
+    }
 }

@@ -84,6 +84,9 @@
         <action
             android:id="@+id/action_pengaturanFragment_to_feelingFragment"
             app:destination="@id/feelingFragment" />
+        <action
+            android:id="@+id/action_pengaturanFragment_to_activityFragment"
+            app:destination="@id/activityFragment" />
     </fragment>
 
     <fragment
@@ -271,6 +274,53 @@
         <action
             android:id="@+id/action_feelingFragment_to_fragmentAddFeeling"
             app:destination="@id/fragmentAddFeeling" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/activityFragment"
+        android:name="com.example.skripsta.ActivityFragment"
+        android:label="ActivityFragment">
+        <action
+            android:id="@+id/action_activityFragment_to_tambahFragment"
+            app:destination="@id/tambahFragment"
+            app:popUpTo="@id/tambahFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_activityFragment_to_fragmentAddActivity"
+            app:destination="@id/fragmentAddActivity" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentAddActivity"
+        android:name="com.example.skripsta.FragmentAddActivity"
+        android:label="FragmentAddActivity">
+        <argument
+            android:name="activityId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="activityName"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="iconRes"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="selectedIconRes"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_fragmentAddActivity_to_activityFragment"
+            app:destination="@id/activityFragment"
+            app:popUpTo="@id/activityFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_fragmentAddActivity_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment"
+            app:popUpTo="@id/pengaturanFragment"
+            app:popUpToInclusive="false" />
+
     </fragment>
 
 </navigation>
