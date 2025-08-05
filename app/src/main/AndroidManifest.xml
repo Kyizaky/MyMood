@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
     <application
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkripsTa"
         tools:targetApi="31">
+        <activity
+            android:name=".FragmentAddFeeling"
+            android:exported="false" />
 
         <receiver
             android:name=".ReminderReceiver"

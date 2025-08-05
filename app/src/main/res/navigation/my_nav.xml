@@ -78,6 +78,12 @@
         <action
             android:id="@+id/action_pengaturanFragment_to_pinLockFragment"
             app:destination="@id/pinLockFragment" />
+        <action
+            android:id="@+id/action_pengaturanFragment_to_fragmentAddFeeling"
+            app:destination="@id/fragmentAddFeeling" />
+        <action
+            android:id="@+id/action_pengaturanFragment_to_feelingFragment"
+            app:destination="@id/feelingFragment" />
     </fragment>
 
     <fragment
@@ -151,6 +157,9 @@
         <action
             android:id="@+id/action_validationFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_validationFragment_to_kegiatanFragment"
+            app:destination="@id/kegiatanFragment" />
     </fragment>
 
     <fragment
@@ -230,6 +239,38 @@
         <action
             android:id="@+id/action_groundMeditationFragment_to_kegiatanFragment"
             app:destination="@id/kegiatanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentAddFeeling"
+        android:name="com.example.skripsta.FragmentAddFeeling"
+        android:label="FragmentAddFeeling" >
+        <argument
+            android:name="feelingId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="feelingName"
+            app:argType="string"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/action_fragmentAddFeeling_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment" />
+        <action
+            android:id="@+id/action_fragmentAddFeeling_to_feelingFragment"
+            app:destination="@id/feelingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/feelingFragment"
+        android:name="com.example.skripsta.FeelingFragment"
+        android:label="FeelingFragment" >
+        <action
+            android:id="@+id/action_feelingFragment_to_tambahFragment"
+            app:destination="@id/tambahFragment"
+            app:popUpTo="@id/tambahFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_feelingFragment_to_fragmentAddFeeling"
+            app:destination="@id/fragmentAddFeeling" />
     </fragment>
 
 </navigation>

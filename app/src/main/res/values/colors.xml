@@ -22,6 +22,8 @@
     <color name="mood_4">#B0DDFF</color>
     <color name="mood_5">#FFEE56</color>
 
+    <color name="blue">#007BFF</color>
+
     <color name="selected_icon_color">#FF0000</color> <!-- Merah untuk ikon saat dipilih -->
     <color name="unselected_icon_color">#666666</color> <!-- Abu-abu untuk ikon saat tidak dipilih -->
 

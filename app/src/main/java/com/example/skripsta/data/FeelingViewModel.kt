@@ -21,4 +21,26 @@ class FeelingViewModel(application: Application) : AndroidViewModel(application)
     fun addAllFeelings(feelings: List<Feeling>) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertAllFeelings(feelings)
     }
+
+    fun addFeeling(feeling: Feeling) {
+        viewModelScope.launch {
+            repository.insert(feeling)
+        }
+    }
+
+    fun updateFeeling(feeling: Feeling) {
+        viewModelScope.launch {
+            repository.update(feeling)
+        }
+    }
+
+    fun deleteFeeling(feeling: Feeling) {
+        viewModelScope.launch {
+            repository.delete(feeling)
+        }
+    }
+
+    suspend fun getFeelingCount(): Int {
+        return repository.getFeelingCount()
+    }
 }
