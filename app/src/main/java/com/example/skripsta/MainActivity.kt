@@ -199,13 +199,13 @@ class MainActivity : AppCompatActivity() {
         activityViewModel.allActivities.observe(this) { activities ->
             if (activities.isNullOrEmpty()) {
                 val initialActivities = listOf(
-                    Activity(name = "Study", iconRes = R.drawable.activity1_nocolor, selectedIconRes = R.drawable.activity1),
-                    Activity(name = "Shop", iconRes = R.drawable.activity2_nocolor, selectedIconRes = R.drawable.activity2),
-                    Activity(name = "Work", iconRes = R.drawable.activity3_nocolor, selectedIconRes = R.drawable.activity3),
-                    Activity(name = "Vacation", iconRes = R.drawable.activity4_nocolor, selectedIconRes = R.drawable.activity4),
-                    Activity(name = "Eat", iconRes = R.drawable.activity5_nocolor, selectedIconRes = R.drawable.activity5),
-                    Activity(name = "Gym", iconRes = R.drawable.activity6_nocolor, selectedIconRes = R.drawable.activity6),
-                    Activity(name = "Swim", iconRes = R.drawable.activity7_nocolor, selectedIconRes = R.drawable.activity7)
+                    Activity(name = "Study", iconRes = R.drawable.activity1, selectedIconRes = R.drawable.activity1_nocolor),
+                    Activity(name = "Shop", iconRes = R.drawable.activity2, selectedIconRes = R.drawable.activity2_nocolor),
+                    Activity(name = "Work", iconRes = R.drawable.activity3, selectedIconRes = R.drawable.activity3_nocolor),
+                    Activity(name = "Vacation", iconRes = R.drawable.activity4, selectedIconRes = R.drawable.activity4_nocolor),
+                    Activity(name = "Eat", iconRes = R.drawable.activity5, selectedIconRes = R.drawable.activity5_nocolor),
+                    Activity(name = "Gym", iconRes = R.drawable.activity6, selectedIconRes = R.drawable.activity6_nocolor),
+                    Activity(name = "Swim", iconRes = R.drawable.activity7, selectedIconRes = R.drawable.activity7_nocolor)
                 )
                 activityViewModel.addAllActivities(initialActivities)
                 Log.d("MainActivity", "Inserted initial activities: ${initialActivities.map { it.name }}")

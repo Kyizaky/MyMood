@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="48dp"
-    android:layout_height="48dp"
-    android:padding="4dp">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <!-- Lingkaran untuk menandai hari ini -->
-    <View
-        android:id="@+id/todayBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_today_circle"
-        android:visibility="gone" />
-
-    <!-- Teks tanggal -->
-    <TextView
-        android:id="@+id/calendarDayText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
-
-    <!-- Emoji -->
     <ImageView
         android:id="@+id/emojiIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="Mood Emoji"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/circle_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/calendarDayText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_margin="2dp"
-        android:contentDescription="Mood Emoji" />
-
-</FrameLayout>
+        android:gravity="center"
+        android:text="holaa"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        android:fontFamily="@font/nunitoregular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emojiIcon" />
+</androidx.constraintlayout.widget.ConstraintLayout>

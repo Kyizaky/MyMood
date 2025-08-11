@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
         val calendarView = binding.calendarView
         calendarView.setup(
             startMonth = YearMonth.of(currentYear, 1), // Start from January of current year
-            endMonth = YearMonth.of(currentYear + 5, 12), // End at December 10 years later
+            endMonth = YearMonth.of(currentYear + 5, 12), // End at December 5 years later
             firstDayOfWeek = firstDayOfWeek
         )
         calendarView.scrollToMonth(currentMonth)
@@ -103,6 +103,8 @@ class HomeFragment : Fragment() {
                     val maxCount = moodCountMap.values.maxOrNull()
                     val mostFrequentMoods = moodCountMap.filterValues { it == maxCount }.keys
                     moodCache[date] = entries.lastOrNull { it.mood in mostFrequentMoods }?.mood
+                } else {
+                    moodCache[date] = null
                 }
             }
         }
@@ -134,35 +136,33 @@ class HomeFragment : Fragment() {
 
                 val dayText = container.textView
                 val emojiIcon = container.emojiIcon
-                val todayBg = container.todayBackground
 
                 if (data.position == DayPosition.MonthDate) {
                     val date = data.date
-
-                    // Lingkaran untuk hari ini
-                    todayBg.visibility = if (date == LocalDate.now()) View.VISIBLE else View.GONE
 
                     // Ambil mood dari cache
                     val mood = moodCache[date]
                     if (mood != null) {
                         emojiIcon.visibility = View.VISIBLE
                         emojiIcon.setImageResource(getMoodEmojiDrawable(mood))
-                        dayText.text = ""
-                    } else {
-                        emojiIcon.visibility = View.GONE
                         dayText.text = date.dayOfMonth.toString()
+                    } else {
+                        emojiIcon.visibility = View.VISIBLE
+                        emojiIcon.setImageResource(R.drawable.circle_gray)
+                        dayText.text = date.dayOfMonth.toString() // Tampilkan tanggal jika tidak ada emoji
                     }
 
-                    dayText.setOnClickListener {
+                    // Listener untuk klik pada hari
+                    container.view.setOnClickListener {
                         val selectedDate = date.format(dateFormatter)
                         val action = HomeFragmentDirections.actionHomeFragmentToRiwayatTanggalFragment(selectedDate)
                         findNavController().navigate(action)
                     }
                 } else {
+                    // Hari di luar bulan (misalnya, padding hari dari bulan sebelumnya/berikutnya)
                     dayText.text = ""
                     emojiIcon.visibility = View.GONE
-                    todayBg.visibility = View.GONE
-                    dayText.setOnClickListener(null)
+                    container.view.setOnClickListener(null)
                 }
             }
         }
@@ -228,9 +228,9 @@ class HomeFragment : Fragment() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_month_year_picker, null)
         dialog.setContentView(dialogView)
 
-        // Setup year range: from current year (app download year) to 10 years in the future
+        // Setup year range: from current year to 5 years in the future
         val currentYear = LocalDate.now().year
-        val yearsList = (currentYear..currentYear + 10).map { it.toString() }
+        val yearsList = (currentYear..currentYear + 5).map { it.toString() }
 
         // Setup NumberPicker untuk bulan
         val monthPicker = dialogView.findViewById<NumberPicker>(R.id.monthPicker)
@@ -281,13 +281,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-
-
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         val textView: TextView = view.findViewById(R.id.calendarDayText)
         val emojiIcon: ImageView = view.findViewById(R.id.emojiIcon)
-        val todayBackground: View = view.findViewById(R.id.todayBackground)
         lateinit var day: CalendarDay
     }
 

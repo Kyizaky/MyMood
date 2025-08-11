@@ -96,11 +96,93 @@
                     android:src="@drawable/chevron_right" />
             </LinearLayout>
 
+            <!-- Week Header -->
+            <LinearLayout
+                android:id="@+id/weekHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Sun"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Mon"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Tue"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Wed"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Thu"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Fri"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Sat"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
             <com.kizitonwose.calendar.view.CalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cv_dayViewResource="@layout/calendar_day_layout" />
+                android:padding="8dp"
+                app:cv_dayViewResource="@layout/calendar_day_layout"
+                app:cv_daySize="seventhWidth"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -124,12 +206,12 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:padding="2dp">
 
                 <ImageView
                     android:id="@+id/fireIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/ic_fire"
                     android:contentDescription="Fire Icon"
                     app:layout_constraintStart_toStartOf="parent"
@@ -140,15 +222,16 @@
                     android:id="@+id/streakText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="19"
-                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/nunitoregular"
+                    android:text="19"
                     android:textColor="#000000"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
+                    android:layout_marginStart="2dp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/fireIcon"
                     app:layout_constraintStart_toEndOf="@id/fireIcon"
                     app:layout_constraintTop_toTopOf="@id/fireIcon"
-                    app:layout_constraintBottom_toBottomOf="@id/fireIcon"/>
+                    app:layout_constraintVertical_bias="0.736" />
 
                 <TextView
                     android:id="@+id/pointsText"
@@ -159,6 +242,7 @@
                     android:text="Poin: 0"
                     android:textColor="#000000"
                     android:textSize="16sp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -189,7 +273,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="2dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 

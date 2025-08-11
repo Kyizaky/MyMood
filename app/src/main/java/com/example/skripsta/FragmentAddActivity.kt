@@ -142,8 +142,8 @@ class FragmentAddActivity : Fragment() {
         val activity = Activity(
             id = if (args.activityId != -1) args.activityId else 0,
             name = activityName,
-            iconRes = selectedIcon!!.noColorRes,
-            selectedIconRes = selectedIcon!!.colorRes
+            iconRes = selectedIcon!!.colorRes,
+            selectedIconRes = selectedIcon!!.noColorRes
         )
         if (args.activityId != -1) {
             mActivityViewModel.updateActivity(activity)
@@ -160,7 +160,7 @@ class FragmentAddActivity : Fragment() {
             val view = super.getView(position, convertView, parent) as TextView
             val icon = icons[position]
             view.text = ""
-            view.setCompoundDrawablesWithIntrinsicBounds(icon.noColorRes, 0, 0, 0)
+            view.setCompoundDrawablesWithIntrinsicBounds(icon.colorRes, 0, 0, 0)
             view.compoundDrawablePadding = 8
             return view
         }
@@ -169,7 +169,7 @@ class FragmentAddActivity : Fragment() {
             val view = super.getDropDownView(position, convertView, parent) as TextView
             val icon = icons[position]
             view.text = "Icon ${position + 1}"
-            view.setCompoundDrawablesWithIntrinsicBounds(icon.noColorRes, 0, icon.colorRes, 0)
+            view.setCompoundDrawablesWithIntrinsicBounds(icon.colorRes, 0, 0, 0)
             view.compoundDrawablePadding = 8
             return view
         }
