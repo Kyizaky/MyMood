@@ -72,8 +72,8 @@ class MainActivity : AppCompatActivity() {
                 intArrayOf(-android.R.attr.state_checked)
             ),
             intArrayOf(
-                ContextCompat.getColor(this, android.R.color.transparent),
-                ContextCompat.getColor(this, R.color.black)
+                ContextCompat.getColor(this, R.color.vista),
+                ContextCompat.getColor(this, R.color.lightGray)
             )
         )
         binding.bottomNavigationView.itemTextColor = textColorStateList
@@ -84,8 +84,8 @@ class MainActivity : AppCompatActivity() {
                 intArrayOf(-android.R.attr.state_checked)
             ),
             intArrayOf(
-                ContextCompat.getColor(this, R.color.white),
-                ContextCompat.getColor(this, R.color.unselected_icon_color)
+                ContextCompat.getColor(this, R.color.vista),
+                ContextCompat.getColor(this, R.color.lightGray)
             )
         )
         binding.bottomNavigationView.itemIconTintList = iconColorStateList

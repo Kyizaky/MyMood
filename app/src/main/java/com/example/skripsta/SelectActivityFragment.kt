@@ -39,7 +39,6 @@ class SelectActivityFragment : Fragment() {
         sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         activityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
 
-        // Load activities from database
         activityViewModel.allActivities.observe(viewLifecycleOwner) { activitiesList ->
             activities.clear()
             activities.addAll(activitiesList)
@@ -55,6 +54,16 @@ class SelectActivityFragment : Fragment() {
             saveSelectedActivities(selectedNames)
             findNavController().popBackStack()
         }
+
+        binding.fabActivity.setOnClickListener {
+            val action = SelectActivityFragmentDirections.actionSelectActivityFragmentToActivityFragment()
+            findNavController().navigate(action)
+        }
+
+        binding.cancelButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
     }
 
     private fun setupRecyclerView() {

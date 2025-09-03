@@ -120,7 +120,6 @@ class FragmentAddActivity : Fragment() {
             return
         }
 
-        // Check activity count for add operation
         if (args.activityId == -1) {
             val activityCount = runBlocking { mActivityViewModel.getActivityCount() }
             if (activityCount >= 10) {
@@ -129,7 +128,6 @@ class FragmentAddActivity : Fragment() {
             }
         }
 
-        // Update SharedPreferences if editing and name changes
         if (args.activityId != -1 && args.activityName != activityName) {
             val selectedNames = sharedPreferences.getStringSet("selected_activity_names", emptySet())?.toMutableSet() ?: mutableSetOf()
             if (args.activityName in selectedNames) {

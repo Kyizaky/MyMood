@@ -29,16 +29,6 @@ class PengaturanFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        binding.btnAddFeeling.setOnClickListener {
-            val action = PengaturanFragmentDirections.actionPengaturanFragmentToFeelingFragment()
-            findNavController().navigate(action)
-        }
-
-        binding.btnAddActivities.setOnClickListener {
-            val action = PengaturanFragmentDirections.actionPengaturanFragmentToActivityFragment()
-            findNavController().navigate(action)
-        }
-
         return binding.root
     }
 

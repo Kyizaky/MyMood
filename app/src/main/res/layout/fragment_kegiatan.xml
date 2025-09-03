@@ -18,8 +18,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Stress Realief"
+                android:fontFamily="@font/nunitobold"
                 android:textSize="22sp"
-                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:layout_gravity="start"
                 android:layout_marginBottom="16dp" />
 
@@ -35,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="8dp"
                     android:gravity="center_vertical">
 
                     <!-- Left Icon -->
@@ -52,13 +53,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="12dp">
+                        android:paddingStart="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Meditation"
                             android:textSize="18sp"
+                            android:fontFamily="@font/nunitosemibold"
                             android:textStyle="bold"
                             android:textColor="#000000" />
 
@@ -92,7 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="8dp"
                     android:gravity="center_vertical">
 
                     <!-- Left Icon -->
@@ -109,12 +111,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="12dp">
+                        android:paddingStart="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Take a Deep Breath"
+                            android:fontFamily="@font/nunitosemibold"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />
@@ -150,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="8dp"
                     android:gravity="center_vertical">
 
                     <!-- Left Icon -->
@@ -167,12 +170,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="12dp">
+                        android:paddingStart="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Ground yourself"
+                            android:fontFamily="@font/nunitosemibold"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />
@@ -208,7 +212,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="8dp"
                     android:gravity="center_vertical">
 
                     <!-- Left Icon -->
@@ -225,12 +229,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:paddingStart="12dp">
+                        android:paddingStart="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Observe Fist"
+                            android:fontFamily="@font/nunitosemibold"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />

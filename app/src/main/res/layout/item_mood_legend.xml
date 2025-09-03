@@ -6,7 +6,6 @@
     android:gravity="center_vertical"
     android:paddingVertical="4dp">
 
-    <!-- Ikon Mood -->
     <ImageView
         android:id="@+id/mood_icon"
         android:layout_width="32dp"
@@ -14,12 +13,11 @@
         android:layout_marginEnd="8dp"
         android:scaleType="fitCenter"/>
 
-    <!-- Persentase -->
     <TextView
         android:id="@+id/mood_percentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:fontFamily="@font/nunitoregular"
+        android:fontFamily="@font/nunitosemibold"
         android:textColor="@android:color/black"/>
 </LinearLayout>

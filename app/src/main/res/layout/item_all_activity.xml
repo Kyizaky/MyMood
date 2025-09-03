@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textSize="16sp"
-        android:fontFamily="@font/nunitoregular"
+        android:fontFamily="@font/nunitosemibold"
         android:textColor="#000000"
         app:layout_constraintStart_toEndOf="@+id/iv_activity_icon"
         app:layout_constraintEnd_toStartOf="@+id/iv_more_options"

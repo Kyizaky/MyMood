@@ -31,8 +31,7 @@
             android:text="Manage Activities"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/nunitoregular" />
+            android:fontFamily="@font/nunitosemibold" />
     </LinearLayout>
 
     <!-- RecyclerView for Activities -->
@@ -67,7 +66,8 @@
         android:elevation="4dp"
         android:background="@drawable/bg_btn"
         android:padding="8dp"
-        android:fontFamily="@font/nunitoregular"
+        android:textAllCaps="false"
+        android:fontFamily="@font/nunitosemibold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

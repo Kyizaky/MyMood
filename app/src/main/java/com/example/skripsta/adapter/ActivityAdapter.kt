@@ -11,10 +11,11 @@ import com.example.skripsta.data.Item
 
 class ActivityAdapter(
     private val items: List<Item>,
+    private val initialActivityName: String? = null,
     private val onItemSelected: (Item) -> Unit
 ) : RecyclerView.Adapter<ActivityAdapter.ViewHolder>() {
 
-    private var selectedItem: Item? = null
+    private var selectedItem: Item? = items.find { it.text == initialActivityName }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.item_icon)
@@ -28,7 +29,7 @@ class ActivityAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.imageView.setImageResource(if (item.isSelected) item.drawableId else item.selectedDrawableId)
+        holder.imageView.setImageResource(if (item.isSelected) item.selectedDrawableId else item.drawableId)
         holder.textView.text = item.getDisplayName()
         holder.itemView.isSelected = item.isSelected
 

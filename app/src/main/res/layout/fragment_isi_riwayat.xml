@@ -34,7 +34,7 @@
                 android:layout_marginStart="70dp"
                 android:background="@drawable/bg_date"
                 android:padding="8dp"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitosemibold"
                 android:textColor="@color/white"
                 android:text="22 Mei 2024"
                 android:textSize="16sp" />
@@ -47,7 +47,7 @@
                 android:background="@drawable/bg_date"
                 android:textColor="@color/white"
                 android:padding="8dp"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitosemibold"
                 android:text="18.00"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/circle_background3"
                 android:gravity="center"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitosemibold"
                 android:padding="5dp"
                 android:text="judul"
                 android:textColor="@color/black"
@@ -92,7 +92,7 @@
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:fontFamily="@font/nunitoregular"
+            android:fontFamily="@font/nunitosemibold"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
@@ -123,7 +123,8 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/rounded_background2"
                     android:padding="5dp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:fontFamily="@font/nunitosemibold"
+                    android:textColor="@color/black"
                     android:text="Aktivitas" />
             </LinearLayout>
         </LinearLayout>
@@ -156,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/circle_background3"
                 android:gravity="center"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitosemibold"
                 android:padding="5dp"
                 android:text="judul"
                 android:textColor="@color/black"
@@ -167,7 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Jurnal"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitosemibold"
                 android:layout_marginTop="10dp" />
         </LinearLayout>
 
@@ -188,7 +189,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:background="@drawable/bg_btn_date"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitosemibold"
                 android:layout_marginEnd="8dp" />
 
             <Button
@@ -196,12 +197,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
                 android:text="Delete"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:background="@drawable/bg_btn_date"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitosemibold"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 

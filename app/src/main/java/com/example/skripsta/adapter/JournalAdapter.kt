@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -20,7 +21,7 @@ class JournalAdapter : ListAdapter<MoodEntry, JournalAdapter.JournalViewHolder>(
         val imageMood: ImageView = itemView.findViewById(R.id.imageViewIcon)
         val feeling: TextView = itemView.findViewById(R.id.textViewStory)
         val jam: TextView = itemView.findViewById(R.id.tv_jam)
-        val cvMood: ConstraintLayout = itemView.findViewById(R.id.consMood)
+        val cvMood: CardView = itemView.findViewById(R.id.consMood)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JournalViewHolder {

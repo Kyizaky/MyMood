@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Beranda"
+    <item android:title="Home"
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"/>
 
-    <item android:title="Riwayat"
+    <item android:title="Statistic"
         android:id="@+id/statFragment"
         android:icon="@drawable/statistics"/>
 
-    <item android:title="Tambah"
+    <item android:title="Add"
         android:id="@+id/tambahFragment"
         android:icon="@drawable/ic_tambah"/>
 
-    <item android:title="Kegiatan"
+    <item android:title="Activities"
         android:id="@+id/kegiatanFragment"
         android:icon="@drawable/img_2"/>
 
-    <item android:title="Pengaturan"
+    <item android:title="Settings"
         android:id="@+id/pengaturanFragment"
         android:icon="@drawable/ic_pengaturan"/>
 </menu>

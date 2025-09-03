@@ -42,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:fontFamily="@font/nunitosemibold"
                     android:layout_marginVertical="3dp"
                     android:text="Sedih"
                     android:textSize="16sp"
@@ -54,6 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="18:00"
+                android:fontFamily="@font/nunitosemibold"
                 android:textSize="14sp"
                 android:textColor="#666666"
                 android:layout_marginTop="4dp" />

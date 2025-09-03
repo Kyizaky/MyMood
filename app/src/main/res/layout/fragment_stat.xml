@@ -44,7 +44,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Terrible"
-                    android:fontFamily="@font/nunitoregular"
+                    android:fontFamily="@font/nunitosemibold"
+                    android:textColor="@color/black"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
@@ -66,8 +67,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bad"
+                    android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:fontFamily="@font/nunitosemibold"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
             </LinearLayout>
@@ -89,7 +91,8 @@
                     android:layout_height="wrap_content"
                     android:text="Okay"
                     android:textSize="14sp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/nunitosemibold"
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
             </LinearLayout>
@@ -112,7 +115,8 @@
                     android:text="Good"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/nunitosemibold"
                     android:gravity="center" />
             </LinearLayout>
 
@@ -134,7 +138,8 @@
                     android:text="Excellent"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/nunitosemibold"
                     android:gravity="center" />
             </LinearLayout>
         </LinearLayout>
@@ -180,8 +185,7 @@
                             android:layout_height="wrap_content"
                             android:text="Pie Chart"
                             android:textSize="16sp"
-                            android:fontFamily="@font/nunitoregular"
-                            android:textStyle="bold"
+                            android:fontFamily="@font/nunitobold"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -196,7 +200,7 @@
                             android:text="Date"
                             android:textSize="14sp"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitosemibold"
                             android:textColor="#FFFFFF"
                             android:padding="8dp"
                             android:background="@drawable/bg_btn_date" />
@@ -266,7 +270,7 @@
                             android:textSize="14sp"
                             android:padding="8dp"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitosemibold"
                             android:textColor="#FFFFFF"
                             android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
@@ -303,8 +307,7 @@
                             android:layout_height="wrap_content"
                             android:text="Mood Calendar"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitobold"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -320,7 +323,7 @@
                             android:textSize="14sp"
                             android:textColor="#FFFFFF"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitosemibold"
                             android:padding="8dp"
                             android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
@@ -357,8 +360,7 @@
                             android:layout_height="wrap_content"
                             android:text="Ranking Activity"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitobold"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -375,7 +377,7 @@
                             android:textSize="14sp"
                             android:padding="8dp"
                             android:textColor="#FFFFFF"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitosemibold"
                             android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
 
@@ -412,8 +414,7 @@
                             android:layout_height="wrap_content"
                             android:text="Ranking Feeling"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitobold"
                             android:textColor="@android:color/black" />
 
                         <View
@@ -430,7 +431,7 @@
                             android:padding="8dp"
                             android:textColor="#FFFFFF"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitoregular"
+                            android:fontFamily="@font/nunitosemibold"
                             android:background="@drawable/bg_btn_date" />
                     </LinearLayout>
 

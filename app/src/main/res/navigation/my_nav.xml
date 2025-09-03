@@ -78,15 +78,6 @@
         <action
             android:id="@+id/action_pengaturanFragment_to_pinLockFragment"
             app:destination="@id/pinLockFragment" />
-        <action
-            android:id="@+id/action_pengaturanFragment_to_fragmentAddFeeling"
-            app:destination="@id/fragmentAddFeeling" />
-        <action
-            android:id="@+id/action_pengaturanFragment_to_feelingFragment"
-            app:destination="@id/feelingFragment" />
-        <action
-            android:id="@+id/action_pengaturanFragment_to_activityFragment"
-            app:destination="@id/activityFragment" />
     </fragment>
 
     <fragment
@@ -198,6 +189,9 @@
         <action
             android:id="@+id/action_selectFeelingFragment_to_tambahFragment"
             app:destination="@id/tambahFragment" />
+        <action
+            android:id="@+id/action_selectFeelingFragment_to_feelingFragment"
+            app:destination="@id/feelingFragment" />
     </fragment>
 
     <fragment
@@ -207,6 +201,9 @@
         <action
             android:id="@+id/action_selectActivityFragment_to_tambahFragment"
             app:destination="@id/tambahFragment" />
+        <action
+            android:id="@+id/action_selectActivityFragment_to_activityFragment"
+            app:destination="@id/activityFragment" />
     </fragment>
 
     <fragment

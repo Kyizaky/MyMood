@@ -18,6 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:fontFamily="@font/nunitosemibold"
+        android:textColor="@color/black"
         android:layout_gravity="center"
         android:text="holaa"
         android:textAllCaps="false"

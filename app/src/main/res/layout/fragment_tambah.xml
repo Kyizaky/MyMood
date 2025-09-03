@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:fontFamily="@font/nunitoregular"
+            android:fontFamily="@font/nunitosemibold"
             android:text="How are you \nfeeling today?"
             android:textColor="#000000"
             android:textSize="20sp"
@@ -275,7 +275,7 @@
                     android:textColor="#000000"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:fontFamily="@font/nunitoregular" />
+                    android:fontFamily="@font/nunitosemibold" />
 
                 <ImageView
                     android:id="@+id/edit_feelings_button"
@@ -330,7 +330,7 @@
                     android:textColor="#000000"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:fontFamily="@font/nunitoregular" />
+                    android:fontFamily="@font/nunitosemibold" />
 
                 <ImageView
                     android:id="@+id/edit_activities_button"
@@ -379,7 +379,7 @@
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/nunitoregular" />
+                android:fontFamily="@font/nunitosemibold" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvJournal"
@@ -406,7 +406,6 @@
                         android:textSize="16sp"
                         android:fontFamily="@font/nunitoregular" />
 
-                    <!-- TextView panduan 3 poin -->
                     <TextView
                         android:id="@+id/journal_guidance"
                         android:layout_width="match_parent"
@@ -417,7 +416,6 @@
                         android:textSize="13sp"
                         android:fontFamily="@font/nunitoregular" />
 
-                    <!-- Isi jurnal -->
                     <EditText
                         android:id="@+id/isi_jurnal_save"
                         android:layout_width="match_parent"
@@ -447,6 +445,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="Simpan"
+                android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:elevation="4dp"
                 android:background="@drawable/bg_btn"

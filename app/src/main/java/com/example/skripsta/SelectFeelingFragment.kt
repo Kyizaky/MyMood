@@ -55,6 +55,16 @@ class SelectFeelingFragment : Fragment() {
             saveSelectedFeelings(selectedNames)
             findNavController().popBackStack()
         }
+
+        binding.fabFeeling.setOnClickListener {
+            val action = SelectFeelingFragmentDirections.actionSelectFeelingFragmentToFeelingFragment()
+            findNavController().navigate(action)
+        }
+
+        binding.cancelButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
     }
 
     private fun setupRecyclerView() {

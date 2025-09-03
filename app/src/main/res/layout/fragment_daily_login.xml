@@ -82,9 +82,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ikky"
-        android:fontFamily="@font/nunitoregular"
+        android:fontFamily="@font/nunitosemibold"
         android:textSize="20sp"
-        android:textStyle="bold"
         android:textColor="@color/black"
         android:layout_marginTop="8dp"
         android:layout_gravity="center"/>
@@ -115,6 +114,7 @@
         android:id="@+id/tv_points"
         android:text="28 poin untuk membuka tampilan berikutnya"
         android:textSize="14sp"
+        android:textColor="@color/black"
         android:fontFamily="@font/nunitoregular"
         android:layout_gravity="center"
         android:layout_marginTop="4dp"/>

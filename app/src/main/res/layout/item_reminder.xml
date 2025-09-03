@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:text="Don't forget to fill ur mood today"
                     android:textSize="18sp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:fontFamily="@font/nunitosemibold"
                     android:textColor="#000000" />
 
                 <TextView
@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:text="08:00"
                     android:textSize="16sp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:fontFamily="@font/nunitosemibold"
                     android:textColor="#666666" />
             </LinearLayout>
 
@@ -49,7 +49,8 @@
                 android:id="@+id/reminderMenu"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_riwayat"
+                android:src="@drawable/ic_more_vert"
+                android:tint="@color/black"
                 android:contentDescription="Reminder Options"
                 android:background="?attr/selectableItemBackgroundBorderless" />
         </LinearLayout>

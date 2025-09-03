@@ -5,17 +5,20 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <CheckBox
-        android:id="@+id/checkBoxSelection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/feelingName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/nunitoregular"
+        android:fontFamily="@font/nunitosemibold"
         android:layout_weight="1"
+        android:textColor="@color/black"
         android:text="Feeling Name"
         android:paddingStart="8dp" />
+
+
+    <CheckBox
+        android:id="@+id/checkBoxSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>
