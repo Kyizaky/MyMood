@@ -12,7 +12,8 @@
         android:textStyle="bold"
         android:fontFamily="@font/nunitoextrabold"
         android:layout_height="wrap_content"
-        android:textSize="40sp"
+        android:textSize="35sp"
+        android:textColor="@color/black"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:text="Pengaturan"
@@ -24,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="7dp"
         app:cardElevation="6dp">
 
         <LinearLayout
@@ -65,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="7dp"
         app:cardElevation="6dp">
 
         <LinearLayout
@@ -93,8 +94,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Kunci Pin"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/nunitosemibold"
                     android:textColor="#000000" />
             </LinearLayout>
         </LinearLayout>
@@ -106,7 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="7dp"
         app:cardElevation="6dp">
 
         <LinearLayout
@@ -134,8 +135,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Back Up"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/nunitosemibold"
                     android:textColor="#000000" />
             </LinearLayout>
         </LinearLayout>
@@ -147,7 +148,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginHorizontal="20dp"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="7dp"
         app:cardElevation="6dp">
 
         <LinearLayout
@@ -175,8 +176,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bagikan Data"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/nunitoregular"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/nunitosemibold"
                     android:textColor="#000000" />
             </LinearLayout>
         </LinearLayout>

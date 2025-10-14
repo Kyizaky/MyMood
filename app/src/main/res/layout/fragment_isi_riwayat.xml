@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="70dp"
-                android:background="@drawable/bg_date"
+                android:background="@drawable/bg_btn"
                 android:padding="8dp"
                 android:fontFamily="@font/nunitosemibold"
                 android:textColor="@color/white"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
-                android:background="@drawable/bg_date"
+                android:background="@drawable/bg_btn"
                 android:textColor="@color/white"
                 android:padding="8dp"
                 android:fontFamily="@font/nunitosemibold"
@@ -83,14 +83,13 @@
                 android:layout_marginBottom="5dp" />
         </LinearLayout>
 
-        <!-- Activity Section -->
         <TextView
             android:id="@+id/tvActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Activity"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:fontFamily="@font/nunitosemibold"
             android:layout_marginBottom="8dp" />
@@ -120,24 +119,57 @@
                     android:id="@+id/tv_aktivitasdata"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/rounded_background2"
-                    android:padding="5dp"
                     android:fontFamily="@font/nunitosemibold"
                     android:textColor="@color/black"
                     android:text="Aktivitas" />
             </LinearLayout>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvFeelingTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feeling"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/nunitosemibold"
+            android:layout_marginBottom="8dp" />
 
-        <!-- Journal Section -->
+        <LinearLayout
+            android:id="@+id/cvFeeling"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/circle_background2"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tvFeeling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:fontFamily="@font/nunitosemibold"
+                    android:background="@drawable/bg_btn_date"
+                    android:textColor="@color/white"
+                    android:text="Aktivitas" />
+            </LinearLayout>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tvCatatan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Journal"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:fontFamily="@font/nunitoregular"
             android:layout_marginBottom="8dp" />
@@ -168,6 +200,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Jurnal"
+                android:textColor="@color/black"
                 android:fontFamily="@font/nunitosemibold"
                 android:layout_marginTop="10dp" />
         </LinearLayout>

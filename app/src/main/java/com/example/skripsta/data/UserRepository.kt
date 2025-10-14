@@ -19,10 +19,6 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getUserById(userId)
     }
 
-    suspend fun updateStreakAndPoints(userId: Int, streakCount: Int, points: Int, lastClaimDate: String) {
-        userDao.updateStreakAndPoints(userId, streakCount, points, lastClaimDate)
-    }
-
     suspend fun updateLastLoginDate(userId: Int, lastLoginDate: String) {
         userDao.updateLastLoginDate(userId, lastLoginDate)
     }

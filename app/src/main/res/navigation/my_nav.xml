@@ -65,6 +65,15 @@
         <action
             android:id="@+id/action_kegiatanFragment_to_groundMeditationFragment"
             app:destination="@id/groundMeditationFragment" />
+        <action
+            android:id="@+id/action_kegiatanFragment_to_meditationFragment"
+            app:destination="@id/meditationFragment" />
+        <action
+            android:id="@+id/action_kegiatanFragment_to_breatheFragment"
+            app:destination="@id/breatheFragment" />
+        <action
+            android:id="@+id/action_kegiatanFragment_to_observeFirstFragment"
+            app:destination="@id/observeFirstFragment" />
     </fragment>
 
     <fragment
@@ -318,6 +327,30 @@
             app:popUpTo="@id/pengaturanFragment"
             app:popUpToInclusive="false" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/meditationFragment"
+        android:name="com.example.skripsta.MeditationFragment"
+        android:label="MeditationFragment" >
+        <action
+            android:id="@+id/action_meditationFragment_to_kegiatanFragment"
+            app:destination="@id/kegiatanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/breatheFragment"
+        android:name="com.example.skripsta.BreatheFragment"
+        android:label="BreatheFragment" >
+        <action
+            android:id="@+id/action_breatheFragment_to_kegiatanFragment"
+            app:destination="@id/kegiatanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/observeFirstFragment"
+        android:name="com.example.skripsta.ObserveFirstFragment"
+        android:label="ObserveFirstFragment" >
+        <action
+            android:id="@+id/action_observeFirstFragment_to_kegiatanFragment"
+            app:destination="@id/kegiatanFragment" />
     </fragment>
 
 </navigation>

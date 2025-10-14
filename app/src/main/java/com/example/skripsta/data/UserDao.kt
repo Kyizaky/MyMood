@@ -26,9 +26,6 @@ interface UserDao {
     @Query("SELECT * FROM user_table WHERE id = :userId")
     suspend fun getUserById(userId: Int): User?
 
-    @Query("UPDATE user_table SET streakCount = :streakCount, points = :points, lastClaimDate = :lastClaimDate WHERE id = :userId")
-    suspend fun updateStreakAndPoints(userId: Int, streakCount: Int, points: Int, lastClaimDate: String)
-
     @Query("UPDATE user_table SET lastLoginDate = :lastLoginDate WHERE id = :userId")
     suspend fun updateLastLoginDate(userId: Int, lastLoginDate: String)
 

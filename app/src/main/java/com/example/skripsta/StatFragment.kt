@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +32,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.graphics.toColorInt
+import com.example.skripsta.utils.MoodUtils
 
 class StatFragment : Fragment() {
 
@@ -723,7 +725,9 @@ class StatFragment : Fragment() {
                     } else {
                         val monthIndex = col
                         val key = "%02d/%02d/%s".format(day, monthIndex, selectedYearCalendar)
-                        val moodColor = moodData[key]?.let { getMoodColor(it) } ?: Color.TRANSPARENT
+                        val moodColor = moodData[key]?.let {
+                            ContextCompat.getColor(requireContext(), MoodUtils.getMoodColor(it))
+                        } ?: Color.TRANSPARENT
 
                         val view = View(requireContext()).apply {
                             background = GradientDrawable().apply {
@@ -760,17 +764,6 @@ class StatFragment : Fragment() {
 
                 gridLayout.addView(tv)
             }
-        }
-    }
-
-    private fun getMoodColor(mood: Int): Int {
-        return when (mood) {
-            1 -> "#cf4e3b".toColorInt()
-            2 -> "#f57e53".toColorInt()
-            3 -> "#f5bc6f".toColorInt()
-            4 -> "#d4d039".toColorInt()
-            5 -> "#8dc363".toColorInt()
-            else -> Color.TRANSPARENT
         }
     }
 }

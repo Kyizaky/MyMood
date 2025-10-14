@@ -13,11 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.skripsta.adapter.HistorySectionAdapter
+import com.example.skripsta.adapter.MoodHistoryAdapter
 import com.example.skripsta.data.MoodEntry
 import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.databinding.FragmentRiwayatBinding
-import com.example.skripsta.model.HistorySection
+import com.example.skripsta.utils.MoodUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -27,7 +27,7 @@ class RiwayatFragment : Fragment() {
 
     private lateinit var binding: FragmentRiwayatBinding
     private lateinit var moodEntryViewModel: MoodEntryViewModel
-    private lateinit var historyAdapter: HistorySectionAdapter
+    private lateinit var moodHistoryAdapter: MoodHistoryAdapter
 
     private val monthsList = listOf(
         "January", "February", "March", "April", "May", "June",
@@ -54,7 +54,8 @@ class RiwayatFragment : Fragment() {
         moodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
 
         selectedFullDate = LocalDate.now()
-        binding.dateButton.text = selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
+        binding.dateButton.text =
+            selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
 
         setupDatePickerButton()
         setupRecyclerView()
@@ -89,7 +90,7 @@ class RiwayatFragment : Fragment() {
 
     private fun showDatePickerDialog() {
         val dialog = BottomSheetDialog(requireContext())
-        val view = layoutInflater.inflate(R.layout.bottom_sheet__picker3, null)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_picker3, null)
         dialog.setContentView(view)
 
         val datePicker = view.findViewById<NumberPicker>(R.id.date_picker)
@@ -98,25 +99,21 @@ class RiwayatFragment : Fragment() {
         val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
         val btnConfirm = view.findViewById<Button>(R.id.btn_confirm)
 
-        // Set initial values
         val initialDate = selectedFullDate ?: LocalDate.now()
         val initialDay = initialDate.dayOfMonth
         val initialMonthIndex = initialDate.monthValue - 1
         val initialYearIndex = yearsList.indexOf(initialDate.year.toString()).coerceAtLeast(0)
 
-        // Year Picker
         yearPicker.minValue = 0
         yearPicker.maxValue = yearsList.size - 1
         yearPicker.displayedValues = yearsList.toTypedArray()
         yearPicker.value = initialYearIndex
 
-        // Month Picker
         monthPicker.minValue = 0
         monthPicker.maxValue = monthsList.size - 1
         monthPicker.displayedValues = monthsList.toTypedArray()
         monthPicker.value = initialMonthIndex
 
-        // Function to get max day in month/year
         fun getMaxDay(month: Int, year: Int): Int {
             return when (month + 1) {
                 1, 3, 5, 7, 8, 10, 12 -> 31
@@ -126,7 +123,6 @@ class RiwayatFragment : Fragment() {
             }
         }
 
-        // Update day picker
         fun updateDatePicker() {
             val selectedYear = yearsList[yearPicker.value].toInt()
             val selectedMonth = monthPicker.value
@@ -139,26 +135,20 @@ class RiwayatFragment : Fragment() {
             datePicker.value = (initialDay - 1).coerceAtMost(maxDay - 1)
         }
 
-        // Initial setup
         updateDatePicker()
-
-        // Listeners for month/year change
         monthPicker.setOnValueChangedListener { _, _, _ -> updateDatePicker() }
         yearPicker.setOnValueChangedListener { _, _, _ -> updateDatePicker() }
 
-        // Cancel button
-        btnCancel.setOnClickListener {
-            dialog.dismiss()
-        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
 
-        // Confirm button
         btnConfirm.setOnClickListener {
             val day = datePicker.value + 1
             val month = monthPicker.value + 1
             val year = yearsList[yearPicker.value].toInt()
             selectedFullDate = LocalDate.of(year, month, day)
 
-            binding.dateButton.text = selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
+            binding.dateButton.text =
+                selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
             moodEntryViewModel.readAllData.value?.let {
                 updateRecyclerView(it)
             }
@@ -174,7 +164,8 @@ class RiwayatFragment : Fragment() {
         val currentMonthYear = now.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH))
         if (currentMonthYear != lastCheckedMonth) {
             selectedFullDate = now
-            binding.dateButton.text = selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
+            binding.dateButton.text =
+                selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
             moodEntryViewModel.readAllData.value?.let {
                 updateRecyclerView(it)
             }
@@ -183,13 +174,15 @@ class RiwayatFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        historyAdapter = HistorySectionAdapter(emptyList()) { moodEntry ->
-            val action = RiwayatFragmentDirections.actionRiwayatFragmentToIsiRiwayatFragment(moodEntry)
+        moodHistoryAdapter = MoodHistoryAdapter { moodEntry ->
+            val action =
+                RiwayatFragmentDirections.actionRiwayatFragmentToIsiRiwayatFragment(moodEntry)
             findNavController().navigate(action)
         }
+
         binding.historyRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = historyAdapter
+            adapter = moodHistoryAdapter
         }
     }
 
@@ -200,20 +193,8 @@ class RiwayatFragment : Fragment() {
         val filteredEntries = moodEntries.filter { entry ->
             val entryDate = LocalDate.parse(entry.tanggal, formatter)
             entryDate == selectedDate
-        }
+        }.sortedByDescending { it.jam }
 
-        val sections = mutableListOf<HistorySection>()
-        if (filteredEntries.isNotEmpty()) {
-            val formattedDate = selectedDate.format(DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH))
-            val sortedEntries = filteredEntries.sortedByDescending { it.jam }
-            sections.add(HistorySection(formattedDate, sortedEntries))
-        }
-
-        historyAdapter = HistorySectionAdapter(sections) { moodEntry ->
-            val action = RiwayatFragmentDirections.actionRiwayatFragmentToIsiRiwayatFragment(moodEntry)
-            findNavController().navigate(action)
-        }
-
-        binding.historyRecyclerView.adapter = historyAdapter
+        moodHistoryAdapter.submitList(filteredEntries)
     }
 }

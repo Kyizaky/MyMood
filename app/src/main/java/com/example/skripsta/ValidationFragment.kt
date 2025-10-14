@@ -16,7 +16,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import kotlin.getValue
+import kotlin.random.Random
 
 class ValidationFragment : Fragment() {
 
@@ -33,52 +33,79 @@ class ValidationFragment : Fragment() {
         val imageline1 = view.findViewById<ImageView>(R.id.line1)
         val imageline2 = view.findViewById<ImageView>(R.id.line2)
         val imagebigline = view.findViewById<ImageView>(R.id.bigline)
-        val iv_word = view.findViewById<ImageView>(R.id.iv_word)
-        val btn_back = view.findViewById<ImageButton>(R.id.ic_back)
+        val ivWord = view.findViewById<TextView>(R.id.iv_word) // ubah jadi TextView ya
+        val btnBack = view.findViewById<ImageButton>(R.id.ic_back)
         val tvPrompt = view.findViewById<TextView>(R.id.tvMoodPrompt)
 
-        btn_back.setOnClickListener {
+        btnBack.setOnClickListener {
             val action = ValidationFragmentDirections.actionValidationFragmentToHomeFragment()
             findNavController().navigate(action)
         }
+
         when (moodType) {
             1 -> {
                 imagemood.setImageResource(R.drawable.valid5)
                 imageline1.setImageResource(R.drawable.line5)
                 imageline2.setImageResource(R.drawable.line5)
                 imagebigline.setImageResource(R.drawable.bigline5)
-                iv_word.setImageResource(R.drawable.word5)
             }
             2 -> {
                 imagemood.setImageResource(R.drawable.valid4)
                 imageline1.setImageResource(R.drawable.line4)
                 imageline2.setImageResource(R.drawable.line4)
                 imagebigline.setImageResource(R.drawable.bigline4)
-                iv_word.setImageResource(R.drawable.word4)
             }
             3 -> {
                 imagemood.setImageResource(R.drawable.valid2)
                 imageline1.setImageResource(R.drawable.line2)
                 imageline2.setImageResource(R.drawable.line2)
                 imagebigline.setImageResource(R.drawable.bigline2)
-                iv_word.setImageResource(R.drawable.word2)
             }
             4 -> {
                 imagemood.setImageResource(R.drawable.valid3)
                 imageline1.setImageResource(R.drawable.line3)
                 imageline2.setImageResource(R.drawable.line3)
                 imagebigline.setImageResource(R.drawable.bigline3)
-                iv_word.setImageResource(R.drawable.word3)
             }
             5 -> {
                 imagemood.setImageResource(R.drawable.valid1)
                 imageline1.setImageResource(R.drawable.line1)
                 imageline2.setImageResource(R.drawable.line1)
                 imagebigline.setImageResource(R.drawable.bigline1)
-                iv_word.setImageResource(R.drawable.word1)
             }
             else -> imagemood.setImageResource(R.drawable.ic_medi)
         }
+
+        val wordList = when (moodType) {
+            1 -> listOf(
+                "It's okay to have bad days.",
+                "Take a deep breath, tomorrow will be better.",
+                "Be gentle with yourself."
+            )
+            2 -> listOf(
+                "Hang in there, things will turn around.",
+                "You’ve handled worse before.",
+                "A small step forward still counts."
+            )
+            3 -> listOf(
+                "You’re doing fine.",
+                "Keep going, steady and calm.",
+                "Every day is progress, even the quiet ones."
+            )
+            4 -> listOf(
+                "That’s great! Keep the energy up.",
+                "You’re doing awesome today.",
+                "Enjoy the little wins!"
+            )
+            5 -> listOf(
+                "Fantastic! You’re on top of the world!",
+                "Keep shining and spread that joy!",
+                "What a wonderful mood to be in!"
+            )
+            else -> listOf("How are you feeling today?", "Stay mindful.", "Take a moment to breathe.")
+        }
+
+        ivWord.text = wordList.random()
 
         val fullText = "Feeling off? Click here!!"
         val spannable = SpannableString(fullText)
@@ -99,6 +126,7 @@ class ValidationFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
+
         spannable.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         tvPrompt.text = spannable

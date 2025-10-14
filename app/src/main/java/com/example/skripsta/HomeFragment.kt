@@ -190,10 +190,8 @@ class HomeFragment : Fragment() {
             // Update points and streak display
             val user = userList.find { it.id == userId }
             // Cek apakah user login hari ini, kalau tidak reset streakCount
-            userViewModel.resetStreakIfMissed(userId)
 
             binding.pointsText.text = user?.let { "Poin: ${it.points}" } ?: "Poin: 0"
-            binding.streakText.text = user?.let { "${it.streakCount}" } ?: "0"
             updateWeeklyStatus()
         }
 
@@ -297,4 +295,5 @@ class HomeFragment : Fragment() {
             else -> R.drawable.ic_medi
         }
     }
+
 }

@@ -34,8 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         app:cardBackgroundColor="#D1DCEF"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="7dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">

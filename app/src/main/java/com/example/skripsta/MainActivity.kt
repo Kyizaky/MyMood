@@ -139,17 +139,16 @@ class MainActivity : AppCompatActivity() {
                 val newUser = User(
                     id = userId,
                     points = 0,
-                    streakCount = 0,
                     lastClaimDate = null,
                     lastLoginDate = null,
                     lastMoodEntryDate = null,
-                    unlockedPets = "img_3",
+                    unlockedPets = "cat1",
                     currentPetIndex = 0
                 )
                 userViewModel.addUser(newUser)
                 Log.d("MainActivity", "Created new user with ID: $userId")
             } else {
-                Log.d("MainActivity", "Current streak for userId: $userId is ${user.streakCount}")
+                Log.d("MainActivity", "Current streak for userId: $userId is ${user.points}")
             }
         }
     }

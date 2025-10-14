@@ -67,7 +67,7 @@ class EditMoodFragment : Fragment() {
         selectedFeelingText = moodEntry.perasaan
         selectedActivityItem = Item(
             drawableId = moodEntry.activityIcon,
-            selectedDrawableId = moodEntry.activityIcon, // Use same icon for consistency, will be updated by adapter
+            selectedDrawableId = moodEntry.activityIcon,
             text = moodEntry.activities,
             isSelected = true
         )
@@ -76,10 +76,8 @@ class EditMoodFragment : Fragment() {
         val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
         val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
-        // Pre-select mood button
         setupMoodButtons(binding.root, moodEntry.mood)
 
-        // Event untuk menampilkan TimePickerDialog
         binding.btnClock.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
                 requireContext(),
@@ -96,7 +94,6 @@ class EditMoodFragment : Fragment() {
             timePickerDialog.show()
         }
 
-        // Event untuk menampilkan DatePickerDialog
         binding.btnCal.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
@@ -122,6 +119,10 @@ class EditMoodFragment : Fragment() {
 
         binding.editFeelingsButton.setOnClickListener {
             findNavController().navigate(R.id.action_editMoodFragment_to_selectFeelingFragment)
+        }
+
+        binding.icBack.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         setupRecyclerView(binding.root)
@@ -174,13 +175,12 @@ class EditMoodFragment : Fragment() {
             val selectedNames = sharedPreferences.getStringSet("selected_activity_names", emptySet()) ?: emptySet()
             val displayedActivities = activities.filter { it.name in selectedNames }.map {
                 Item(
-                    drawableId = it.iconRes,
-                    selectedDrawableId = it.selectedIconRes,
+                    drawableId = it.selectedIconRes,
+                    selectedDrawableId = it.iconRes,
                     text = it.name,
                     isSelected = it.name == args.moodEntry.activities
                 )
             }
-            Log.d("EditMoodFragment", "Displayed activities: ${displayedActivities.map { it.text }}")
             recyclerView.adapter = ActivityAdapter(displayedActivities, args.moodEntry.activities) { selectedItem ->
                 selectedActivityItem = selectedItem
             }
@@ -272,4 +272,5 @@ class EditMoodFragment : Fragment() {
         Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
         findNavController().popBackStack()
     }
+
 }

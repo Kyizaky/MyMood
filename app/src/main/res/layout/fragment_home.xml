@@ -26,34 +26,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#FFFFFF"
-                android:elevation="4dp"
+                android:elevation="3dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="15dp"
+                android:paddingHorizontal="17dp"
+                android:paddingVertical="12dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/appNameText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Eunoia "
-                    android:textColor="#000000"
-                    android:fontFamily="@font/nunitoblack"
-                    android:textSize="20sp" />
+                <!-- Logo Aplikasi -->
+                <ImageView
+                    android:id="@+id/logoApp"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/logoapp"
+                    android:contentDescription="logo" />
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1" />
 
+                <!-- Tombol Riwayat -->
                 <ImageView
                     android:id="@+id/riwayatButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_riwayat" />
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_riwayat"
+                    android:contentDescription="his" />
             </LinearLayout>
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/calendarCardView"
@@ -61,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="7dp"
                 app:cardElevation="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -203,7 +207,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="15dp"
-                app:cardCornerRadius="15dp"
+                app:cardCornerRadius="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/calendarCardView">
@@ -230,7 +234,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
                         <TextView
-                            android:id="@+id/streakText"
+                            android:id="@+id/pointsText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunitosemibold"
@@ -243,20 +247,6 @@
                             app:layout_constraintStart_toEndOf="@id/fireIcon"
                             app:layout_constraintTop_toTopOf="@id/fireIcon"
                             app:layout_constraintVertical_bias="0.736" />
-
-                        <TextView
-                            android:id="@+id/pointsText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="36dp"
-                            android:fontFamily="@font/nunitoregular"
-                            android:text="Poin: 0"
-                            android:textColor="#000000"
-                            android:textSize="16sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
                             android:id="@+id/chev"

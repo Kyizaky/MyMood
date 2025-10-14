@@ -16,16 +16,27 @@
     <color name="color_active">#A5C6F9</color>
     <color name="color_inactive">#FFFFFF</color>
 
-    <color name="mood_1">#FF6242</color>
-    <color name="mood_2">#82DF45</color>
-    <color name="mood_3">#D19DFF</color>
-    <color name="mood_4">#B0DDFF</color>
-    <color name="mood_5">#FFEE56</color>
+    <color name="mood_1">#cf4e3b</color>
+    <color name="mood_2">#f57e53</color>
+    <color name="mood_3">#f5bc6f</color>
+    <color name="mood_4">#d4d039</color>
+    <color name="mood_5">#8dc363</color>
 
     <color name="blue">#007BFF</color>
 
     <color name="selected_icon_color">#FF0000</color> <!-- Merah untuk ikon saat dipilih -->
     <color name="unselected_icon_color">#666666</color> <!-- Abu-abu untuk ikon saat tidak dipilih -->
+
+    <color name="indigo_600">#5B21B6</color>
+    <color name="gray_800">#1F2937</color>
+    <color name="gray_700">#374151</color>
+    <color name="gray_600">#4B5563</color>
+    <color name="gray_500">#6B7280</color>
+    <color name="gray_300">#D1D5DB</color>
+    <color name="gray_50">#F9FAFB</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="green_100">#D1FAE5</color>
+    <color name="green_800">#065F46</color>
 
 </resources>
 

@@ -11,7 +11,6 @@ data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val points: Int,
-    val streakCount: Int,
     val lastClaimDate: String?,
     val lastLoginDate: String?, // Tracks last login date
     val lastMoodEntryDate: String?, // Tracks last mood entry date

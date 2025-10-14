@@ -150,7 +150,7 @@ class TambahFragment : Fragment() {
             }
 
             val displayedActivities = activities.filter { it.name in selectedNames }.map {
-                Item(it.iconRes, it.selectedIconRes, it.name)
+                Item(it.selectedIconRes, it.iconRes, it.name)
             }
             recyclerView.adapter = ActivityAdapter(displayedActivities) { selectedItem ->
                 selectedActivityItem = selectedItem
@@ -190,7 +190,7 @@ class TambahFragment : Fragment() {
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
         if (moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
-            Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Complete all data before saving!", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -198,7 +198,7 @@ class TambahFragment : Fragment() {
             id = 0,
             mood = moodType,
             activities = selectedActivity.getDisplayName(),
-            activityIcon = selectedActivity.drawableId,
+            activityIcon = selectedActivity.selectedDrawableId,
             perasaan = selectedFeeling,
             judul = titleJournal,
             jurnal = journalContent,

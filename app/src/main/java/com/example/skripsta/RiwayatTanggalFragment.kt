@@ -1,6 +1,5 @@
 package com.example.skripsta
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,10 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.skripsta.adapter.JournalAdapter
-import com.example.skripsta.adapter.RiwayatAdapter
+import com.example.skripsta.adapter.MoodHistoryAdapter
 import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.databinding.FragmentRiwayatTanggalBinding
+import com.example.skripsta.utils.MoodUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -22,7 +21,7 @@ class RiwayatTanggalFragment : Fragment() {
 
     private val args by navArgs<RiwayatTanggalFragmentArgs>()
     private lateinit var mMoodEntryViewModel: MoodEntryViewModel
-    private lateinit var adapter: JournalAdapter
+    private lateinit var adapter: MoodHistoryAdapter
     private lateinit var binding: FragmentRiwayatTanggalBinding
 
     override fun onCreateView(
@@ -32,20 +31,30 @@ class RiwayatTanggalFragment : Fragment() {
         binding = FragmentRiwayatTanggalBinding.inflate(inflater, container, false)
         mMoodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
 
+        // Sembunyikan bottom navigation
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
+        // Tombol back ke Home
         binding.icBack.setOnClickListener {
-            val action = RiwayatTanggalFragmentDirections.actionRiwayatTanggalFragmentToHomeFragment()
+            findNavController().navigate(RiwayatTanggalFragmentDirections.actionRiwayatTanggalFragmentToHomeFragment())
+        }
+
+        // Format tanggal di title
+        binding.tvCal.text = MoodUtils.formatTanggalIndonesia(args.selectedDate)
+
+        // Inisialisasi adapter baru dengan fungsi klik
+        adapter = MoodHistoryAdapter { moodEntry ->
+            val action = RiwayatTanggalFragmentDirections
+                .actionRiwayatTanggalFragmentToIsiRiwayatFragment(moodEntry)
             findNavController().navigate(action)
         }
 
-        // Konfigurasi RecyclerView
-        binding.tvCal.text = formatDateToDayMonth(args.selectedDate)
-        adapter = JournalAdapter()
+        // Set RecyclerView
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
-        mMoodEntryViewModel.getJournalsByDate( args.selectedDate).observe(viewLifecycleOwner) { moodEntryList ->
+        // Observasi data dari ViewModel
+        mMoodEntryViewModel.getJournalsByDate(args.selectedDate).observe(viewLifecycleOwner) { moodEntryList ->
             if (moodEntryList.isEmpty()) {
                 binding.cvMood.visibility = View.GONE
                 binding.tvCal.visibility = View.GONE
@@ -61,17 +70,5 @@ class RiwayatTanggalFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    // Function to format the date to "21 Mei"
-    private fun formatDateToDayMonth(dateString: String): String {
-        return try {
-            val inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
-            val date = LocalDate.parse(dateString, inputFormatter)
-            val outputFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH)
-            date.format(outputFormatter)
-        } catch (e: Exception) {
-            dateString
-        }
     }
 }

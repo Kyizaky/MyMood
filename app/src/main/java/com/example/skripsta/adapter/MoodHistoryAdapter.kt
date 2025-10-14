@@ -6,15 +6,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.R
 import com.example.skripsta.data.MoodEntry
 import com.example.skripsta.utils.MoodUtils
 
-class MoodAdapter(
-    private var entries: List<MoodEntry>,
+class MoodHistoryAdapter(
     private val onItemClick: (MoodEntry) -> Unit
-) : RecyclerView.Adapter<MoodAdapter.MoodViewHolder>() {
+) : ListAdapter<MoodEntry, MoodHistoryAdapter.MoodViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoodViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -23,38 +24,35 @@ class MoodAdapter(
     }
 
     override fun onBindViewHolder(holder: MoodViewHolder, position: Int) {
-        holder.bind(entries[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount(): Int = entries.size
 
     class MoodViewHolder(
         itemView: View,
         private val onItemClick: (MoodEntry) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
+
         private val moodIcon: ImageView = itemView.findViewById(R.id.moodIcon)
         private val moodText: TextView = itemView.findViewById(R.id.moodText)
         private val timeText: TextView = itemView.findViewById(R.id.timeText)
         private val moodCard: CardView = itemView.findViewById(R.id.moodCardView)
 
-        fun bind(moodEntry: MoodEntry) {
-            // Map mood integer to string and icon
-            moodText.text = moodEntry.perasaan
-            moodIcon.setImageResource(MoodUtils.getMoodIcon(moodEntry.mood))
+        fun bind(entry: MoodEntry) {
+            // Text dan ikon mood
+            moodText.text = MoodUtils.getMoodText(entry.mood)
+            moodIcon.setImageResource(MoodUtils.getMoodIcon(entry.mood))
+            timeText.text = entry.jam
 
-            timeText.text = moodEntry.jam
-            val colorResId = when (moodEntry.mood) {
-                1 -> R.color.mood_1
-                2 -> R.color.mood_2
-                3 -> R.color.mood_3
-                4 -> R.color.mood_4
-                5 -> R.color.mood_5
-                else -> R.color.transparent
-            }
-
+            val colorResId = MoodUtils.getMoodColor(entry.mood)
             moodCard.setCardBackgroundColor(itemView.context.getColor(colorResId))
 
-            itemView.setOnClickListener { onItemClick(moodEntry) }
+            // Aksi klik
+            itemView.setOnClickListener { onItemClick(entry) }
         }
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<MoodEntry>() {
+        override fun areItemsTheSame(oldItem: MoodEntry, newItem: MoodEntry) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: MoodEntry, newItem: MoodEntry) = oldItem == newItem
     }
 }

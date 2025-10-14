@@ -5,14 +5,14 @@
                 android:startColor="#DDEEFF"
                 android:endColor="#A6D1F2"
                 android:angle="270" />
-            <corners android:radius="4dp" />
+            <corners android:radius="7dp" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <clip>
             <shape>
                 <solid android:color="#3875A7" />
-                <corners android:radius="4dp" />
+                <corners android:radius="7dp" />
             </shape>
         </clip>
     </item>

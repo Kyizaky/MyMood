@@ -44,17 +44,4 @@ class ReminderAdapter(
     }
 
     override fun getItemCount(): Int = reminders.size
-
-    private fun dayOfWeekToString(day: Int): String {
-        return when (day) {
-            Calendar.SUNDAY -> "Sun"
-            Calendar.MONDAY -> "Mon"
-            Calendar.TUESDAY -> "Tue"
-            Calendar.WEDNESDAY -> "Wed"
-            Calendar.THURSDAY -> "Thu"
-            Calendar.FRIDAY -> "Fri"
-            Calendar.SATURDAY -> "Sat"
-            else -> ""
-        }
-    }
 }

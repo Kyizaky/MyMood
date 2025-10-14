@@ -25,8 +25,8 @@ class DailyLoginFragment : Fragment() {
     private lateinit var binding: FragmentDailyLoginBinding
     private lateinit var userViewModel: UserViewModel
     private val dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    private val petDrawables = listOf("img_3", "img_4", "img_5")
-    private val pointsToEvolve = 800
+    private val petDrawables = listOf("cat1", "cat2", "cat3")
+    private val pointsToEvolveList = listOf(7, 14, 30)
     private var currentUserId: Int = 1
 
     override fun onCreateView(
@@ -48,35 +48,94 @@ class DailyLoginFragment : Fragment() {
         userViewModel.readAllData.observe(viewLifecycleOwner) { userList ->
             val user = userList.find { it.id == currentUserId }
             user?.let {
-                binding.tvStreakCount.text = it.streakCount.toString()
+                binding.tvStreakCount.text = it.points.toString()
+
+                val currentIndex = it.currentPetIndex.coerceIn(0, petDrawables.size - 1)
+                val pointsToEvolve = pointsToEvolveList[currentIndex]
+                val isFinalEvolution = currentIndex >= petDrawables.size - 1
+                val unlockedPets = it.unlockedPets.split(",").filter { it.isNotEmpty() }
+                val maxUnlockedIndex = unlockedPets.map { pet -> petDrawables.indexOf(pet) }.maxOrNull() ?: 0
+                val isActivePet = currentIndex == maxUnlockedIndex
+                val nextPetIndex = currentIndex + 1
+                val canEvolveToNext = nextPetIndex < petDrawables.size && petDrawables[nextPetIndex] !in unlockedPets
+
+                // Periksa apakah poin cukup untuk evolusi berikutnya
+                val previousPoints = if (maxUnlockedIndex > 0) pointsToEvolveList.take(maxUnlockedIndex).sum() else 0
+                val relativePoints = (it.points - previousPoints).coerceAtLeast(0)
+
+
+                // Update progress bar
                 binding.petProgress.progress = it.points
                 binding.petProgress.max = pointsToEvolve
-                binding.tvPoints.text = "${pointsToEvolve - it.points} poin untuk membuka tampilan berikutnya"
-                binding.petProgress.visibility = if (it.points >= pointsToEvolve) View.GONE else View.VISIBLE
-                binding.btnEvolve.visibility = if (it.points >= pointsToEvolve) View.VISIBLE else View.GONE
+
+                binding.petProgress.visibility = when {
+                    !isActivePet -> View.GONE
+                    isFinalEvolution -> View.GONE
+                    relativePoints >= pointsToEvolve && canEvolveToNext -> View.GONE
+                    else -> View.VISIBLE
+                }
+
+                binding.tvPoints.visibility = when {
+                    !isActivePet -> View.GONE
+                    isFinalEvolution -> View.GONE
+                    relativePoints >= pointsToEvolve && canEvolveToNext -> View.GONE
+                    else -> View.VISIBLE
+                }
+
+                // Tampilkan tombol evolve hanya jika poin cukup dan pet berikutnya belum di-unlock
+                binding.btnEvolve.visibility = when {
+                    !isFinalEvolution && it.points >= pointsToEvolve && canEvolveToNext -> View.VISIBLE
+                    else -> View.GONE
+                }
+
+                // Update teks progress
+                binding.tvPoints.text = when {
+                    isFinalEvolution -> "Max evolution reached!"
+                    it.points >= pointsToEvolve && canEvolveToNext -> "Go evolve"
+                    else -> "${pointsToEvolve - it.points} more total days to unlock the next stage"
+                }
+
                 updatePetImage(it)
                 updateChecklist(it)
             }
         }
 
+
         binding.btnClaimPoint.setOnClickListener {
             lifecycleScope.launch {
-                if (userViewModel.canClaimStreakPoints(currentUserId)) {
-                    userViewModel.claimStreakPoints(currentUserId, 5)
-                    val user = userViewModel.getUserById(currentUserId)
-                    val pointsClaimed = if (user?.streakCount ?: 0 >= 2) 10 else 5
+                val user = userViewModel.getUserById(currentUserId)
+                val today = LocalDate.now().format(dbDateFormatter)
+                if (userViewModel.canClaimToday(currentUserId) && user?.lastLoginDate == today && user?.lastMoodEntryDate == today) {
+                    userViewModel.claimStreakPoints(currentUserId, 7)
                     ClaimPrefsHelper.saveClaimDateToday(requireContext())
                     Toast.makeText(
                         requireContext(),
-                        "Claimed $pointsClaimed points! Streak: ${user?.streakCount}",
+                        "Claimed 1 point!",
                         Toast.LENGTH_SHORT
                     ).show()
                     user?.let {
-                        binding.tvStreakCount.text = it.streakCount.toString()
+                        binding.tvStreakCount.text = it.points.toString()
+                        val currentIndex = it.currentPetIndex.coerceIn(0, petDrawables.size - 1)
+                        val pointsToEvolve = pointsToEvolveList[currentIndex]
+                        val isFinalEvolution = currentIndex >= petDrawables.size - 1
+                        val unlockedPets = it.unlockedPets.split(",").filter { it.isNotEmpty() }
+                        val nextPetIndex = currentIndex + 1
+                        val canEvolveToNext = nextPetIndex < petDrawables.size && petDrawables[nextPetIndex] !in unlockedPets
+
+                        // Periksa apakah poin cukup untuk evolusi berikutnya
+                        val nextPointsToEvolve = if (nextPetIndex < pointsToEvolveList.size) pointsToEvolveList[nextPetIndex] else pointsToEvolve
+                        val isPointFull = it.points >= pointsToEvolve && (isFinalEvolution || it.points >= nextPointsToEvolve)
+
                         binding.petProgress.progress = it.points
-                        binding.tvPoints.text = "${pointsToEvolve - it.points} poin untuk membuka tampilan berikutnya"
-                        binding.petProgress.visibility = if (it.points >= pointsToEvolve) View.GONE else View.VISIBLE
-                        binding.btnEvolve.visibility = if (it.points >= pointsToEvolve) View.VISIBLE else View.GONE
+                        binding.petProgress.max = pointsToEvolve
+                        binding.petProgress.visibility = if (isFinalEvolution || isPointFull) View.GONE else View.VISIBLE
+                        binding.btnEvolve.visibility = if (!isFinalEvolution && it.points >= pointsToEvolve && canEvolveToNext) View.VISIBLE else View.GONE
+                        binding.tvPoints.visibility = if (isFinalEvolution || isPointFull) View.GONE else View.VISIBLE
+                        binding.tvPoints.text = when {
+                            isFinalEvolution -> "Max evolution reached!"
+                            it.points >= pointsToEvolve && canEvolveToNext -> "Go evolve"
+                            else -> "${pointsToEvolve - it.points} more total days to unlock the next stage"
+                        }
                         updateChecklist(it)
                     }
                 } else {
@@ -92,12 +151,33 @@ class DailyLoginFragment : Fragment() {
         binding.btnEvolve.setOnClickListener {
             lifecycleScope.launch {
                 val user = userViewModel.getUserById(currentUserId) ?: return@launch
-                val nextPetIndex = user.currentPetIndex + 1
+                val currentIndex = user.currentPetIndex.coerceIn(0, petDrawables.size - 1)
+                val nextPetIndex = currentIndex + 1
                 if (nextPetIndex < petDrawables.size) {
-                    val newPet = petDrawables[nextPetIndex]
-                    userViewModel.evolvePet(currentUserId, newPet)
-                    userViewModel.updateUser(user.copy(points = 0))
-                    Toast.makeText(requireContext(), "Pet evolved to ${newPet}!", Toast.LENGTH_SHORT).show()
+                    val pointsToEvolve = pointsToEvolveList[currentIndex]
+                    val nextPointsToEvolve = if (nextPetIndex < pointsToEvolveList.size) pointsToEvolveList[nextPetIndex] else pointsToEvolve
+                    val unlockedPets = user.unlockedPets.split(",").filter { it.isNotEmpty() }
+                    val canEvolveToNext = petDrawables[nextPetIndex] !in unlockedPets
+
+                    if (user.points >= pointsToEvolve && canEvolveToNext) {
+                        val newPet = petDrawables[nextPetIndex]
+                        userViewModel.evolvePet(currentUserId, newPet)
+                        Toast.makeText(requireContext(), "Pet evolved to ${newPet}!", Toast.LENGTH_SHORT).show()
+
+                        val isFinalEvolution = nextPetIndex >= petDrawables.size - 1
+                        binding.petProgress.visibility = if (isFinalEvolution || user.points >= nextPointsToEvolve) View.GONE else View.VISIBLE
+                        binding.btnEvolve.visibility = if (!isFinalEvolution && user.points >= nextPointsToEvolve && canEvolveToNext) View.VISIBLE else View.GONE
+                        binding.tvPoints.visibility = if (isFinalEvolution || user.points >= nextPointsToEvolve) View.GONE else View.VISIBLE
+                        binding.tvPoints.text = when {
+                            isFinalEvolution -> "Max evolution reached!"
+                            user.points >= nextPointsToEvolve && canEvolveToNext -> "Go evolve"
+                            else -> "${nextPointsToEvolve - user.points} more total days to unlock the next stage"
+                        }
+                        updatePetImage(user)
+                        updateChecklist(user)
+                    } else {
+                        Toast.makeText(requireContext(), "Not enough points to evolve!", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -139,9 +219,11 @@ class DailyLoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         lifecycleScope.launch {
-            binding.btnClaimPoint.isEnabled = userViewModel.canClaimStreakPoints(currentUserId)
+            val canClaim = userViewModel.canClaimToday(currentUserId)
+            binding.btnClaimPoint.isEnabled = canClaim
         }
     }
+
 
     private fun updateChecklist(user: User) {
         val today = LocalDate.now().format(dbDateFormatter)
@@ -150,9 +232,6 @@ class DailyLoginFragment : Fragment() {
         )
         binding.check2.setImageResource(
             if (user.lastMoodEntryDate == today) R.drawable.ic_checkbox else R.drawable.ic_nocheck
-        )
-        binding.check3.setImageResource(
-            if (user.streakCount >= 2) R.drawable.ic_checkbox else R.drawable.ic_nocheck
         )
     }
 
@@ -166,7 +245,7 @@ class DailyLoginFragment : Fragment() {
             R.drawable.ic_ask
         }
         binding.petImage.setImageResource(drawableRes)
-        binding.petName.text = if (petDrawableName in unlockedPets) "Ikky ${currentIndex + 1}" else "Locked"
+        binding.petName.text = if (petDrawableName in unlockedPets) "Ikky" else "Locked"
         binding.prevPet.visibility = if (currentIndex > 0) View.VISIBLE else View.GONE
         binding.nextPet.visibility = if (currentIndex < petDrawables.size - 1) View.VISIBLE else View.GONE
     }

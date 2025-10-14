@@ -4,5 +4,5 @@
     <stroke
         android:width="2dp"
         android:color="#B0BEC5" /> <!-- Warna abu -->
-    <corners android:radius="20dp" />
+    <corners android:radius="10dp" />
 </shape>

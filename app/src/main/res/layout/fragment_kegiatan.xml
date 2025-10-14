@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:text="Stress Realief"
                 android:fontFamily="@font/nunitobold"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textColor="@color/black"
                 android:layout_gravity="start"
                 android:layout_marginBottom="16dp" />
@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="7dp"
                 app:cardElevation="6dp">
 
                 <LinearLayout
@@ -41,9 +41,10 @@
 
                     <!-- Left Icon -->
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:src="@drawable/ic_medi"
+                        android:layout_marginRight="10dp"
                         android:contentDescription="Smile Icon"
                         android:layout_gravity="center_vertical" />
 
@@ -87,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="7dp"
                 app:cardElevation="6dp">
 
                 <LinearLayout
@@ -99,9 +100,10 @@
 
                     <!-- Left Icon -->
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_breathe"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_breath"
                         android:contentDescription="Love Icon"
                         android:layout_gravity="center_vertical" />
 
@@ -125,6 +127,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunitosemibold"
                             android:text="Hold on, just breathe! Feeling better now? when you breathe ..."
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
@@ -146,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="7dp"
                 app:cardElevation="6dp">
 
                 <LinearLayout
@@ -158,9 +161,10 @@
 
                     <!-- Left Icon -->
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_medi"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_hugging"
                         android:contentDescription="Love Icon"
                         android:layout_gravity="center_vertical" />
 
@@ -184,6 +188,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunitosemibold"
                             android:text="Hold on, just breathe! Feeling better now? when you breathe ..."
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
@@ -205,7 +210,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="7dp"
                 app:cardElevation="6dp">
 
                 <LinearLayout
@@ -217,9 +222,10 @@
 
                     <!-- Left Icon -->
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_medi"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_eyes"
                         android:contentDescription="Love Icon"
                         android:layout_gravity="center_vertical" />
 
@@ -243,6 +249,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunitosemibold"
                             android:text="Hold on, just breathe! Feeling better now? when you breathe ..."
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"

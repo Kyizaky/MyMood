@@ -5,8 +5,9 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
     android:layout_marginHorizontal="16dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="7dp"
     app:cardElevation="4dp"
+    android:id="@+id/containerCardMood"
     app:cardBackgroundColor="@color/white">
 
     <LinearLayout
@@ -34,7 +35,7 @@
                 android:id="@+id/moodCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="7dp"
                 app:cardBackgroundColor="@color/app">
 
                 <TextView

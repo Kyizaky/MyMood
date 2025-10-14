@@ -1,6 +1,5 @@
 package com.example.skripsta
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,23 +19,27 @@ class KegiatanFragment : Fragment() {
         val cardMeditation = view.findViewById<CardView>(R.id.meditation)
         val cardBreathe = view.findViewById<CardView>(R.id.breathe)
         val cardGround = view.findViewById<CardView>(R.id.medi_ground)
+        val cardObserve = view.findViewById<CardView>(R.id.medi_observe)
 
         cardMeditation.setOnClickListener {
-            val intent = Intent(activity, MeditationActivity::class.java)
-            startActivity(intent)
+            val action = KegiatanFragmentDirections.actionKegiatanFragmentToMeditationFragment()
+            findNavController().navigate(action)
         }
 
         cardBreathe.setOnClickListener {
-            val intent = Intent(activity, BreatheActivity::class.java)
-            startActivity(intent)
+            val action = KegiatanFragmentDirections.actionKegiatanFragmentToBreatheFragment()
+            findNavController().navigate(action)
         }
 
         cardGround.setOnClickListener {
             val action = KegiatanFragmentDirections.actionKegiatanFragmentToGroundMeditationFragment()
             findNavController().navigate(action)
         }
-
-
+        
+        cardObserve.setOnClickListener { 
+            val action = KegiatanFragmentDirections.actionKegiatanFragmentToObserveFirstFragment()
+            findNavController().navigate(action)
+        }
         return view
     }
 }
