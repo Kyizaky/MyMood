@@ -22,11 +22,8 @@ class MoodEntryRepository(private val moodEntryDao: MoodEntryDao) {
         return moodEntryDao.getJournalsByDate(selectedDate)
     }
 
-    suspend fun getMoodEntriesForDate(date: String): List<MoodEntry> {
-        return moodEntryDao.getMoodEntriesForDate(date)
+    suspend fun getAllMoodEntriesList(): List<MoodEntry> {
+        return moodEntryDao.getAllMoodEntriesList()
     }
 
-    suspend fun getMoodById(moodId: Int): MoodEntry? {
-        return moodEntryDao.getMoodById(moodId)
-    }
 }

@@ -36,10 +36,6 @@ object ClaimPrefsHelper {
             }
     }
 
-    /**
-     * Hapus semua tanggal claim yang berada di luar minggu berjalan.
-     * Minggu dimulai dari Sunday (dayOfWeek == 7 % 7 = 0).
-     */
     fun cleanOldClaimsKeepThisWeek(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val today = LocalDate.now()

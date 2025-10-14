@@ -87,6 +87,12 @@
         <action
             android:id="@+id/action_pengaturanFragment_to_pinLockFragment"
             app:destination="@id/pinLockFragment" />
+        <action
+            android:id="@+id/action_pengaturanFragment_to_backUpFragment"
+            app:destination="@id/backUpFragment" />
+        <action
+            android:id="@+id/action_pengaturanFragment_to_shareFragment"
+            app:destination="@id/shareFragment" />
     </fragment>
 
     <fragment
@@ -351,6 +357,24 @@
         <action
             android:id="@+id/action_observeFirstFragment_to_kegiatanFragment"
             app:destination="@id/kegiatanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/backUpFragment"
+        android:name="com.example.skripsta.BackUpFragment"
+        android:label="fragment_back_up"
+        tools:layout="@layout/fragment_back_up" >
+        <action
+            android:id="@+id/action_backUpFragment_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shareFragment"
+        android:name="com.example.skripsta.ShareFragment"
+        android:label="fragment_share"
+        tools:layout="@layout/fragment_share" >
+        <action
+            android:id="@+id/action_shareFragment_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment" />
     </fragment>
 
 </navigation>

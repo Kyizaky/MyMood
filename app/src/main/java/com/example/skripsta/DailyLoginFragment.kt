@@ -106,7 +106,7 @@ class DailyLoginFragment : Fragment() {
                 val user = userViewModel.getUserById(currentUserId)
                 val today = LocalDate.now().format(dbDateFormatter)
                 if (userViewModel.canClaimToday(currentUserId) && user?.lastLoginDate == today && user?.lastMoodEntryDate == today) {
-                    userViewModel.claimStreakPoints(currentUserId, 7)
+                    userViewModel.claimStreakPoints(currentUserId, 1)
                     ClaimPrefsHelper.saveClaimDateToday(requireContext())
                     Toast.makeText(
                         requireContext(),

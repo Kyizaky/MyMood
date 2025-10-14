@@ -29,7 +29,15 @@ class PengaturanFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        binding.btnBackup.setOnClickListener {
+            val action = PengaturanFragmentDirections.actionPengaturanFragmentToBackUpFragment()
+            findNavController().navigate(action)
+        }
 
+        binding.btnShareData.setOnClickListener {
+            val action = PengaturanFragmentDirections.actionPengaturanFragmentToShareFragment()
+            findNavController().navigate(action)
+        }
 
         return binding.root
     }

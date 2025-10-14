@@ -86,11 +86,9 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
 
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
     ksp("androidx.room:room-compiler:$room_version")
 
     // If this project only uses Java source, use the Java annotationProcessor
-    // No additional plugins are necessary
     annotationProcessor("androidx.room:room-compiler:$room_version")
 
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -122,6 +120,9 @@ dependencies {
     implementation (libs.kotlin.stdlib.jdk7)
     api (libs.kotlinx.coroutines.core)
     api (libs.kotlinx.coroutines.android)
+
+    implementation("org.apache.poi:poi:5.4.1")
+    implementation("org.apache.poi:poi-ooxml:5.4.1")
 
     implementation ("com.google.android.flexbox:flexbox:3.0.0")
 }

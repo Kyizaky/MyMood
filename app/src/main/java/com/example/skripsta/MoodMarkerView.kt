@@ -1,9 +1,7 @@
-package com.example.skripsta.utils
+package com.example.skripsta
 
 import android.content.Context
-import android.view.View
 import android.widget.TextView
-import com.example.skripsta.R
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
@@ -24,10 +22,10 @@ class MoodMarkerView(context: Context, layoutResource: Int) : MarkerView(context
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         if (e == null || e.y == 0f) {
-            markerText.visibility = View.GONE
+            markerText.visibility = GONE
             this.alpha = 0f // Buat marker jadi transparan sepenuhnya
         } else {
-            markerText.visibility = View.VISIBLE
+            markerText.visibility = VISIBLE
             this.alpha = 1f // Tampilkan marker seperti biasa
 
             val hour = e.x.toInt()

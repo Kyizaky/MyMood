@@ -31,4 +31,8 @@ interface MoodEntryDao {
 
     @Query("SELECT * FROM mood_entry_table WHERE id = :moodId")
     suspend fun getMoodById(moodId: Int): MoodEntry?
+
+    @Query("SELECT * FROM mood_entry_table ORDER BY id ASC")
+    suspend fun getAllMoodEntriesList(): List<MoodEntry>
+
 }
