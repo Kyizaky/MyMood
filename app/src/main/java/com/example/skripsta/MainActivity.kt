@@ -98,9 +98,17 @@ class MainActivity : AppCompatActivity() {
             R.id.pengaturanFragment,
             R.id.kegiatanFragment
         )
-        if (pinLockViewModel.hasPin(this) && navController.currentDestination?.id != R.id.pinLockFragment) {
-            navController.navigate(R.id.action_global_pinLockFragment)
+
+        if (pinLockViewModel.hasPin(this)) {
+            val currentDestination = navController.currentDestination?.id
+            if (currentDestination != R.id.pinLockFragment) {
+                val bundle = Bundle().apply {
+                    putString("mode", "login")
+                }
+                navController.navigate(R.id.action_global_pinLockFragment, bundle)
+            }
         }
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomNavigationView.visibility =
                 if (destination.id in visibleFragments) View.VISIBLE else View.GONE

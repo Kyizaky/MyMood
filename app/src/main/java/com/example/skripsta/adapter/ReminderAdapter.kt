@@ -6,7 +6,6 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skripsta.data.Reminder
 import com.example.skripsta.databinding.ItemReminderBinding
-import java.util.*
 
 class ReminderAdapter(
     private val reminders: MutableList<Reminder>,
@@ -14,10 +13,15 @@ class ReminderAdapter(
     private val onDelete: (Reminder) -> Unit
 ) : RecyclerView.Adapter<ReminderAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ItemReminderBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: ItemReminderBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemReminderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemReminderBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 

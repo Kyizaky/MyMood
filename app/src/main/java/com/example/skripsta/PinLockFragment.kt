@@ -55,6 +55,12 @@ class PinLockFragment : Fragment() {
             else -> Step.ENTER_PIN
         }
 
+        binding.btnBack.visibility = if (mode == Mode.CHANGE_PIN) View.VISIBLE else View.GONE
+
+         binding.btnBack.setOnClickListener {
+             findNavController().popBackStack()
+         }
+
         setupButtons()
         updatePinDots()
         updateGuideText()

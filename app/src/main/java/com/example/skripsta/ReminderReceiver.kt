@@ -84,19 +84,20 @@ class ReminderReceiver : BroadcastReceiver() {
             return
         }
 
-        val calendar = Calendar.getInstance(TimeZone.getDefault())
-        calendar.set(Calendar.HOUR_OF_DAY, reminder.hour)
-        calendar.set(Calendar.MINUTE, reminder.minute)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        if (calendar.timeInMillis <= System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            add(Calendar.DAY_OF_YEAR, 1)
+            set(Calendar.HOUR_OF_DAY, reminder.hour)
+            set(Calendar.MINUTE, reminder.minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
         }
 
         val intent = Intent(context, ReminderReceiver::class.java).apply {
-            putExtra("message", reminder.message)
+            putExtra("message", reminder.message ?: "Don't forget to fill your mood today")
             putExtra("reminderId", reminder.id)
         }
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             reminder.id,
@@ -104,7 +105,6 @@ class ReminderReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        Log.d("ReminderReceiver", "Scheduling reminder ${reminder.id} at: ${calendar.time}")
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setExactAndAllowWhileIdle(
@@ -119,9 +119,10 @@ class ReminderReceiver : BroadcastReceiver() {
                     pendingIntent
                 )
             }
-            Log.d("ReminderReceiver", "Reminder ${reminder.id} scheduled successfully")
+            Log.d("ReminderReceiver", "Reminder ${reminder.id} scheduled for ${calendar.time}")
         } catch (e: SecurityException) {
             Log.e("ReminderReceiver", "Failed to schedule reminder ${reminder.id}: ${e.message}")
         }
     }
+
 }

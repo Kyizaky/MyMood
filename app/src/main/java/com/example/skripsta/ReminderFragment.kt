@@ -18,50 +18,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.skripsta.adapter.ReminderAdapter
 import com.example.skripsta.data.Reminder
 import com.example.skripsta.databinding.FragmentReminderBinding
 import com.example.skripsta.databinding.ItemReminderBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
-
-class ReminderAdapter(
-    private val reminders: MutableList<Reminder>,
-    private val onEdit: (Reminder) -> Unit,
-    private val onDelete: (Reminder) -> Unit
-) : androidx.recyclerview.widget.RecyclerView.Adapter<ReminderAdapter.ViewHolder>() {
-
-    inner class ViewHolder(val binding: ItemReminderBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemReminderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val reminder = reminders[position]
-        with(holder.binding) {
-            reminderMessage.text = reminder.message
-            reminderTime.text = String.format("%02d:%02d", reminder.hour, reminder.minute)
-
-            reminderMenu.setOnClickListener {
-                val popup = PopupMenu(root.context, reminderMenu)
-                popup.menu.add("Edit")
-                popup.menu.add("Delete")
-                popup.setOnMenuItemClickListener { item ->
-                    when (item.title) {
-                        "Edit" -> onEdit(reminder)
-                        "Delete" -> onDelete(reminder)
-                    }
-                    true
-                }
-                popup.show()
-            }
-        }
-    }
-
-    override fun getItemCount(): Int = reminders.size
-}
 
 class ReminderFragment : Fragment() {
 
@@ -157,6 +120,7 @@ class ReminderFragment : Fragment() {
                 }
                 saveReminders()
                 adapter.notifyDataSetChanged()
+                updateEmptyState()
             }
         }
     }
@@ -170,6 +134,7 @@ class ReminderFragment : Fragment() {
             reminders.addAll(gson.fromJson(json, type))
         }
         nextReminderId = sharedPreferences.getInt("nextReminderId", 0)
+        updateEmptyState()
     }
 
     private fun saveReminders() {
@@ -184,6 +149,7 @@ class ReminderFragment : Fragment() {
         reminders.remove(reminder)
         saveReminders()
         adapter.notifyDataSetChanged()
+        updateEmptyState()
     }
 
     private fun scheduleReminder(reminder: Reminder) {
@@ -274,4 +240,17 @@ class ReminderFragment : Fragment() {
         alarmManager.cancel(pendingIntent)
         Log.d("ReminderFragment", "Reminder ${reminder.id} alarm canceled")
     }
+
+    private fun updateEmptyState() {
+        if (reminders.isEmpty()) {
+            binding.reminderRecyclerView.visibility = View.GONE
+            binding.bellIcon.visibility = View.VISIBLE
+            binding.tvbell.visibility = View.VISIBLE
+        } else {
+            binding.reminderRecyclerView.visibility = View.VISIBLE
+            binding.bellIcon.visibility = View.GONE
+            binding.tvbell.visibility = View.GONE
+        }
+    }
+
 }

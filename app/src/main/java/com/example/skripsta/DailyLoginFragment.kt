@@ -42,7 +42,7 @@ class DailyLoginFragment : Fragment() {
         userViewModel.recordLogin(currentUserId)
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_dailyLoginFragment_to_homeFragment)
+            findNavController().popBackStack()
         }
 
         userViewModel.readAllData.observe(viewLifecycleOwner) { userList ->
