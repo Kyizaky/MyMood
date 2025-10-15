@@ -66,8 +66,10 @@
 
         <ImageView
             android:id="@+id/pet_image"
-            android:src="@drawable/img_1"
+            android:src="@drawable/pet3"
             android:layout_width="210dp"
+            android:background="@drawable/circular_ripple"
+            android:padding="10dp"
             android:layout_height="210dp"
             android:layout_centerInParent="true" />
 

@@ -403,7 +403,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_btn_date"
-                        android:hint="Judul Jurnal"
+                        android:hint="Title Journal"
                         android:padding="12dp"
                         android:textSize="16sp"
                         android:fontFamily="@font/nunitoregular" />
@@ -444,7 +444,7 @@
                 android:id="@+id/btnUpdate"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Simpan"
+                android:text="Save"
                 android:textColor="@android:color/white"
                 android:elevation="4dp"
                 android:textAllCaps="false"

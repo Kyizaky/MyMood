@@ -17,7 +17,7 @@ object MoodUtils {
         }
     }
 
-    fun formatTanggalIndonesia(tanggal: String): String {
+    fun formatTanggal(tanggal: String): String {
         return try {
             val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             val outputFormat = SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH)

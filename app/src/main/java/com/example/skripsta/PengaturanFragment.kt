@@ -25,9 +25,12 @@ class PengaturanFragment : Fragment() {
         }
 
         binding.btnPin.setOnClickListener {
-            val action = PengaturanFragmentDirections.actionPengaturanFragmentToPinLockFragment()
-            findNavController().navigate(action)
+            val bundle = Bundle().apply {
+                putString("mode", "change")
+            }
+            findNavController().navigate(R.id.action_pengaturanFragment_to_pinLockFragment, bundle)
         }
+
 
         binding.btnBackup.setOnClickListener {
             val action = PengaturanFragmentDirections.actionPengaturanFragmentToBackUpFragment()

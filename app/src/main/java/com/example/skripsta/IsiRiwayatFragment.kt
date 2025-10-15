@@ -77,7 +77,7 @@ class IsiRiwayatFragment : Fragment() {
     // 🔹 Fungsi untuk memperbarui UI dengan data terbaru
     private fun updateUI(moodEntry: MoodEntry) {
         binding.tvTitleP.text = MoodUtils.getMoodText(moodEntry.mood)
-        binding.txtDate.text = MoodUtils.formatTanggalIndonesia(moodEntry.tanggal)
+        binding.txtDate.text = MoodUtils.formatTanggal(moodEntry.tanggal)
         binding.txtTime.text = moodEntry.jam
         binding.tvFeeling.text = moodEntry.perasaan
         binding.tvIsiJurnal.text = moodEntry.jurnal

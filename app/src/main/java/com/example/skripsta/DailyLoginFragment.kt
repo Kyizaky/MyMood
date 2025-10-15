@@ -25,7 +25,7 @@ class DailyLoginFragment : Fragment() {
     private lateinit var binding: FragmentDailyLoginBinding
     private lateinit var userViewModel: UserViewModel
     private val dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    private val petDrawables = listOf("cat1", "cat2", "cat3")
+    private val petDrawables = listOf("pet1", "pet2", "pet3")
     private val pointsToEvolveList = listOf(7, 14, 30)
     private var currentUserId: Int = 1
 

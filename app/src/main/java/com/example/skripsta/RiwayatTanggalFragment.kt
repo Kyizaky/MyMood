@@ -13,9 +13,6 @@ import com.example.skripsta.adapter.MoodHistoryAdapter
 import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.databinding.FragmentRiwayatTanggalBinding
 import com.example.skripsta.utils.MoodUtils
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class RiwayatTanggalFragment : Fragment() {
 
@@ -40,7 +37,7 @@ class RiwayatTanggalFragment : Fragment() {
         }
 
         // Format tanggal di title
-        binding.tvCal.text = MoodUtils.formatTanggalIndonesia(args.selectedDate)
+        binding.tvCal.text = MoodUtils.formatTanggal(args.selectedDate)
 
         // Inisialisasi adapter baru dengan fungsi klik
         adapter = MoodHistoryAdapter { moodEntry ->

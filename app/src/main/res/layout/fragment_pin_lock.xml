@@ -1,123 +1,300 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:background="#A5C6F9"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="24dp"
+    android:paddingTop="24dp">
 
-    <TextView
-        android:id="@+id/tv_pin_prompt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter PIN"
-        android:textSize="24sp"
-        android:fontFamily="@font/nunitoextrabold"
-        android:textColor="@color/black"
-        android:layout_marginBottom="32dp"/>
 
-    <EditText
-        android:id="@+id/pin_input"
-        android:layout_width="200dp"
+    <!-- Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="numberPassword"
-        android:maxLength="4"
-        android:textSize="24sp"
+        android:orientation="horizontal"
+        android:gravity="start|center_vertical"
+        android:layout_marginBottom="24dp">
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginBottom="32dp"/>
+        android:layout_marginBottom="48dp">
 
-    <GridLayout
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter the  PIN"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/nunitosemibold"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/tvGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Akses yang aman untuk perangkat Anda"
+            android:textSize="14sp"
+            android:fontFamily="@font/nunitosemibold"
+            android:textColor="#B3FFFFFF"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <!-- PIN Display -->
+    <LinearLayout
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="64dp"
+        android:spacing="12dp">
+
+
+
+    <View
+            android:id="@+id/pin_dot_1"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/pin_dot_empty"
+            android:layout_marginEnd="8dp" />
+
+        <View
+            android:id="@+id/pin_dot_2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/pin_dot_empty"
+            android:layout_marginEnd="8dp" />
+
+        <View
+            android:id="@+id/pin_dot_3"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/pin_dot_empty"
+            android:layout_marginEnd="8dp" />
+
+        <View
+            android:id="@+id/pin_dot_4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/pin_dot_empty" />
+    </LinearLayout>
+
+    <!-- Numeric Keypad -->
+    <GridLayout
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:columnCount="3"
         android:rowCount="4"
-        android:layout_marginBottom="16dp">
+        android:layout_gravity="center"
+        android:orientation="horizontal">
 
+        <!-- Row 1: 1, 2, 3 -->
         <Button
             android:id="@+id/btn_1"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/nunitosemibold"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
             android:text="1"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
             android:id="@+id/btn_2"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="0"
+            android:fontFamily="@font/nunitosemibold"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
             android:text="2"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
             android:id="@+id/btn_3"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:fontFamily="@font/nunitosemibold"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
             android:text="3"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
+        <!-- Row 2: 4, 5, 6 -->
         <Button
             android:id="@+id/btn_4"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:fontFamily="@font/nunitosemibold"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
             android:text="4"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
             android:id="@+id/btn_5"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:fontFamily="@font/nunitosemibold"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
             android:text="5"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
             android:id="@+id/btn_6"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
+            android:fontFamily="@font/nunitosemibold"
             android:text="6"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
             android:id="@+id/btn_7"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
+            android:fontFamily="@font/nunitosemibold"
             android:text="7"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
             android:id="@+id/btn_8"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
+            android:fontFamily="@font/nunitosemibold"
             android:text="8"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
             android:id="@+id/btn_9"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="2"
+            android:layout_column="2"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
             android:text="9"
-            android:layout_margin="4dp"/>
+            android:fontFamily="@font/nunitosemibold"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
-        <Button
-            android:id="@+id/btn_clear"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:text="C"
-            android:layout_margin="4dp"/>
+        <!-- Row 4: Backspace, 0, OK -->
+        <ImageButton
+            android:id="@+id/btn_backspace"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
+            android:src="@drawable/ic_back"
+            android:tint="@color/white"
+            android:background="@drawable/btn_keypad_secondary"
+            android:contentDescription="no"
+            android:scaleType="centerInside" />
 
         <Button
             android:id="@+id/btn_0"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
+            android:fontFamily="@font/nunitosemibold"
             android:text="0"
-            android:layout_margin="4dp"/>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_keypad" />
 
         <Button
-            android:id="@+id/btn_confirm"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:id="@+id/btn_ok"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_row="3"
+            android:layout_column="2"
+            android:fontFamily="@font/nunitosemibold"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_margin="6dp"
             android:text="OK"
-            android:layout_margin="4dp"/>
-
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_ok"
+            android:contentDescription="ok" />
     </GridLayout>
 
 </LinearLayout>

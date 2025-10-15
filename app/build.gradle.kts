@@ -124,5 +124,7 @@ dependencies {
     implementation("org.apache.poi:poi:5.4.1")
     implementation("org.apache.poi:poi-ooxml:5.4.1")
 
+    implementation("com.itextpdf:itextg:5.5.10")
+
     implementation ("com.google.android.flexbox:flexbox:3.0.0")
 }

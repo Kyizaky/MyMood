@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activityViewModel: ActivityViewModel
     private lateinit var iconViewModel: IconViewModel
     private val pinLockViewModel = PinLockViewModel()
+    private var backPressedTime = 0L
+    private var backToast: Toast? = null
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -126,6 +128,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        val currentDestination = navController.currentDestination?.id
+
+        val mainFragments = setOf(
+            R.id.homeFragment,
+            R.id.statFragment,
+            R.id.kegiatanFragment,
+            R.id.tambahFragment,
+            R.id.pengaturanFragment
+        )
+
+        when {
+            // Kalau lagi di salah satu tab utama tapi bukan Home
+            currentDestination in mainFragments && currentDestination != R.id.homeFragment -> {
+                navController.popBackStack(R.id.homeFragment, false)
+                binding.bottomNavigationView.selectedItemId = R.id.homeFragment
+
+            }
+
+            // Kalau sudah di HomeFragment → tampilkan pesan exit
+            currentDestination == R.id.homeFragment -> {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - backPressedTime < 2000) {
+                    backToast?.cancel()
+                    super.onBackPressed() // keluar aplikasi
+                } else {
+                    backToast = Toast.makeText(
+                        this,
+                        "Tekan sekali lagi untuk keluar",
+                        Toast.LENGTH_SHORT
+                    )
+                    backToast?.show()
+                    backPressedTime = currentTime
+                }
+            }
+
+            // Kalau di halaman lain (bukan bagian bottom nav), biarkan back biasa
+            else -> super.onBackPressed()
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         navController = findNavController(R.id.navHostFragmentContainer)
         return navController.navigateUp() || super.onSupportNavigateUp()
@@ -142,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                     lastClaimDate = null,
                     lastLoginDate = null,
                     lastMoodEntryDate = null,
-                    unlockedPets = "cat1",
+                    unlockedPets = "pet1",
                     currentPetIndex = 0
                 )
                 userViewModel.addUser(newUser)

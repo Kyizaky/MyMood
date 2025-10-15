@@ -104,7 +104,6 @@ class ValidationFragment : Fragment() {
             )
             else -> listOf("How are you feeling today?", "Stay mindful.", "Take a moment to breathe.")
         }
-
         ivWord.text = wordList.random()
 
         val fullText = "Feeling off? Click here!!"
