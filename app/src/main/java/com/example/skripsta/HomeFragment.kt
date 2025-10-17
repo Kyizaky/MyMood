@@ -19,6 +19,7 @@ import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.data.UserViewModel
 import com.example.skripsta.databinding.FragmentHomeBinding
 import com.example.skripsta.utils.ClaimPrefsHelper
+import com.example.skripsta.utils.MoodUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.MonthDayBinder
@@ -27,6 +28,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 class HomeFragment : Fragment() {
 
@@ -34,7 +36,10 @@ class HomeFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var moodEntryViewModel: MoodEntryViewModel
     private var moodEntries: List<MoodEntry> = emptyList()
-    private val dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+    private val dbFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+    private val displayFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
+
+
     private val moodDates = mutableSetOf<LocalDate>()
     private val monthsList = listOf(
         "January", "February", "March", "April", "May", "June",
@@ -72,7 +77,7 @@ class HomeFragment : Fragment() {
         val btnNext = binding.btnNextMonth
 
         fun updateMonthHeader(month: YearMonth) {
-            val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
+            val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
             monthYearText.text = month.format(formatter)
         }
 
@@ -97,7 +102,7 @@ class HomeFragment : Fragment() {
             moodCache.clear()
             val monthDates = yearMonth.atDay(1).datesUntil(yearMonth.plusMonths(1).atDay(1)).toList()
             monthDates.forEach { date ->
-                val entries = moodEntries.filter { it.tanggal == date.format(dateFormatter) }
+                val entries = moodEntries.filter { it.tanggal == date.format(dbFormatter) }
                 if (entries.isNotEmpty()) {
                     val moodCountMap = entries.groupingBy { it.mood }.eachCount()
                     val maxCount = moodCountMap.values.maxOrNull()
@@ -133,7 +138,6 @@ class HomeFragment : Fragment() {
 
             override fun bind(container: DayViewContainer, data: CalendarDay) {
                 container.day = data
-
                 val dayText = container.textView
                 val emojiIcon = container.emojiIcon
 
@@ -144,7 +148,7 @@ class HomeFragment : Fragment() {
                     val mood = moodCache[date]
                     if (mood != null) {
                         emojiIcon.visibility = View.VISIBLE
-                        emojiIcon.setImageResource(getMoodEmojiDrawable(mood))
+                        emojiIcon.setImageResource(MoodUtils.getMoodIcon(mood))
                         dayText.text = date.dayOfMonth.toString()
                     } else {
                         emojiIcon.visibility = View.VISIBLE
@@ -154,7 +158,7 @@ class HomeFragment : Fragment() {
 
                     // Listener untuk klik pada hari
                     container.view.setOnClickListener {
-                        val selectedDate = date.format(dateFormatter)
+                        val selectedDate = date.format(dbFormatter)
                         val action = HomeFragmentDirections.actionHomeFragmentToRiwayatTanggalFragment(selectedDate)
                         findNavController().navigate(action)
                     }
@@ -175,7 +179,7 @@ class HomeFragment : Fragment() {
             moodDates.clear()
             moodDates.addAll(entries.mapNotNull {
                 try {
-                    LocalDate.parse(it.tanggal, dateFormatter)
+                    LocalDate.parse(it.tanggal, dbFormatter)
                 } catch (e: Exception) {
                     null
                 }
@@ -283,17 +287,6 @@ class HomeFragment : Fragment() {
         val textView: TextView = view.findViewById(R.id.calendarDayText)
         val emojiIcon: ImageView = view.findViewById(R.id.emojiIcon)
         lateinit var day: CalendarDay
-    }
-
-    fun getMoodEmojiDrawable(mood: Int): Int {
-        return when (mood) {
-            1 -> R.drawable.para1
-            2 -> R.drawable.para2
-            3 -> R.drawable.para3
-            4 -> R.drawable.para4
-            5 -> R.drawable.para5
-            else -> R.drawable.ic_medi
-        }
     }
 
 }

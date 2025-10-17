@@ -23,11 +23,15 @@ import com.example.skripsta.data.FeelingViewModel
 import com.example.skripsta.data.MoodEntry
 import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.utils.MoodUtils
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -41,6 +45,8 @@ class TambahFragment : Fragment() {
     private var selectedFeelingText: String? = null
     private var selectedActivityItem: Item? = null
     private var selectedMoodButton: ImageButton? = null
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,21 +74,18 @@ class TambahFragment : Fragment() {
         val btnCal: EditText = view.findViewById(R.id.btn_cal)
         val btnClock: EditText = view.findViewById(R.id.btn_clock)
         val calendar = Calendar.getInstance()
+        val today = LocalDate.now()
+        val now = LocalTime.now()
 
-        val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-        btnClock.setText(timeFormat.format(calendar.time))
-
-        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
-        btnCal.setText(dateFormat.format(calendar.time))
+        btnCal.setText(MoodUtils.formatCal(today.format(dateFormatter)))
+        btnClock.setText(now.format(timeFormatter))
 
         btnClock.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
                 requireContext(),
                 { _, hourOfDay, minute ->
-                    val selectedTime = Calendar.getInstance()
-                    selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                    selectedTime.set(Calendar.MINUTE, minute)
-                    btnClock.setText(timeFormat.format(selectedTime.time))
+                    val selectedTime = LocalTime.of(hourOfDay, minute)
+                    btnClock.setText(selectedTime.format(timeFormatter))
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
@@ -95,13 +98,12 @@ class TambahFragment : Fragment() {
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    val selectedDate = Calendar.getInstance()
-                    selectedDate.set(year, month, dayOfMonth)
-                    btnCal.setText(dateFormat.format(selectedDate.time))
+                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                    btnCal.setText(MoodUtils.formatCal(selectedDate.format(dateFormatter)))
                 },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                today.year,
+                today.monthValue - 1,
+                today.dayOfMonth
             )
             datePickerDialog.show()
         }
@@ -189,6 +191,13 @@ class TambahFragment : Fragment() {
         val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
         val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
+        val storedDate = try {
+            val date = LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH))
+            date.format(dateFormatter)
+        } catch (e: Exception) {
+            selectedDate // Fallback to input if conversion fails
+        }
+
         if (moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Complete all data before saving!", Toast.LENGTH_SHORT).show()
             return
@@ -202,7 +211,7 @@ class TambahFragment : Fragment() {
             perasaan = selectedFeeling,
             judul = titleJournal,
             jurnal = journalContent,
-            tanggal = selectedDate,
+            tanggal = storedDate,
             jam = selectedTime
         )
 

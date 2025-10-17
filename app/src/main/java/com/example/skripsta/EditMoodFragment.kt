@@ -26,11 +26,14 @@ import com.example.skripsta.data.MoodEntryViewModel
 import com.example.skripsta.data.ActivityViewModel
 import com.example.skripsta.data.FeelingViewModel
 import com.example.skripsta.databinding.FragmentEditMoodBinding
+import com.example.skripsta.utils.MoodUtils
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -45,6 +48,9 @@ class EditMoodFragment : Fragment() {
     private var selectedFeelingText: String? = null
     private var selectedActivityItem: Item? = null
     private var selectedMoodButton: ImageButton? = null
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+    private val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +66,7 @@ class EditMoodFragment : Fragment() {
         binding = FragmentEditMoodBinding.inflate(inflater, container, false)
 
         val moodEntry = args.moodEntry
-        binding.btnCal.setText(moodEntry.tanggal)
+        binding.btnCal.setText(MoodUtils.formatCal(moodEntry.tanggal))
         binding.btnClock.setText(moodEntry.jam)
         binding.tvJurnaling.setText(moodEntry.jurnal)
         binding.etJornal.setText(moodEntry.judul)
@@ -73,8 +79,6 @@ class EditMoodFragment : Fragment() {
         )
 
         val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
-        val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
         setupMoodButtons(binding.root, moodEntry.mood)
 
@@ -100,7 +104,8 @@ class EditMoodFragment : Fragment() {
                 { _, year, month, dayOfMonth ->
                     val selectedDate = Calendar.getInstance()
                     selectedDate.set(year, month, dayOfMonth)
-                    binding.btnCal.setText(dateFormat.format(selectedDate.time))
+                    binding.btnCal.setText(MoodUtils.formatCal(dateFormat.format(selectedDate.time)))
+
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -251,6 +256,13 @@ class EditMoodFragment : Fragment() {
         val selectedDate = binding.btnCal.text.toString()
         val selectedTime = binding.btnClock.text.toString()
 
+        val storedDate = try {
+            val date = LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH))
+            date.format(dateFormatter)
+        } catch (e: Exception) {
+            selectedDate // Fallback to input if conversion fails
+        }
+
         if (moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
             Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
             return
@@ -264,7 +276,7 @@ class EditMoodFragment : Fragment() {
             perasaan = selectedFeeling,
             judul = titleJournal,
             jurnal = journalContent,
-            tanggal = selectedDate,
+            tanggal = storedDate,
             jam = selectedTime
         )
 

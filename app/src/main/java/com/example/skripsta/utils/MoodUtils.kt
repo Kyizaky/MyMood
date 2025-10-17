@@ -1,10 +1,15 @@
 package com.example.skripsta.utils
 
 import com.example.skripsta.R
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 object MoodUtils {
+
+    private val inputDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+    private val outputDateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
+    private val outputDateFormatter2 = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
 
     fun getMoodIcon(mood: Int): Int {
         return when (mood) {
@@ -19,12 +24,19 @@ object MoodUtils {
 
     fun formatTanggal(tanggal: String): String {
         return try {
-            val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH)
-            val date = inputFormat.parse(tanggal)
-            outputFormat.format(date!!)
+            val date = LocalDate.parse(tanggal, inputDateFormatter)
+            date.format(outputDateFormatter)
         } catch (e: Exception) {
-            tanggal
+            tanggal // Return original string if parsing fails
+        }
+    }
+
+    fun formatCal(tanggal: String): String {
+        return try {
+            val date = LocalDate.parse(tanggal, inputDateFormatter)
+            date.format(outputDateFormatter2)
+        } catch (e: Exception) {
+            tanggal // Return original string if parsing fails
         }
     }
 
@@ -49,5 +61,4 @@ object MoodUtils {
             else -> "Unknown Mood"
         }
     }
-
 }

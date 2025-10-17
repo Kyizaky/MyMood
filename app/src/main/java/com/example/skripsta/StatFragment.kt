@@ -149,7 +149,7 @@ class StatFragment : Fragment() {
     private fun observeDataPie() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCount = mutableMapOf<Int, Int>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val parseFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
             val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetMonth = "%02d".format(months.indexOf(selectedMonthPie) + 1)
@@ -370,7 +370,7 @@ class StatFragment : Fragment() {
     private fun observeDataRanking() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val activityCount = mutableMapOf<String, Pair<Int, Int>>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val parseFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
             val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetMonth = "%02d".format(months.indexOf(selectedMonthActivity) + 1)
@@ -416,7 +416,7 @@ class StatFragment : Fragment() {
     private fun observeDataFeelingRanking() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val feelingCount = mutableMapOf<String, Pair<Int, Int>>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val parseFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
             val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetMonth = "%02d".format(months.indexOf(selectedMonthFeeling) + 1)
@@ -460,7 +460,7 @@ class StatFragment : Fragment() {
 
     private fun observeDataLineChart() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val parseFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val dayFormat = SimpleDateFormat("dd", Locale.ENGLISH)
             val monthFormat = SimpleDateFormat("MM", Locale.ENGLISH)
             val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
@@ -626,7 +626,7 @@ class StatFragment : Fragment() {
     private fun observeMoodData() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->
             val moodCountPerDay = mutableMapOf<String, Int>()
-            val parseFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val parseFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val yearFormat = SimpleDateFormat("yyyy", Locale.ENGLISH)
             val targetYear = selectedYearCalendar
 

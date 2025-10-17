@@ -54,8 +54,7 @@ class RiwayatFragment : Fragment() {
         moodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
 
         selectedFullDate = LocalDate.now()
-        binding.dateButton.text =
-            selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
+        binding.dateButton.text = MoodUtils.formatTanggal(selectedFullDate!!.toString())
 
         setupDatePickerButton()
         setupRecyclerView()
@@ -147,8 +146,7 @@ class RiwayatFragment : Fragment() {
             val year = yearsList[yearPicker.value].toInt()
             selectedFullDate = LocalDate.of(year, month, day)
 
-            binding.dateButton.text =
-                selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
+            binding.dateButton.text = MoodUtils.formatTanggal(selectedFullDate!!.toString())
             moodEntryViewModel.readAllData.value?.let {
                 updateRecyclerView(it)
             }
@@ -161,11 +159,10 @@ class RiwayatFragment : Fragment() {
 
     private fun updateButtonsIfNeeded() {
         val now = LocalDate.now()
-        val currentMonthYear = now.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH))
+        val currentMonthYear = now.format(DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH))
         if (currentMonthYear != lastCheckedMonth) {
             selectedFullDate = now
-            binding.dateButton.text =
-                selectedFullDate?.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH))
+            binding.dateButton.text = MoodUtils.formatTanggal(selectedFullDate!!.toString())
             moodEntryViewModel.readAllData.value?.let {
                 updateRecyclerView(it)
             }
@@ -188,13 +185,29 @@ class RiwayatFragment : Fragment() {
 
     private fun updateRecyclerView(moodEntries: List<MoodEntry>) {
         val selectedDate = selectedFullDate ?: return
-        val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
         val filteredEntries = moodEntries.filter { entry ->
-            val entryDate = LocalDate.parse(entry.tanggal, formatter)
-            entryDate == selectedDate
+            try {
+                val entryDate = LocalDate.parse(entry.tanggal, inputFormatter)
+                entryDate == selectedDate
+            } catch (e: Exception) {
+                false
+            }
         }.sortedByDescending { it.jam }
 
+        // Perbarui adapter
         moodHistoryAdapter.submitList(filteredEntries)
+
+        // Atur visibilitas berdasarkan data
+        if (filteredEntries.isEmpty()) {
+            binding.historyRecyclerView.visibility = View.GONE
+            binding.tvNoData.visibility = View.VISIBLE
+        } else {
+            binding.historyRecyclerView.visibility = View.VISIBLE
+            binding.tvNoData.visibility = View.GONE
+        }
     }
+
 }
