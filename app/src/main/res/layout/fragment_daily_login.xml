@@ -27,7 +27,7 @@
             android:text="Total Day"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:textColor="#94A3B8"
+            android:textColor="@color/black"
             android:layout_marginTop="8dp"
             android:textSize="12sp"
             android:fontFamily="@font/nunitosemibold" />
@@ -43,8 +43,7 @@
             android:layout_marginTop="17dp"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:fontFamily="@font/nunitosemibold" />
-
+            android:fontFamily="@font/nunitobold" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -177,6 +176,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Login to the App"
+                    android:textColor="@color/black"
                     android:fontFamily="@font/nunitoregular"
                     android:layout_marginStart="8dp"
                     android:textSize="14sp"/>
@@ -197,6 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:text="Log mood once"
+                    android:textColor="@color/black"
                     android:fontFamily="@font/nunitoregular"
                     android:layout_marginStart="8dp"
                     android:textSize="14sp"/>
@@ -208,8 +209,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="90dp"
                 android:layout_marginTop="5dp"
-                android:fontFamily="@font/nunitoregular"
+                android:fontFamily="@font/nunitobold"
                 android:textColor="#FFFFFF"
+                android:textAllCaps="false"
+                android:textSize="15sp"
                 android:background="@drawable/bg_btn"
                 android:text="Claim"/>
 

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
-        android:text="Klik lingkaran untuk memulai"
+        android:text="Tap the circle to start"
         android:textSize="20sp"
         android:textColor="#000"
         android:fontFamily="@font/nunitosemibold"
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Click me!!"
-        android:fontFamily="@font/nunitosemibold"
+        android:fontFamily="@font/nunitobold"
         android:textSize="18sp"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />

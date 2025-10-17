@@ -42,6 +42,11 @@ class PengaturanFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        binding.btnExportImportdata.setOnClickListener {
+            val action = PengaturanFragmentDirections.actionPengaturanFragmentToExportImportFragment()
+            findNavController().navigate(action)
+        }
+
         return binding.root
     }
 

@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.core.graphics.toColorInt
 import com.example.skripsta.utils.MoodUtils
+import com.example.skripsta.utils.MoodUtils.formatMonthName
 
 class StatFragment : Fragment() {
 
@@ -142,9 +143,6 @@ class StatFragment : Fragment() {
         return view
     }
 
-    private fun formatMonthName(month: String): String {
-        return month.lowercase(Locale.ENGLISH).replaceFirstChar { it.titlecase(Locale.US) }
-    }
 
     private fun observeDataPie() {
         mMoodEntryViewModel.readAllData.observe(viewLifecycleOwner) { users ->

@@ -22,13 +22,13 @@ class PinLockViewModel : ViewModel() {
         return pin == savedPin
     }
 
+    fun deletePin(context: Context) {
+        val prefs = context.getSharedPreferences("pin_prefs", Context.MODE_PRIVATE)
+        prefs.edit().remove("user_pin").apply()
+    }
+
     fun hasPin(context: Context): Boolean {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return prefs.contains(PIN_KEY)
-    }
-
-    fun clearPin(context: Context) {
-        val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        prefs.edit().remove(PIN_KEY).apply()
     }
 }

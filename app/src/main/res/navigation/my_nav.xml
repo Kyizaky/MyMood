@@ -93,6 +93,9 @@
         <action
             android:id="@+id/action_pengaturanFragment_to_shareFragment"
             app:destination="@id/shareFragment" />
+        <action
+            android:id="@+id/action_pengaturanFragment_to_exportImportFragment"
+            app:destination="@id/exportImportFragment" />
     </fragment>
 
     <fragment
@@ -374,6 +377,14 @@
         tools:layout="@layout/fragment_share" >
         <action
             android:id="@+id/action_shareFragment_to_pengaturanFragment"
+            app:destination="@id/pengaturanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/exportImportFragment"
+        android:name="com.example.skripsta.ExportImportFragment"
+        android:label="ExportImportFragment" >
+        <action
+            android:id="@+id/action_exportImportFragment_to_pengaturanFragment"
             app:destination="@id/pengaturanFragment" />
     </fragment>
 

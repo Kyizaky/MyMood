@@ -64,7 +64,7 @@
                 android:id="@+id/tvGuide"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Konfirmasi kode PIN"
+                android:text="Enter PIN"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/nunitobold"
@@ -310,6 +310,21 @@
                 android:scaleType="centerInside" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/btn_delete_pin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Remove PIN"
+            android:layout_marginTop="10dp"
+            android:textColor="#FF0000"
+            android:textSize="16sp"
+            android:fontFamily="@font/nunitoregular"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
+            android:clickable="true"
+            android:focusable="true" />
 
     </LinearLayout>
 

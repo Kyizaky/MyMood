@@ -32,6 +32,16 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun replaceUsers(users: List<User>) = viewModelScope.launch {
+        repository.replaceUsers(users)
+    }
+
+    fun deleteAllUsers() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllUsers()
+        }
+    }
+
     suspend fun getUserById(userId: Int): User? {
         return repository.getUserById(userId)
     }

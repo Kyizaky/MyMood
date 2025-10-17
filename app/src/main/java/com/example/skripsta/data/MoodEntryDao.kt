@@ -6,16 +6,29 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 
 @Dao
 interface MoodEntryDao {
 
+    @Query("SELECT * FROM mood_entry_table ORDER BY id ASC")
+    fun readAllData(): LiveData<List<MoodEntry>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addMoodEntry(moodEntry: MoodEntry)
 
-    @Query("SELECT * FROM mood_entry_table ORDER BY id ASC")
-    fun readAllData(): LiveData<List<MoodEntry>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addMoodEntryAll(moodEntries: List<MoodEntry>)
+
+    @Query("DELETE FROM mood_entry_table")
+    suspend fun deleteAllMoodEntry()
+
+    @Transaction
+    suspend fun replaceMoodEntry(moodEntries: List<MoodEntry>) {
+        deleteAllMoodEntry()
+        addMoodEntryAll(moodEntries)
+    }
 
     @Update
     suspend fun updateMoodEntry(moodEntry: MoodEntry)

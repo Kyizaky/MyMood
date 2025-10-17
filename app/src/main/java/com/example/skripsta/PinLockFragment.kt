@@ -61,6 +61,18 @@ class PinLockFragment : Fragment() {
              findNavController().popBackStack()
          }
 
+        binding.btnDeletePin.setOnClickListener {
+            if (viewModel.hasPin(requireContext())) {
+                viewModel.deletePin(requireContext())
+                hasExistingPin = false
+                Snackbar.make(binding.root, "PIN deleted successfully", Snackbar.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_pinLockFragment_to_pengaturanFragment)
+            } else {
+                Snackbar.make(binding.root, "No PIN saved", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
+
         setupButtons()
         updatePinDots()
         updateGuideText()
@@ -123,7 +135,7 @@ class PinLockFragment : Fragment() {
                 if (viewModel.verifyPin(requireContext(), enteredPin)) {
                     currentStep = Step.ENTER_NEW_PIN
                 } else {
-                    Snackbar.make(binding.root, "PIN lama salah", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "Incorrect old PIN", Snackbar.LENGTH_SHORT).show()
                 }
                 enteredPin = ""
                 updatePinDots()
@@ -147,7 +159,7 @@ class PinLockFragment : Fragment() {
                     Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_pinLockFragment_to_pengaturanFragment)
                 } else {
-                    Snackbar.make(binding.root, "PIN tidak cocok, ulangi", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, "PINs do not match, please try again", Snackbar.LENGTH_SHORT).show()
                     currentStep = Step.ENTER_NEW_PIN
                 }
                 enteredPin = ""
@@ -159,10 +171,10 @@ class PinLockFragment : Fragment() {
 
     private fun updateGuideText() {
         binding.tvGuide.text = when (currentStep) {
-            Step.ENTER_PIN -> "Masukkan PIN Anda untuk melanjutkan"
-            Step.ENTER_OLD_PIN -> "Masukkan PIN lama Anda"
-            Step.ENTER_NEW_PIN -> "Masukkan PIN baru"
-            Step.CONFIRM_NEW_PIN -> "Konfirmasi PIN baru"
+            Step.ENTER_PIN -> "Enter your PIN"
+            Step.ENTER_OLD_PIN -> "Enter your old PIN"
+            Step.ENTER_NEW_PIN -> "Enter your new PIN"
+            Step.CONFIRM_NEW_PIN -> "Confirm your new PIN"
         }
     }
 
@@ -174,6 +186,12 @@ class PinLockFragment : Fragment() {
             else
                 R.drawable.pin_dot_empty
             view.setBackgroundResource(drawableId)
+        }
+
+        binding.btnDeletePin.visibility = if (hasExistingPin && currentStep != Step.ENTER_PIN) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 

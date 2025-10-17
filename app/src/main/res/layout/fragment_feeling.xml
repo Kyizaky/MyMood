@@ -66,10 +66,11 @@
         android:textColor="@android:color/white"
         android:elevation="4dp"
         android:background="@drawable/bg_btn"
+        android:textSize="15sp"
         android:padding="8dp"
         android:layout_marginBottom="20dp"
         android:textAllCaps="false"
-        android:fontFamily="@font/nunitosemibold"
+        android:fontFamily="@font/nunitobold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

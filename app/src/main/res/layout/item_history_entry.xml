@@ -55,9 +55,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="18:00"
+
                 android:fontFamily="@font/nunitosemibold"
                 android:textSize="14sp"
-                android:textColor="#666666"
+                android:textColor="@color/black"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 

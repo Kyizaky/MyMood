@@ -455,7 +455,8 @@
                 android:elevation="4dp"
                 android:background="@drawable/bg_btn"
                 android:padding="8dp"
-                android:fontFamily="@font/nunitoregular" />
+                android:textSize="15sp"
+                android:fontFamily="@font/nunitobold" />
         </LinearLayout>
 
     </LinearLayout>

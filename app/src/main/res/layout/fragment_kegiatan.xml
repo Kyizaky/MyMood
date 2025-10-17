@@ -68,8 +68,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Meditation and mindfullnes are practices that help you ..."
+                            android:text="Meditation calms the mind and reduces stress"
                             android:textSize="14sp"
+                            android:fontFamily="@font/nunitosemibold"
                             android:textColor="#6D6D6D"
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
@@ -128,7 +129,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunitosemibold"
-                            android:text="Hold on, just breathe! Feeling better now? when you breathe ..."
+                            android:text="Hold on, just breathe! Feeling better now?"
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
                             android:layout_marginTop="4dp" />
@@ -189,7 +190,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunitosemibold"
-                            android:text="Hold on, just breathe! Feeling better now? when you breathe ..."
+                            android:text="Ground yourself helps you stay calm and present"
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
                             android:layout_marginTop="4dp" />
@@ -250,7 +251,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunitosemibold"
-                            android:text="Hold on, just breathe! Feeling better now? when you breathe ..."
+                            android:text="Observe first means to pause, notice, and understand before reacting"
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
                             android:layout_marginTop="4dp" />

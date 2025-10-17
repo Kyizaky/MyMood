@@ -31,6 +31,11 @@ object MoodUtils {
         }
     }
 
+    fun formatMonthName(month: String): String {
+        return month.lowercase(Locale.ENGLISH).replaceFirstChar { it.titlecase(Locale.US) }
+    }
+
+
     fun formatCal(tanggal: String): String {
         return try {
             val date = LocalDate.parse(tanggal, inputDateFormatter)

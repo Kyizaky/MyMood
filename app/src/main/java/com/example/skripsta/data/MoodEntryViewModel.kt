@@ -1,11 +1,9 @@
 package com.example.skripsta.data
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.example.skripsta.utils.ExcelUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -24,6 +22,16 @@ class MoodEntryViewModel(application: Application) : AndroidViewModel(applicatio
     fun addMoodEntry(moodEntry: MoodEntry) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addMoodEntry(moodEntry)
+        }
+    }
+
+    fun replaceMoodEntry(moodList: List<MoodEntry>) = viewModelScope.launch {
+        repository.replaceMoodEntry(moodList)
+    }
+
+    fun deleteAllMoodEntry() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllMoodEntry()
         }
     }
 

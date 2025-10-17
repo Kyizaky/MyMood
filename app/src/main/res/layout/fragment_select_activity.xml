@@ -17,13 +17,11 @@
             android:padding="8dp"
             android:layout_marginBottom="20dp">
 
-            <TextView
+            <ImageView
                 android:id="@+id/cancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Back"
-                android:textColor="@color/black"
-                android:fontFamily="@font/nunitosemibold"
+                android:src="@drawable/ic_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -72,7 +70,8 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_btn"
                     android:elevation="4dp"
-                    android:fontFamily="@font/nunitosemibold"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/nunitobold"
                     android:padding="8dp"
                     android:text="Simpan"
                     android:textAllCaps="false"

@@ -61,7 +61,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/titleText"
+                android:id="@+id/tvTitleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -76,32 +76,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
-            <TextView
-                android:id="@+id/subTitleText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/titleText"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/nunitosemibold"
-                android:text="By: Maulana Rizky Richardy"
-                android:textColor="#B0BEC5"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/titleText" />
-
             <ImageView
                 android:id="@+id/playPauseButton"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="76dp"
                 android:background="@drawable/play_button_background"
                 android:src="@drawable/ic_play"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/subTitleText"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleText"
                 app:tint="#FFFFFF" />
 
             <View

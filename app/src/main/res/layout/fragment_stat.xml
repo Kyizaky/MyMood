@@ -198,9 +198,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Date"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitosemibold"
+                            android:fontFamily="@font/nunitobold"
                             android:textColor="#FFFFFF"
                             android:padding="8dp"
                             android:background="@drawable/bg_btn" />
@@ -267,10 +267,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Date"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:padding="8dp"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitosemibold"
+                            android:fontFamily="@font/nunitobold"
                             android:textColor="#FFFFFF"
                             android:background="@drawable/bg_btn" />
                     </LinearLayout>
@@ -320,10 +320,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Date"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:textColor="#FFFFFF"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitosemibold"
+                            android:fontFamily="@font/nunitobold"
                             android:padding="8dp"
                             android:background="@drawable/bg_btn" />
                     </LinearLayout>
@@ -374,10 +374,10 @@
                             android:layout_height="wrap_content"
                             android:text="Date"
                             android:textAllCaps="false"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:padding="8dp"
                             android:textColor="#FFFFFF"
-                            android:fontFamily="@font/nunitosemibold"
+                            android:fontFamily="@font/nunitobold"
                             android:background="@drawable/bg_btn" />
                     </LinearLayout>
 
@@ -427,11 +427,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Date"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:padding="8dp"
                             android:textColor="#FFFFFF"
                             android:textAllCaps="false"
-                            android:fontFamily="@font/nunitosemibold"
+                            android:fontFamily="@font/nunitobold"
                             android:background="@drawable/bg_btn" />
                     </LinearLayout>
 

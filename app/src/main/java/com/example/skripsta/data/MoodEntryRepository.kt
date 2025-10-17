@@ -10,6 +10,14 @@ class MoodEntryRepository(private val moodEntryDao: MoodEntryDao) {
         moodEntryDao.addMoodEntry(moodEntry)
     }
 
+    suspend fun deleteAllMoodEntry() {
+        moodEntryDao.deleteAllMoodEntry()
+    }
+
+    suspend fun replaceMoodEntry(moodList: List<MoodEntry>) {
+        moodEntryDao.replaceMoodEntry(moodList)
+    }
+
     suspend fun updateMoodEntry(moodEntry: MoodEntry) {
         moodEntryDao.updateMoodEntry(moodEntry)
     }

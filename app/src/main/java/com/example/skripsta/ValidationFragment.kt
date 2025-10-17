@@ -38,8 +38,15 @@ class ValidationFragment : Fragment() {
         val tvPrompt = view.findViewById<TextView>(R.id.tvMoodPrompt)
 
         btnBack.setOnClickListener {
-            val action = ValidationFragmentDirections.actionValidationFragmentToHomeFragment()
-            findNavController().navigate(action)
+            val navController = findNavController()
+            val navOptions = androidx.navigation.NavOptions.Builder()
+                .setPopUpTo(R.id.validationFragment, true)
+                .build()
+
+            navController.navigate(
+                ValidationFragmentDirections.actionValidationFragmentToHomeFragment(),
+                navOptions
+            )
         }
 
         when (moodType) {

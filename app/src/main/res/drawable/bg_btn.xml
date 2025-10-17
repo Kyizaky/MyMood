@@ -8,10 +8,9 @@
         </shape>
     </item>
 
-    <!-- Main button layer -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#7699D4"/>
+            <solid android:color="#4F7DDB"/>
             <stroke
                 android:width="2dp"
             android:color="#D0D0D0"/>
