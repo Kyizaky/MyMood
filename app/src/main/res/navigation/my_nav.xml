@@ -48,7 +48,9 @@
         tools:layout="@layout/fragment_tambah" >
         <action
             android:id="@+id/action_tambahFragment_to_validationFragment"
-            app:destination="@id/validationFragment" />
+            app:destination="@id/validationFragment"
+            app:popUpTo="@id/tambahFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_tambahFragment_to_selectFeelingFragment"
             app:destination="@id/selectFeelingFragment" />

@@ -218,8 +218,6 @@ class TambahFragment : Fragment() {
         mMoodEntryViewModel.addMoodEntry(moodEntry)
         val action = TambahFragmentDirections.actionTambahFragmentToValidationFragment(moodType)
         findNavController().navigate(action)
-
-        findNavController().popBackStack(R.id.homeFragment, false)
     }
 
     private fun getSelectedMoodType(view: View): Int? {
