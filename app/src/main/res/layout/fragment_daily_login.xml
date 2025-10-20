@@ -213,7 +213,7 @@
                 android:textColor="#FFFFFF"
                 android:textAllCaps="false"
                 android:textSize="15sp"
-                android:background="@drawable/bg_btn"
+                android:background="@drawable/bg_btn_disabled"
                 android:text="Claim"/>
 
         </LinearLayout>

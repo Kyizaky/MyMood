@@ -12,7 +12,7 @@ import com.example.skripsta.data.Item
 class ActivityAdapter(
     private val items: List<Item>,
     private val initialActivityName: String? = null,
-    private val onItemSelected: (Item) -> Unit
+    private val onItemSelected: (Item?) -> Unit // ubah agar bisa kirim null
 ) : RecyclerView.Adapter<ActivityAdapter.ViewHolder>() {
 
     private var selectedItem: Item? = items.find { it.text == initialActivityName }
@@ -29,19 +29,31 @@ class ActivityAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.imageView.setImageResource(if (item.isSelected) item.selectedDrawableId else item.drawableId)
+        holder.imageView.setImageResource(
+            if (item.isSelected) item.selectedDrawableId else item.drawableId
+        )
         holder.textView.text = item.getDisplayName()
         holder.itemView.isSelected = item.isSelected
 
         holder.itemView.setOnClickListener {
-            selectedItem?.let { prevItem ->
-                prevItem.isSelected = false
-                notifyItemChanged(items.indexOf(prevItem))
+            if (selectedItem == item) {
+                // Toggle off
+                item.isSelected = false
+                selectedItem = null
+                notifyItemChanged(position)
+                onItemSelected(null)
+            } else {
+                // Deselect item sebelumnya
+                selectedItem?.let { prevItem ->
+                    prevItem.isSelected = false
+                    notifyItemChanged(items.indexOf(prevItem))
+                }
+                // Pilih item baru
+                item.isSelected = true
+                selectedItem = item
+                notifyItemChanged(position)
+                onItemSelected(item)
             }
-            item.isSelected = true
-            selectedItem = item
-            notifyItemChanged(position)
-            onItemSelected(item)
         }
     }
 

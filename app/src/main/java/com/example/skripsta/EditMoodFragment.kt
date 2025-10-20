@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -132,6 +134,7 @@ class EditMoodFragment : Fragment() {
 
         setupRecyclerView(binding.root)
         setupFeelingRecyclerView(binding.root)
+        updateSaveButtonState(binding.root)
 
         return binding.root
     }
@@ -163,6 +166,7 @@ class EditMoodFragment : Fragment() {
             }
             button.setOnClickListener {
                 updateMoodSelection(it as ImageButton, moodButtons.map { view.findViewById<ImageButton>(it.first) })
+                updateSaveButtonState(view)
             }
         }
     }
@@ -188,6 +192,7 @@ class EditMoodFragment : Fragment() {
             }
             recyclerView.adapter = ActivityAdapter(displayedActivities, args.moodEntry.activities) { selectedItem ->
                 selectedActivityItem = selectedItem
+                updateSaveButtonState(view)
             }
         })
     }
@@ -206,6 +211,7 @@ class EditMoodFragment : Fragment() {
             Log.d("EditMoodFragment", "Displayed feelings: $displayedFeelings, Initial feeling: ${args.moodEntry.perasaan}")
             recyclerView.adapter = FeelingAdapter(displayedFeelings, args.moodEntry.perasaan) { selectedFeeling ->
                 selectedFeelingText = selectedFeeling
+                updateSaveButtonState(view)
             }
         })
     }
@@ -283,6 +289,25 @@ class EditMoodFragment : Fragment() {
         mMoodEntryViewModel.updateMoodEntry(updatedMood)
         Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
         findNavController().popBackStack()
+    }
+    private fun updateSaveButtonState(view: View) {
+        val moodType = getSelectedMoodType(view)
+        val selectedFeeling = selectedFeelingText
+        val selectedActivity = selectedActivityItem
+        val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
+        val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
+
+        val saveButton = view.findViewById<Button>(R.id.btnUpdate)
+        val isComplete = moodType != null && selectedFeeling != null &&
+                selectedActivity != null && selectedDate.isNotBlank() && selectedTime.isNotBlank()
+
+        if (isComplete) {
+            saveButton.setBackgroundResource(R.drawable.bg_btn)
+            saveButton.isEnabled = true
+        } else {
+            saveButton.setBackgroundResource(R.drawable.bg_btn_disabled)
+            saveButton.isEnabled = false
+        }
     }
 
 }

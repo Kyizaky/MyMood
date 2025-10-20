@@ -86,6 +86,7 @@ class TambahFragment : Fragment() {
                 { _, hourOfDay, minute ->
                     val selectedTime = LocalTime.of(hourOfDay, minute)
                     btnClock.setText(selectedTime.format(timeFormatter))
+                    updateSaveButtonState(view)
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
@@ -100,6 +101,7 @@ class TambahFragment : Fragment() {
                 { _, year, month, dayOfMonth ->
                     val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
                     btnCal.setText(MoodUtils.formatCal(selectedDate.format(dateFormatter)))
+                    updateSaveButtonState(view)
                 },
                 today.year,
                 today.monthValue - 1,
@@ -111,6 +113,7 @@ class TambahFragment : Fragment() {
         setupMoodButtons(view)
         setupRecyclerView(view)
         setupFeelingRecyclerView(view)
+        updateSaveButtonState(view)
 
         view.findViewById<ImageView>(R.id.edit_activities_button).setOnClickListener {
             findNavController().navigate(R.id.action_tambahFragment_to_selectActivityFragment)
@@ -131,6 +134,7 @@ class TambahFragment : Fragment() {
         moodButtons.forEach { (id, _) ->
             view.findViewById<ImageButton>(id).setOnClickListener { button ->
                 updateMoodSelection(button as ImageButton, moodButtons.map { view.findViewById<ImageButton>(it.first) })
+                updateSaveButtonState(view)
             }
         }
     }
@@ -156,6 +160,7 @@ class TambahFragment : Fragment() {
             }
             recyclerView.adapter = ActivityAdapter(displayedActivities) { selectedItem ->
                 selectedActivityItem = selectedItem
+                updateSaveButtonState(view)
             }
         })
     }
@@ -178,6 +183,7 @@ class TambahFragment : Fragment() {
             val displayedFeelings = feelings.filter { it.name in selectedNames }.map { it.name }
             recyclerView.adapter = FeelingAdapter(displayedFeelings) { selectedFeeling ->
                 selectedFeelingText = selectedFeeling
+                updateSaveButtonState(view)
             }
         })
     }
@@ -255,4 +261,25 @@ class TambahFragment : Fragment() {
         selectedMoodButton = button
         return true
     }
+
+    private fun updateSaveButtonState(view: View) {
+        val moodType = getSelectedMoodType(view)
+        val selectedFeeling = selectedFeelingText
+        val selectedActivity = selectedActivityItem
+        val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
+        val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
+
+        val saveButton = view.findViewById<Button>(R.id.btn_save)
+        val isComplete = moodType != null && selectedFeeling != null &&
+                selectedActivity != null && selectedDate.isNotBlank() && selectedTime.isNotBlank()
+
+        if (isComplete) {
+            saveButton.setBackgroundResource(R.drawable.bg_btn)
+            saveButton.isEnabled = true
+        } else {
+            saveButton.setBackgroundResource(R.drawable.bg_btn_disabled)
+            saveButton.isEnabled = false
+        }
+    }
+
 }

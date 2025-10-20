@@ -113,6 +113,10 @@ class DailyLoginFragment : Fragment() {
                         "Claimed 1 point!",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    binding.btnClaimPoint.isEnabled = false
+                    binding.btnClaimPoint.setBackgroundResource(R.drawable.bg_btn_disabled)
+
                     user?.let {
                         binding.tvStreakCount.text = it.points.toString()
                         val currentIndex = it.currentPetIndex.coerceIn(0, petDrawables.size - 1)
@@ -144,6 +148,9 @@ class DailyLoginFragment : Fragment() {
                         "Complete all mandatory tasks to claim points!",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    binding.btnClaimPoint.isEnabled = false
+                    binding.btnClaimPoint.setBackgroundResource(R.drawable.bg_btn_disabled)
                 }
             }
         }
@@ -219,10 +226,25 @@ class DailyLoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         lifecycleScope.launch {
+            val user = userViewModel.getUserById(currentUserId)
+            val today = LocalDate.now().format(dbDateFormatter)
             val canClaim = userViewModel.canClaimToday(currentUserId)
-            binding.btnClaimPoint.isEnabled = canClaim
+            val isTaskComplete = user?.lastLoginDate == today && user?.lastMoodEntryDate == today
+
+            val isEnabled = canClaim && isTaskComplete
+            binding.btnClaimPoint.isEnabled = isEnabled
+
+            // Ubah background sesuai status
+            val backgroundRes = if (isEnabled) {
+                R.drawable.bg_btn
+            } else {
+                R.drawable.bg_btn_disabled
+            }
+            binding.btnClaimPoint.setBackgroundResource(backgroundRes)
         }
     }
+
+
 
 
     private fun updateChecklist(user: User) {
