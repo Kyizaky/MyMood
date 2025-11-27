@@ -37,7 +37,6 @@ class HomeFragment : Fragment() {
     private lateinit var moodEntryViewModel: MoodEntryViewModel
     private var moodEntries: List<MoodEntry> = emptyList()
     private val dbFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
-    private val displayFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
 
 
     private val moodDates = mutableSetOf<LocalDate>()
@@ -195,7 +194,7 @@ class HomeFragment : Fragment() {
             val user = userList.find { it.id == userId }
             // Cek apakah user login hari ini, kalau tidak reset streakCount
 
-            binding.pointsText.text = user?.let { "Poin: ${it.points}" } ?: "Poin: 0"
+            binding.pointsText.text = user?.let { "Total Day: ${it.points}" } ?: "Total: 0"
             updateWeeklyStatus()
         }
 

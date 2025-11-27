@@ -114,6 +114,12 @@ class MeditationFragment : Fragment() {
         builder.show()
     }
 
+    private fun formatTime(milliseconds: Int): String {
+        val seconds = (milliseconds / 1000) % 60
+        val minutes = (milliseconds / 1000) / 60
+        return String.format("%02d:%02d", minutes, seconds)
+    }
+
     private fun playAudio() {
         mediaPlayer.start()
         isPlaying = true
@@ -127,30 +133,50 @@ class MeditationFragment : Fragment() {
         binding.playPauseButton.setImageResource(R.drawable.ic_play)
     }
 
-    private fun resetAudio() {
-        mediaPlayer.seekTo(0)
-        binding.seekBar.progress = 0f
-        pauseAudio()
-    }
-
-    private fun updateSeekBar() {
-        if (mediaPlayer.isPlaying) {
-            val progress = (mediaPlayer.currentPosition / mediaPlayer.duration.toFloat()) * 100
-            binding.seekBar.progress = progress
-            binding.currentTimeText.text = formatTime(mediaPlayer.currentPosition)
-            binding.seekBar.postDelayed({ updateSeekBar() }, 100)
+    private val updateRunnable = object : Runnable {
+        override fun run() {
+            if (this@MeditationFragment::mediaPlayer.isInitialized &&
+                tryCheckPlaying()) {
+                val progress = (mediaPlayer.currentPosition / mediaPlayer.duration.toFloat()) * 100
+                binding.seekBar.progress = progress
+                binding.currentTimeText.text = formatTime(mediaPlayer.currentPosition)
+                binding.seekBar.postDelayed(this, 100)
+            }
         }
     }
 
-    private fun formatTime(milliseconds: Int): String {
-        val seconds = (milliseconds / 1000) % 60
-        val minutes = (milliseconds / 1000) / 60
-        return String.format("%02d:%02d", minutes, seconds)
+    // Fungsi untuk cek aman tanpa crash
+    private fun tryCheckPlaying(): Boolean {
+        return try {
+            mediaPlayer.isPlaying
+        } catch (e: IllegalStateException) {
+            false
+        }
+    }
+
+    private fun updateSeekBar() {
+        binding.seekBar.removeCallbacks(updateRunnable)
+        binding.seekBar.post(updateRunnable)
+    }
+
+    private fun resetAudio() {
+        try {
+            mediaPlayer.seekTo(0)
+            binding.seekBar.progress = 0f
+            pauseAudio()
+            binding.seekBar.removeCallbacks(updateRunnable)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mediaPlayer.release()
+        binding.seekBar.removeCallbacks(updateRunnable) // Hentikan update loop
+        if (this::mediaPlayer.isInitialized) {
+            mediaPlayer.release()
+        }
         _binding = null
     }
+
 }
