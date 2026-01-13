@@ -402,7 +402,7 @@
                         android:id="@+id/etJornal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_btn_date"
+                        android:background="@drawable/rounded_background2"
                         android:hint="Title Journal"
                         android:padding="12dp"
                         android:textSize="16sp"

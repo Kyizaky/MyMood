@@ -14,43 +14,51 @@
         android:paddingVertical="20dp"
         android:paddingHorizontal="20dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:id="@+id/backIsisHistory"
                 android:layout_width="44dp"
                 android:layout_height="42dp"
-                android:src="@drawable/ic_back" />
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/txtDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
                 android:background="@drawable/bg_btn"
                 android:padding="8dp"
                 android:fontFamily="@font/nunitosemibold"
                 android:textColor="@color/white"
                 android:text="22 Mei 2024"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/txtTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
                 android:background="@drawable/bg_btn"
-                android:textColor="@color/white"
                 android:padding="8dp"
                 android:fontFamily="@font/nunitosemibold"
+                android:textColor="@color/white"
                 android:text="18.00"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <!-- Mood Container -->
         <LinearLayout
@@ -157,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:fontFamily="@font/nunitobold"
-                    android:background="@drawable/bg_btn_date"
+                    android:background="@drawable/bg_btn"
                     android:textColor="@color/white"
                     android:text="Aktivitas" />
             </LinearLayout>
@@ -235,7 +243,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                android:background="@drawable/bg_btn"
+                android:background="@drawable/bg_btn_del"
                 android:fontFamily="@font/nunitobold"
                 android:layout_marginStart="8dp" />
         </LinearLayout>

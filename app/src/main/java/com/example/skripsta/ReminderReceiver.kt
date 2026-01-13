@@ -17,30 +17,57 @@ import java.util.*
 
 class ReminderReceiver : BroadcastReceiver() {
 
+    // Fungsi utama yang dipanggil ketika alarm atau broadcast diterima
     override fun onReceive(context: Context, intent: Intent) {
+
+        // Log untuk debugging saat receiver dipanggil
         Log.d("ReminderReceiver", "onReceive called with action: ${intent.action}")
 
+        // Mengecek apakah broadcast berasal dari BOOT_COMPLETED
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
-            val sharedPreferences = context.getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+
+            // Mengambil data reminder dari SharedPreferences
+            val sharedPreferences =
+                context.getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
             val gson = Gson()
             val json = sharedPreferences.getString("reminders", null)
             val type = object : TypeToken<List<Reminder>>() {}.type
-            val reminders: List<Reminder> = if (json != null) gson.fromJson(json, type) else emptyList()
 
+            // Mengubah JSON menjadi list Reminder
+            val reminders: List<Reminder> =
+                if (json != null) gson.fromJson(json, type) else emptyList()
+
+            // Menjadwalkan ulang semua reminder setelah device reboot
             reminders.forEach { reminder ->
                 scheduleNextReminder(context, reminder)
-                Log.d("ReminderReceiver", "Re-scheduled reminder ${reminder.id} after boot")
+                Log.d(
+                    "ReminderReceiver",
+                    "Re-scheduled reminder ${reminder.id} after boot"
+                )
             }
             return
         }
 
+        // Mengambil ID reminder dari intent
         val reminderId = intent.getIntExtra("reminderId", -1)
-        val message = intent.getStringExtra("message") ?: "Don't forget to fill ur mood today"
-        Log.d("ReminderReceiver", "Processing reminder $reminderId with message: $message")
 
-        // Show notification
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // Mengambil pesan reminder atau menggunakan pesan default
+        val message =
+            intent.getStringExtra("message")
+                ?: "Don't forget to fill ur mood today"
+
+        Log.d(
+            "ReminderReceiver",
+            "Processing reminder $reminderId with message: $message"
+        )
+
+        // Menampilkan notifikasi
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         val channelId = "reminder_channel"
+
+        // Membuat notification channel (wajib Android 8+)
         val channel = NotificationChannel(
             channelId,
             "Reminder Notifications",
@@ -48,8 +75,10 @@ class ReminderReceiver : BroadcastReceiver() {
         ).apply {
             description = "Channel for reminder notifications"
         }
+
         notificationManager.createNotificationChannel(channel)
 
+        // Membangun notifikasi
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_home)
             .setContentTitle("Daily Reminder")
@@ -58,32 +87,64 @@ class ReminderReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
             .build()
 
+        // Menggunakan reminderId sebagai notificationId
         val notificationId = reminderId
-        notificationManager.notify(notificationId, notification)
-        Log.d("ReminderReceiver", "Notification sent with ID: $notificationId")
 
-        // Reschedule the reminder
-        val sharedPreferences = context.getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
+        // Menampilkan notifikasi ke sistem
+        notificationManager.notify(notificationId, notification)
+
+        Log.d(
+            "ReminderReceiver",
+            "Notification sent with ID: $notificationId"
+        )
+
+        // Mengambil ulang data reminder untuk penjadwalan berikutnya
+        val sharedPreferences =
+            context.getSharedPreferences("ReminderPrefs", Context.MODE_PRIVATE)
         val gson = Gson()
         val json = sharedPreferences.getString("reminders", null)
         val type = object : TypeToken<List<Reminder>>() {}.type
-        val reminders: List<Reminder> = if (json != null) gson.fromJson(json, type) else emptyList()
+
+        val reminders: List<Reminder> =
+            if (json != null) gson.fromJson(json, type) else emptyList()
+
+        // Mencari reminder berdasarkan ID
         val reminder = reminders.find { it.id == reminderId }
+
         if (reminder != null) {
+            // Menjadwalkan reminder untuk hari berikutnya
             scheduleNextReminder(context, reminder)
-            Log.d("ReminderReceiver", "Scheduled next reminder for ID: $reminderId")
+            Log.d(
+                "ReminderReceiver",
+                "Scheduled next reminder for ID: $reminderId"
+            )
         } else {
-            Log.w("ReminderReceiver", "Reminder $reminderId not found in SharedPreferences")
+            // Log jika reminder tidak ditemukan
+            Log.w(
+                "ReminderReceiver",
+                "Reminder $reminderId not found in SharedPreferences"
+            )
         }
     }
 
+    // Fungsi untuk menjadwalkan reminder ke hari berikutnya
     private fun scheduleNextReminder(context: Context, reminder: Reminder) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            Log.d("ReminderReceiver", "Cannot schedule exact alarms for reminder ${reminder.id}")
+
+        val alarmManager =
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Mengecek izin exact alarm untuk Android 12+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            !alarmManager.canScheduleExactAlarms()
+        ) {
+            Log.d(
+                "ReminderReceiver",
+                "Cannot schedule exact alarms for reminder ${reminder.id}"
+            )
             return
         }
 
+        // Mengatur waktu alarm ke hari berikutnya
         val calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
             add(Calendar.DAY_OF_YEAR, 1)
@@ -93,11 +154,16 @@ class ReminderReceiver : BroadcastReceiver() {
             set(Calendar.MILLISECOND, 0)
         }
 
+        // Intent untuk memicu ReminderReceiver kembali
         val intent = Intent(context, ReminderReceiver::class.java).apply {
-            putExtra("message", reminder.message ?: "Don't forget to fill your mood today")
+            putExtra(
+                "message",
+                reminder.message ?: "Don't forget to fill your mood today"
+            )
             putExtra("reminderId", reminder.id)
         }
 
+        // PendingIntent untuk alarm
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             reminder.id,
@@ -106,6 +172,7 @@ class ReminderReceiver : BroadcastReceiver() {
         )
 
         try {
+            // Menjadwalkan exact alarm
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
@@ -119,10 +186,18 @@ class ReminderReceiver : BroadcastReceiver() {
                     pendingIntent
                 )
             }
-            Log.d("ReminderReceiver", "Reminder ${reminder.id} scheduled for ${calendar.time}")
+
+            Log.d(
+                "ReminderReceiver",
+                "Reminder ${reminder.id} scheduled for ${calendar.time}"
+            )
+
         } catch (e: SecurityException) {
-            Log.e("ReminderReceiver", "Failed to schedule reminder ${reminder.id}: ${e.message}")
+            // Menangani error jika izin alarm tidak tersedia
+            Log.e(
+                "ReminderReceiver",
+                "Failed to schedule reminder ${reminder.id}: ${e.message}"
+            )
         }
     }
-
 }

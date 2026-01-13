@@ -7,94 +7,120 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.example.skripsta.viewmodel.PinLockViewModel
 import com.example.skripsta.databinding.FragmentPinLockBinding
 import com.google.android.material.snackbar.Snackbar
 
 class PinLockFragment : Fragment() {
 
+    // ViewBinding untuk mengakses komponen UI
     private var _binding: FragmentPinLockBinding? = null
     private val binding get() = _binding!!
+
+    // ViewModel untuk mengelola logika PIN
     private val viewModel: PinLockViewModel by viewModels()
 
+    // Argument dari Navigation Component
+    private val args: PinLockFragmentArgs by navArgs()
+
+    // Menyimpan PIN yang sedang diketik
     private var enteredPin = ""
+
+    // Menyimpan PIN sementara saat proses pembuatan / penggantian
     private var tempPin = ""
-    private var hasExistingPin = false
-    private var mode = Mode.LOGIN
+
+    // Menyimpan langkah saat ini
     private var currentStep = Step.ENTER_PIN
 
+    // Mode penggunaan PIN
+    private var mode = Mode.LOGIN
+
+    // Enum untuk mode PIN
     private enum class Mode {
-        LOGIN,
-        CHANGE_PIN
+        LOGIN,        // Mode verifikasi PIN
+        CREATE_PIN,   // Mode membuat PIN baru
+        CHANGE_PIN    // Mode mengganti PIN
     }
 
+    // Enum untuk tahapan input PIN
     private enum class Step {
-        ENTER_PIN,
-        ENTER_OLD_PIN,
-        ENTER_NEW_PIN,
-        CONFIRM_NEW_PIN
+        ENTER_PIN,        // Memasukkan PIN
+        ENTER_OLD_PIN,    // Memasukkan PIN lama
+        ENTER_NEW_PIN,    // Memasukkan PIN baru
+        CONFIRM_NEW_PIN   // Konfirmasi PIN baru
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        // Inflate layout menggunakan ViewBinding
         _binding = FragmentPinLockBinding.inflate(inflater, container, false)
 
-        // Ambil mode dari argument
-        mode = when (arguments?.getString("mode")) {
-            "change" -> Mode.CHANGE_PIN
-            else -> Mode.LOGIN
-        }
+        // Menentukan mode dan langkah awal
+        setupMode()
 
-        hasExistingPin = viewModel.hasPin(requireContext())
-
-        // Tentukan langkah awal
-        currentStep = when {
-            !hasExistingPin -> Step.ENTER_NEW_PIN // user pertama kali buat PIN
-            mode == Mode.CHANGE_PIN -> Step.ENTER_OLD_PIN
-            else -> Step.ENTER_PIN
-        }
-
-        binding.btnBack.visibility = if (mode == Mode.CHANGE_PIN) View.VISIBLE else View.GONE
-
-         binding.btnBack.setOnClickListener {
-             findNavController().popBackStack()
-         }
-
-        binding.btnDeletePin.setOnClickListener {
-            if (viewModel.hasPin(requireContext())) {
-                viewModel.deletePin(requireContext())
-                hasExistingPin = false
-                Snackbar.make(binding.root, "PIN deleted successfully", Snackbar.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_pinLockFragment_to_pengaturanFragment)
-            } else {
-                Snackbar.make(binding.root, "No PIN saved", Snackbar.LENGTH_SHORT).show()
-            }
-        }
-
-
+        // Mengatur tombol angka dan kontrol PIN
         setupButtons()
-        updatePinDots()
+
+        // Menampilkan teks panduan awal
         updateGuideText()
+
+        // Menampilkan titik PIN awal
+        updatePinDots()
+
+        // Tombol kembali
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         return binding.root
     }
 
+    // Mengatur mode PIN berdasarkan argument
+    private fun setupMode() {
+        mode = when (args.mode) {
+            "create" -> Mode.CREATE_PIN
+            "change" -> Mode.CHANGE_PIN
+            else -> Mode.LOGIN
+        }
+
+        // Menentukan langkah awal berdasarkan mode
+        currentStep = when (mode) {
+            Mode.LOGIN -> Step.ENTER_PIN
+            Mode.CREATE_PIN -> Step.ENTER_NEW_PIN
+            Mode.CHANGE_PIN -> Step.ENTER_OLD_PIN
+        }
+
+        // Tombol back hanya tampil jika bukan mode login
+        binding.btnBack.visibility =
+            if (mode == Mode.LOGIN) View.GONE else View.VISIBLE
+    }
+
+    // Mengatur tombol angka, hapus, dan OK
     private fun setupButtons() {
+
+        // Daftar tombol angka
         val numberButtons = listOf(
-            binding.btn0, binding.btn1, binding.btn2, binding.btn3, binding.btn4,
-            binding.btn5, binding.btn6, binding.btn7, binding.btn8, binding.btn9
+            binding.btn1, binding.btn2, binding.btn3,
+            binding.btn4, binding.btn5, binding.btn6,
+            binding.btn7, binding.btn8, binding.btn9,
+            binding.btn0
         )
 
-        numberButtons.forEach { button ->
-            button.setOnClickListener {
+        // Listener tombol angka
+        numberButtons.forEach { btn ->
+            btn.setOnClickListener {
                 if (enteredPin.length < 4) {
-                    enteredPin += button.text
+                    enteredPin += btn.text
                     updatePinDots()
                 }
             }
         }
 
+        // Tombol hapus PIN
         binding.btnBackspace.setOnClickListener {
             if (enteredPin.isNotEmpty()) {
                 enteredPin = enteredPin.dropLast(1)
@@ -102,101 +128,114 @@ class PinLockFragment : Fragment() {
             }
         }
 
-        binding.btnOk.setOnClickListener { handleStepLogic() }
+        // Tombol OK untuk memproses PIN
+        binding.btnOk.setOnClickListener {
+            if (enteredPin.length == 4) {
+                handlePinLogic()
+            }
+        }
     }
 
-    private fun handleStepLogic() {
-        if (enteredPin.length < 4) {
-            return
-        }
-
+    // Logika utama pengolahan PIN
+    private fun handlePinLogic() {
         when (currentStep) {
 
-            // Mode login
+            // Verifikasi PIN
             Step.ENTER_PIN -> {
                 if (viewModel.verifyPin(requireContext(), enteredPin)) {
-                    findNavController().navigate(
-                        R.id.action_pinLockFragment_to_homeFragment,
-                        null,
-                        androidx.navigation.NavOptions.Builder()
-                            .setPopUpTo(R.id.pinLockFragment, true) // hapus PinLock dari back stack
-                            .setLaunchSingleTop(true) // hindari duplikat home fragment
-                            .build()
-                    )
+
+                    // Mengecek target setelah PIN diverifikasi
+                    val target =
+                        findNavController()
+                            .previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.get<String>("pin_verified_target")
+
+                    if (target == "pin_settings") {
+                        findNavController().navigate(
+                            PinLockFragmentDirections
+                                .actionPinLockFragmentToPinSettingsFragment()
+                        )
+                    } else {
+                        findNavController().popBackStack()
+                    }
+
                 } else {
-                    Snackbar.make(binding.root, "PIN salah", Snackbar.LENGTH_SHORT).show()
+                    showError("Incorrect PIN")
                 }
-                enteredPin = ""
-                updatePinDots()
             }
 
-            // Ubah PIN - verifikasi PIN lama
+            // Verifikasi PIN lama
             Step.ENTER_OLD_PIN -> {
                 if (viewModel.verifyPin(requireContext(), enteredPin)) {
                     currentStep = Step.ENTER_NEW_PIN
                 } else {
-                    Snackbar.make(binding.root, "Incorrect old PIN", Snackbar.LENGTH_SHORT).show()
+                    showError("Incorrect current PIN")
                 }
-                enteredPin = ""
-                updatePinDots()
-                updateGuideText()
             }
 
-            // Ubah PIN - masukkan PIN baru
+            // Menyimpan PIN baru sementara
             Step.ENTER_NEW_PIN -> {
                 tempPin = enteredPin
                 currentStep = Step.CONFIRM_NEW_PIN
-                enteredPin = ""
-                updatePinDots()
-                updateGuideText()
             }
 
-            // Ubah PIN - konfirmasi PIN baru
+            // Konfirmasi PIN baru
             Step.CONFIRM_NEW_PIN -> {
                 if (enteredPin == tempPin) {
                     viewModel.savePin(requireContext(), enteredPin)
-                    val message = if (mode == Mode.CHANGE_PIN) "PIN berhasil diubah" else "PIN berhasil dibuat"
-                    Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_pinLockFragment_to_pengaturanFragment)
+                    Snackbar.make(binding.root, "PIN saved successfully", Snackbar.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
                 } else {
-                    Snackbar.make(binding.root, "PINs do not match, please try again", Snackbar.LENGTH_SHORT).show()
+                    showError("PINs do not match")
                     currentStep = Step.ENTER_NEW_PIN
                 }
-                enteredPin = ""
-                updatePinDots()
-                updateGuideText()
             }
         }
+
+        // Reset input PIN setelah proses
+        enteredPin = ""
+        updatePinDots()
+        updateGuideText()
     }
 
+    // Memperbarui teks panduan sesuai langkah
     private fun updateGuideText() {
         binding.tvGuide.text = when (currentStep) {
             Step.ENTER_PIN -> "Enter your PIN"
-            Step.ENTER_OLD_PIN -> "Enter your old PIN"
-            Step.ENTER_NEW_PIN -> "Enter your new PIN"
+            Step.ENTER_OLD_PIN -> "Enter your current PIN"
+            Step.ENTER_NEW_PIN -> "Create a new PIN"
             Step.CONFIRM_NEW_PIN -> "Confirm your new PIN"
         }
     }
 
+    // Memperbarui indikator titik PIN
     private fun updatePinDots() {
-        val dots = listOf(binding.pinDot1, binding.pinDot2, binding.pinDot3, binding.pinDot4)
-        dots.forEachIndexed { index, view ->
-            val drawableId = if (index < enteredPin.length)
-                R.drawable.pin_dot_filled
-            else
-                R.drawable.pin_dot_empty
-            view.setBackgroundResource(drawableId)
-        }
+        val dots = listOf(
+            binding.pinDot1,
+            binding.pinDot2,
+            binding.pinDot3,
+            binding.pinDot4
+        )
 
-        binding.btnDeletePin.visibility = if (hasExistingPin && currentStep != Step.ENTER_PIN) {
-            View.VISIBLE
-        } else {
-            View.GONE
+        dots.forEachIndexed { index, view ->
+            view.setBackgroundResource(
+                if (index < enteredPin.length)
+                    R.drawable.pin_dot_filled
+                else
+                    R.drawable.pin_dot_empty
+            )
         }
+    }
+
+    // Menampilkan pesan error
+    private fun showError(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Membersihkan binding untuk mencegah memory leak
         _binding = null
     }
 }

@@ -1,4 +1,4 @@
-package com.example.skripsta.data
+package com.example.skripsta.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.skripsta.data.entity.MoodEntry
 
 @Dao
 interface MoodEntryDao {
@@ -15,10 +16,10 @@ interface MoodEntryDao {
     @Query("SELECT * FROM mood_entry_table ORDER BY id ASC")
     fun readAllData(): LiveData<List<MoodEntry>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
     suspend fun addMoodEntry(moodEntry: MoodEntry)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun addMoodEntryAll(moodEntries: List<MoodEntry>)
 
     @Query("DELETE FROM mood_entry_table")

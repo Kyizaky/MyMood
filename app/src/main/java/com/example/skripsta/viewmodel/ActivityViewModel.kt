@@ -1,9 +1,12 @@
-package com.example.skripsta.data
+package com.example.skripsta.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.skripsta.data.entity.Activity
+import com.example.skripsta.data.repository.ActivityRepository
+import com.example.skripsta.data.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -12,7 +15,7 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
     val allActivities: LiveData<List<Activity>>
 
     init {
-        val activityDao = AppDatabase.getDatabase(application).activityDao()
+        val activityDao = AppDatabase.Companion.getDatabase(application).activityDao()
         repository = ActivityRepository(activityDao)
         allActivities = repository.allActivities
     }

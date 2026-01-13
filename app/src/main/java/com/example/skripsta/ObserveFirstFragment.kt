@@ -14,15 +14,26 @@ class ObserveFirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        // Inflate layout fragment observe pertama
         val view = inflater.inflate(R.layout.fragment_observe_first, container, false)
 
+        // Menghubungkan ImageView tombol kembali dari layout
         val goBack = view.findViewById<ImageView>(R.id.ic_go_back)
 
+        // Listener klik tombol kembali
         goBack.setOnClickListener {
-            val action = ObserveFirstFragmentDirections.actionObserveFirstFragmentToKegiatanFragment()
+
+            // Aksi navigasi dari ObserveFirstFragment ke KegiatanFragment
+            val action =
+                ObserveFirstFragmentDirections
+                    .actionObserveFirstFragmentToKegiatanFragment()
+
+            // Menjalankan navigasi menggunakan NavController
             findNavController().navigate(action)
         }
 
+        // Mengembalikan view fragment
         return view
     }
 

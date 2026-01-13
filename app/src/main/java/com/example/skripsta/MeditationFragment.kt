@@ -11,15 +11,23 @@ import com.example.skripsta.databinding.FragmentMeditationBinding
 import me.tankery.lib.circularseekbar.CircularSeekBar
 
 class MeditationFragment : Fragment() {
+
+    // Binding untuk mengakses view pada fragment
     private var _binding: FragmentMeditationBinding? = null
     private val binding get() = _binding!!
+
+    // MediaPlayer untuk memutar audio meditasi
     private lateinit var mediaPlayer: MediaPlayer
+
+    // Status apakah audio sedang diputar
     private var isPlaying = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        // Inisialisasi ViewBinding
         _binding = FragmentMeditationBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -27,27 +35,29 @@ class MeditationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Fullscreen immersive mode
+        // Mengaktifkan mode layar penuh (immersive mode)
         requireActivity().window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
-        // Tombol kembali
+        // Tombol kembali untuk menghentikan audio dan kembali ke halaman sebelumnya
         binding.goBack.setOnClickListener {
             resetAudio()
             requireActivity().onBackPressed()
         }
 
-        // Tombol petunjuk
+        // Tombol petunjuk meditasi
         binding.howTo.setOnClickListener {
             showCustomDialog()
         }
 
-        // Initialize MediaPlayer
+        // Inisialisasi MediaPlayer dengan audio meditasi
         mediaPlayer = MediaPlayer.create(requireContext(), R.raw.music)
 
-        // Listener seekbar melingkar
+        // Listener untuk circular seek bar
         binding.seekBar.setOnSeekBarChangeListener(object :
             CircularSeekBar.OnCircularSeekBarChangeListener {
+
+            // Mengatur posisi audio saat seekbar digeser
             override fun onProgressChanged(
                 circularSeekBar: CircularSeekBar?,
                 progress: Float,
@@ -64,27 +74,28 @@ class MeditationFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: CircularSeekBar?) {}
         })
 
-        // Tombol play/pause
+        // Tombol play dan pause audio
         binding.playPauseButton.setOnClickListener {
             if (isPlaying) pauseAudio() else playAudio()
         }
 
-        // Tombol reset
+        // Tombol reset audio
         binding.resetButton.setOnClickListener {
             resetAudio()
         }
 
-        // Update seekbar selama audio berjalan
+        // Update seekbar setelah audio siap diputar
         mediaPlayer.setOnPreparedListener {
             updateSeekBar()
         }
 
-        // Reset setelah selesai
+        // Reset audio ketika selesai diputar
         mediaPlayer.setOnCompletionListener {
             resetAudio()
         }
     }
 
+    // Menampilkan dialog petunjuk meditasi
     private fun showCustomDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Meditation Guide")
@@ -114,12 +125,14 @@ class MeditationFragment : Fragment() {
         builder.show()
     }
 
+    // Mengubah waktu audio dari milidetik ke format menit:detik
     private fun formatTime(milliseconds: Int): String {
         val seconds = (milliseconds / 1000) % 60
         val minutes = (milliseconds / 1000) / 60
         return String.format("%02d:%02d", minutes, seconds)
     }
 
+    // Memutar audio meditasi
     private fun playAudio() {
         mediaPlayer.start()
         isPlaying = true
@@ -127,17 +140,21 @@ class MeditationFragment : Fragment() {
         updateSeekBar()
     }
 
+    // Menjeda audio meditasi
     private fun pauseAudio() {
         mediaPlayer.pause()
         isPlaying = false
         binding.playPauseButton.setImageResource(R.drawable.ic_play)
     }
 
+    // Runnable untuk memperbarui seekbar dan waktu audio secara berkala
     private val updateRunnable = object : Runnable {
         override fun run() {
             if (this@MeditationFragment::mediaPlayer.isInitialized &&
                 tryCheckPlaying()) {
-                val progress = (mediaPlayer.currentPosition / mediaPlayer.duration.toFloat()) * 100
+
+                val progress =
+                    (mediaPlayer.currentPosition / mediaPlayer.duration.toFloat()) * 100
                 binding.seekBar.progress = progress
                 binding.currentTimeText.text = formatTime(mediaPlayer.currentPosition)
                 binding.seekBar.postDelayed(this, 100)
@@ -145,7 +162,7 @@ class MeditationFragment : Fragment() {
         }
     }
 
-    // Fungsi untuk cek aman tanpa crash
+    // Fungsi untuk mengecek status audio tanpa menyebabkan crash
     private fun tryCheckPlaying(): Boolean {
         return try {
             mediaPlayer.isPlaying
@@ -154,11 +171,13 @@ class MeditationFragment : Fragment() {
         }
     }
 
+    // Memulai pembaruan seekbar
     private fun updateSeekBar() {
         binding.seekBar.removeCallbacks(updateRunnable)
         binding.seekBar.post(updateRunnable)
     }
 
+    // Mengatur ulang audio ke posisi awal
     private fun resetAudio() {
         try {
             mediaPlayer.seekTo(0)
@@ -172,11 +191,16 @@ class MeditationFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.seekBar.removeCallbacks(updateRunnable) // Hentikan update loop
+
+        // Menghentikan update seekbar
+        binding.seekBar.removeCallbacks(updateRunnable)
+
+        // Melepaskan MediaPlayer untuk mencegah memory leak
         if (this::mediaPlayer.isInitialized) {
             mediaPlayer.release()
         }
+
+        // Membersihkan binding
         _binding = null
     }
-
 }

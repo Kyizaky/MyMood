@@ -1,6 +1,8 @@
-package com.example.skripsta.data
+package com.example.skripsta.data.repository
 
 import androidx.lifecycle.LiveData
+import com.example.skripsta.data.dao.ActivityDao
+import com.example.skripsta.data.entity.Activity
 
 class ActivityRepository(private val activityDao: ActivityDao) {
     val allActivities: LiveData<List<Activity>> = activityDao.getAllActivities()

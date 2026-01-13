@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.skripsta.data.MoodEntryViewModel
+import com.example.skripsta.viewmodel.MoodEntryViewModel
 import com.example.skripsta.databinding.FragmentBackUpBinding
+import com.example.skripsta.data.entity.MoodEntry
+import com.example.skripsta.utils.ExcelUtils
 import com.example.skripsta.utils.PdfUtils
 import kotlinx.coroutines.launch
 
@@ -19,48 +21,45 @@ class BackUpFragment : Fragment() {
     private var _binding: FragmentBackUpBinding? = null
     private val binding get() = _binding!!
 
+    // ViewModel untuk mengambil data mood
     private val moodEntryViewModel: MoodEntryViewModel by viewModels()
-    private var currentMoodList = emptyList<com.example.skripsta.data.MoodEntry>()
-
+    private var currentMoodList = emptyList<MoodEntry>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Inisialisasi ViewBinding
         _binding = FragmentBackUpBinding.inflate(inflater, container, false)
-        val view = binding.root
 
+        // Observasi data mood
         moodEntryViewModel.readAllData.observe(viewLifecycleOwner) { moodList ->
             currentMoodList = moodList
         }
 
+        // Tombol kembali
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
+        // Simpan ke PDF
         binding.btnSavePdf.setOnClickListener {
-            if (currentMoodList.isEmpty()) {
-                showEmptyWarning()
-                return@setOnClickListener
-            }
             handleExportAction {
                 PdfUtils.saveMoodEntriesToPdf(requireContext(), currentMoodList)
             }
         }
 
+        // Simpan ke Excel
         binding.btnSaveCsv.setOnClickListener {
-            if (currentMoodList.isEmpty()) {
-                showEmptyWarning()
-                return@setOnClickListener
-            }
             handleExportAction {
-                PdfUtils.saveMoodEntriesToPdf(requireContext(), currentMoodList)
+                ExcelUtils.saveMoodEntriesToExcel(requireContext(), currentMoodList)
             }
         }
 
-        return view
+        return binding.root
     }
 
+    // Menangani proses export data
     private fun handleExportAction(action: suspend () -> Unit) {
         if (currentMoodList.isEmpty()) {
             showEmptyWarning()
@@ -72,7 +71,6 @@ class BackUpFragment : Fragment() {
             try {
                 action()
             } catch (e: Exception) {
-                e.printStackTrace()
                 Toast.makeText(requireContext(), "❌ Error: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 showLoading(false)
@@ -80,10 +78,16 @@ class BackUpFragment : Fragment() {
         }
     }
 
+    // Peringatan jika data kosong
     private fun showEmptyWarning() {
-        Toast.makeText(requireContext(), "⚠️ No mood data available to export!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            "⚠️ Data mood kosong",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
+    // Mengatur tampilan loading
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.tvWarning.visibility = if (isLoading) View.GONE else View.VISIBLE

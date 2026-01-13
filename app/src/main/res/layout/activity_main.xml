@@ -10,22 +10,14 @@
     android:background="@color/app"
     tools:context=".MainActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/navHostFragmentContainer"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/navHostFragmentContainer"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/my_nav" />
-
-    </androidx.core.widget.NestedScrollView>
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/my_nav" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -33,6 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
+        app:itemTextAppearanceActive="@style/BottomNavTextStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
         app:menu="@menu/bottom_nav" />
 
 </LinearLayout>

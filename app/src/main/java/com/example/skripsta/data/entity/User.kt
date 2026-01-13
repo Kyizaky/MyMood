@@ -1,4 +1,4 @@
-package com.example.skripsta.data
+package com.example.skripsta.data.entity
 
 import android.os.Parcelable
 import androidx.room.Entity

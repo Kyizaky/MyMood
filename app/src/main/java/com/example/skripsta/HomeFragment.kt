@@ -14,9 +14,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.skripsta.data.MoodEntry
-import com.example.skripsta.data.MoodEntryViewModel
-import com.example.skripsta.data.UserViewModel
+import com.example.skripsta.data.entity.MoodEntry
+import com.example.skripsta.viewmodel.MoodEntryViewModel
+import com.example.skripsta.viewmodel.UserViewModel
 import com.example.skripsta.databinding.FragmentHomeBinding
 import com.example.skripsta.utils.ClaimPrefsHelper
 import com.example.skripsta.utils.MoodUtils
@@ -32,19 +32,33 @@ import java.util.Locale
 
 class HomeFragment : Fragment() {
 
+    // ViewBinding untuk fragment home
     private lateinit var binding: FragmentHomeBinding
+
+    // ViewModel untuk user dan mood
     private lateinit var userViewModel: UserViewModel
     private lateinit var moodEntryViewModel: MoodEntryViewModel
+
+    // List data mood
     private var moodEntries: List<MoodEntry> = emptyList()
-    private val dbFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
+    // Formatter tanggal database
+    private val dbFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
+    // Set tanggal yang memiliki mood
     private val moodDates = mutableSetOf<LocalDate>()
+
+    // Daftar nama bulan
     private val monthsList = listOf(
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     )
+
+    // Cache mood per tanggal untuk performa kalender
     private val moodCache = mutableMapOf<LocalDate, Int?>()
+
+    // ID icon checklist login mingguan
     private val loginIcons = listOf(
         R.id.login1, R.id.login2, R.id.login3, R.id.login4,
         R.id.login5, R.id.login6, R.id.login7
@@ -54,7 +68,11 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        // Inflate layout menggunakan ViewBinding
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        // Inisialisasi ViewModel
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         moodEntryViewModel = ViewModelProvider(this)[MoodEntryViewModel::class.java]
 
@@ -63,67 +81,85 @@ class HomeFragment : Fragment() {
         val currentYear = LocalDate.now().year
         val firstDayOfWeek = firstDayOfWeekFromLocale()
         val calendarView = binding.calendarView
+
+        // Konfigurasi rentang kalender
         calendarView.setup(
-            startMonth = YearMonth.of(currentYear, 1), // Start from January of current year
-            endMonth = YearMonth.of(currentYear + 5, 12), // End at December 5 years later
+            startMonth = YearMonth.of(currentYear, 1),
+            endMonth = YearMonth.of(currentYear + 5, 12),
             firstDayOfWeek = firstDayOfWeek
         )
+
+        // Scroll ke bulan saat ini
         calendarView.scrollToMonth(currentMonth)
 
-        // Setup header kalender
+        // Header bulan dan tombol navigasi
         val monthYearText = binding.monthYearText
         val btnPrevious = binding.btnPreviousMonth
         val btnNext = binding.btnNextMonth
 
+        // Update teks header bulan
         fun updateMonthHeader(month: YearMonth) {
-            val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
+            val formatter =
+                DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
             monthYearText.text = month.format(formatter)
         }
 
         updateMonthHeader(currentMonth)
 
-        // Listener untuk tombol Previous
+        // Navigasi bulan sebelumnya
         btnPrevious.setOnClickListener {
-            val currentVisibleMonth = calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
-            val previousMonth = currentVisibleMonth.minusMonths(1)
-            calendarView.smoothScrollToMonth(previousMonth)
+            val currentVisibleMonth =
+                calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
+            calendarView.smoothScrollToMonth(currentVisibleMonth.minusMonths(1))
         }
 
-        // Listener untuk tombol Next
+        // Navigasi bulan berikutnya
         btnNext.setOnClickListener {
-            val currentVisibleMonth = calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
-            val nextMonth = currentVisibleMonth.plusMonths(1)
-            calendarView.smoothScrollToMonth(nextMonth)
+            val currentVisibleMonth =
+                calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
+            calendarView.smoothScrollToMonth(currentVisibleMonth.plusMonths(1))
         }
 
-        // Fungsi untuk memperbarui moodCache berdasarkan bulan
+        // Update cache mood untuk bulan tertentu
         fun updateMoodCacheForMonth(yearMonth: YearMonth) {
             moodCache.clear()
-            val monthDates = yearMonth.atDay(1).datesUntil(yearMonth.plusMonths(1).atDay(1)).toList()
+            val monthDates =
+                yearMonth.atDay(1)
+                    .datesUntil(yearMonth.plusMonths(1).atDay(1))
+                    .toList()
+
             monthDates.forEach { date ->
-                val entries = moodEntries.filter { it.tanggal == date.format(dbFormatter) }
+                val entries =
+                    moodEntries.filter {
+                        it.tanggal == date.format(dbFormatter)
+                    }
+
                 if (entries.isNotEmpty()) {
-                    val moodCountMap = entries.groupingBy { it.mood }.eachCount()
+                    val moodCountMap =
+                        entries.groupingBy { it.mood }.eachCount()
                     val maxCount = moodCountMap.values.maxOrNull()
-                    val mostFrequentMoods = moodCountMap.filterValues { it == maxCount }.keys
-                    moodCache[date] = entries.lastOrNull { it.mood in mostFrequentMoods }?.mood
+                    val mostFrequentMoods =
+                        moodCountMap.filterValues { it == maxCount }.keys
+                    moodCache[date] =
+                        entries.lastOrNull { it.mood in mostFrequentMoods }?.mood
                 } else {
                     moodCache[date] = null
                 }
             }
         }
 
-        // Listener untuk scroll kalender
+        // Listener scroll bulan kalender
         calendarView.monthScrollListener = { month ->
             updateMonthHeader(month.yearMonth)
             updateMoodCacheForMonth(month.yearMonth)
             binding.calendarView.notifyCalendarChanged()
         }
 
-        // Tambahkan listener untuk TextView monthYearText
+        // Klik header untuk memilih bulan & tahun
         monthYearText.setOnClickListener {
             showMonthYearPickerDialog(currentMonth) { selectedMonth, selectedYear ->
-                val selectedYearMonth = YearMonth.of(selectedYear, selectedMonth)
+                val selectedYearMonth =
+                    YearMonth.of(selectedYear, selectedMonth)
                 calendarView.scrollToMonth(selectedYearMonth)
                 updateMonthHeader(selectedYearMonth)
                 updateMoodCacheForMonth(selectedYearMonth)
@@ -131,51 +167,64 @@ class HomeFragment : Fragment() {
             }
         }
 
-        // Setup dayBinder untuk kalender
-        calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
-            override fun create(view: View) = DayViewContainer(view)
+        // Binder tampilan setiap hari di kalender
+        calendarView.dayBinder =
+            object : MonthDayBinder<DayViewContainer> {
 
-            override fun bind(container: DayViewContainer, data: CalendarDay) {
-                container.day = data
-                val dayText = container.textView
-                val emojiIcon = container.emojiIcon
+                override fun create(view: View) =
+                    DayViewContainer(view)
 
-                if (data.position == DayPosition.MonthDate) {
-                    val date = data.date
+                override fun bind(container: DayViewContainer, data: CalendarDay) {
+                    val dayText = container.textView
+                    val emojiIcon = container.emojiIcon
 
-                    // Ambil mood dari cache
-                    val mood = moodCache[date]
-                    if (mood != null) {
-                        emojiIcon.visibility = View.VISIBLE
-                        emojiIcon.setImageResource(MoodUtils.getMoodIcon(mood))
+                    if (data.position == DayPosition.MonthDate) {
+                        val date = data.date
+                        val mood = moodCache[date]
+
+                        // Tampilkan icon mood atau placeholder
+                        if (mood != null) {
+                            emojiIcon.visibility = View.VISIBLE
+                            emojiIcon.setImageResource(
+                                MoodUtils.getMoodIcon(mood)
+                            )
+                        } else {
+                            emojiIcon.visibility = View.VISIBLE
+                            emojiIcon.setImageResource(R.drawable.circle_gray)
+                        }
+
                         dayText.text = date.dayOfMonth.toString()
-                    } else {
-                        emojiIcon.visibility = View.VISIBLE
-                        emojiIcon.setImageResource(R.drawable.circle_gray)
-                        dayText.text = date.dayOfMonth.toString() // Tampilkan tanggal jika tidak ada emoji
-                    }
 
-                    // Listener untuk klik pada hari
-                    container.view.setOnClickListener {
-                        val selectedDate = date.format(dbFormatter)
-                        val action = HomeFragmentDirections.actionHomeFragmentToRiwayatTanggalFragment(selectedDate)
-                        findNavController().navigate(action)
+                        // Navigasi ke riwayat tanggal
+                        container.view.setOnClickListener {
+                            val selectedDate =
+                                date.format(dbFormatter)
+                            val action =
+                                HomeFragmentDirections
+                                    .actionHomeFragmentToRiwayatTanggalFragment(
+                                        selectedDate
+                                    )
+                            findNavController().navigate(action)
+                        }
+                    } else {
+                        dayText.text = ""
+                        emojiIcon.visibility = View.GONE
+                        container.view.setOnClickListener(null)
                     }
-                } else {
-                    // Hari di luar bulan (misalnya, padding hari dari bulan sebelumnya/berikutnya)
-                    dayText.text = ""
-                    emojiIcon.visibility = View.GONE
-                    container.view.setOnClickListener(null)
                 }
             }
-        }
 
-        // Observe data dari database untuk memperbarui moodDates, cache, poin, dan streak
-        val sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getInt("current_user_id", 1)
+        // Ambil user aktif
+        val sharedPreferences =
+            requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val userId =
+            sharedPreferences.getInt("current_user_id", 1)
+
+        // Observasi data mood
         moodEntryViewModel.readAllData.observe(viewLifecycleOwner) { entries ->
             moodEntries = entries
             moodDates.clear()
+
             moodDates.addAll(entries.mapNotNull {
                 try {
                     LocalDate.parse(it.tanggal, dbFormatter)
@@ -183,35 +232,39 @@ class HomeFragment : Fragment() {
                     null
                 }
             })
-            // Perbarui cache untuk bulan saat ini
-            val currentVisibleMonth = calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
+
+            val currentVisibleMonth =
+                calendarView.findFirstVisibleMonth()?.yearMonth ?: currentMonth
             updateMoodCacheForMonth(currentVisibleMonth)
             binding.calendarView.notifyCalendarChanged()
         }
 
+        // Observasi data user
         userViewModel.readAllData.observe(viewLifecycleOwner) { userList ->
-            // Update points and streak display
             val user = userList.find { it.id == userId }
-            // Cek apakah user login hari ini, kalau tidak reset streakCount
-
-            binding.pointsText.text = user?.let { "Total Day: ${it.points}" } ?: "Total: 0"
+            binding.pointsText.text =
+                user?.let { "Total Day: ${it.points}" } ?: "Total: 0"
             updateWeeklyStatus()
         }
 
-        // Listener untuk CardView Daily
+        // Navigasi ke daily login
         binding.cardviewDaily.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_dailyLoginFragment)
+            findNavController()
+                .navigate(R.id.action_homeFragment_to_dailyLoginFragment)
         }
 
-        // Listener untuk tombol Riwayat
+        // Navigasi ke riwayat mood
         binding.riwayatButton.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_riwayatFragment)
+            findNavController()
+                .navigate(R.id.action_homeFragment_to_riwayatFragment)
         }
 
-        // Tambahan padding top untuk header agar tidak bentrok dengan status bar
+        // Penyesuaian padding status bar
         ViewCompat.setOnApplyWindowInsetsListener(binding.headerLayout) { view, insets ->
-            val topInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
-            val paddingTop = topInset + (15 * resources.displayMetrics.density).toInt() // 15dp + status bar
+            val topInset =
+                insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+            val paddingTop =
+                topInset + (15 * resources.displayMetrics.density).toInt()
             view.setPadding(
                 view.paddingLeft,
                 paddingTop,
@@ -224,68 +277,89 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    private fun showMonthYearPickerDialog(currentMonth: YearMonth, onConfirm: (Int, Int) -> Unit) {
+    // Dialog pemilih bulan dan tahun
+    private fun showMonthYearPickerDialog(
+        currentMonth: YearMonth,
+        onConfirm: (Int, Int) -> Unit
+    ) {
         val dialog = BottomSheetDialog(requireContext())
-        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_month_year_picker, null)
+        val dialogView =
+            LayoutInflater.from(context)
+                .inflate(R.layout.dialog_month_year_picker, null)
+
         dialog.setContentView(dialogView)
 
-        // Setup year range: from current year to 5 years in the future
         val currentYear = LocalDate.now().year
-        val yearsList = (currentYear..currentYear + 5).map { it.toString() }
+        val yearsList =
+            (currentYear..currentYear + 5).map { it.toString() }
 
-        // Setup NumberPicker untuk bulan
-        val monthPicker = dialogView.findViewById<NumberPicker>(R.id.monthPicker)
+        val monthPicker =
+            dialogView.findViewById<NumberPicker>(R.id.monthPicker)
         monthPicker.minValue = 0
         monthPicker.maxValue = monthsList.size - 1
         monthPicker.displayedValues = monthsList.toTypedArray()
         monthPicker.value = currentMonth.monthValue - 1
         monthPicker.wrapSelectorWheel = false
 
-        // Setup NumberPicker untuk tahun
-        val yearPicker = dialogView.findViewById<NumberPicker>(R.id.yearPicker)
+        val yearPicker =
+            dialogView.findViewById<NumberPicker>(R.id.yearPicker)
         yearPicker.minValue = 0
         yearPicker.maxValue = yearsList.size - 1
         yearPicker.displayedValues = yearsList.toTypedArray()
-        yearPicker.value = yearsList.indexOf(currentMonth.year.toString())
+        yearPicker.value =
+            yearsList.indexOf(currentMonth.year.toString())
         yearPicker.wrapSelectorWheel = false
 
-        // Listener untuk tombol Setuju
-        dialogView.findViewById<Button>(R.id.confirmButton).setOnClickListener {
-            val selectedMonthIndex = monthPicker.value + 1 // 1-12
-            val selectedYear = yearsList[yearPicker.value].toInt()
-            onConfirm(selectedMonthIndex, selectedYear)
-            dialog.dismiss()
-        }
+        dialogView.findViewById<Button>(R.id.confirmButton)
+            .setOnClickListener {
+                val selectedMonthIndex = monthPicker.value + 1
+                val selectedYear =
+                    yearsList[yearPicker.value].toInt()
+                onConfirm(selectedMonthIndex, selectedYear)
+                dialog.dismiss()
+            }
 
         dialog.show()
     }
 
+    // Update checklist login mingguan
     private fun updateWeeklyStatus() {
-        ClaimPrefsHelper.cleanOldClaimsKeepThisWeek(requireContext()) // auto hapus tanggal minggu lalu
 
+        // Bersihkan klaim lama
+        ClaimPrefsHelper.cleanOldClaimsKeepThisWeek(requireContext())
+
+        // Reset semua icon
         loginIcons.forEach { iconId ->
-            binding.root.findViewById<ImageView>(iconId)?.setImageResource(R.drawable.ic_nocheck)
+            binding.root.findViewById<ImageView>(iconId)
+                ?.setImageResource(R.drawable.ic_nocheck)
         }
 
-        val claimDates = ClaimPrefsHelper.getAllClaimDates(requireContext())
+        // Ambil tanggal klaim
+        val claimDates =
+            ClaimPrefsHelper.getAllClaimDates(requireContext())
+
         val today = LocalDate.now()
-        val weekStart = today.minusDays((today.dayOfWeek.value % 7).toLong())
+        val weekStart =
+            today.minusDays((today.dayOfWeek.value % 7).toLong())
 
         claimDates.forEach { date ->
             if (date >= weekStart) {
-                val dayIndex = ChronoUnit.DAYS.between(weekStart, date).toInt()
+                val dayIndex =
+                    ChronoUnit.DAYS.between(weekStart, date).toInt()
                 if (dayIndex in 0..6) {
-                    binding.root.findViewById<ImageView>(loginIcons[dayIndex])
+                    binding.root
+                        .findViewById<ImageView>(loginIcons[dayIndex])
                         ?.setImageResource(R.drawable.ic_checkbox)
                 }
             }
         }
     }
 
+    // Container untuk setiap tanggal di kalender
     inner class DayViewContainer(view: View) : ViewContainer(view) {
-        val textView: TextView = view.findViewById(R.id.calendarDayText)
-        val emojiIcon: ImageView = view.findViewById(R.id.emojiIcon)
-        lateinit var day: CalendarDay
+        val textView: TextView =
+            view.findViewById(R.id.calendarDayText)
+        val emojiIcon: ImageView =
+            view.findViewById(R.id.emojiIcon)
     }
-
 }

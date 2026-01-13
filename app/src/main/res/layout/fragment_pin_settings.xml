@@ -37,7 +37,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Share data"
+                android:text="Pin Lock"
                 android:layout_marginLeft="20dp"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -68,7 +68,7 @@
                 android:id="@+id/tvSelectFormat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select share format"
+                android:text="Pin Lock Settings"
                 android:textSize="16sp"
                 android:textColor="#808080"
                 android:fontFamily="@font/nunitosemibold"
@@ -77,7 +77,7 @@
 
             <!-- PDF Option -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/btnSharePdf"
+                android:id="@+id/btnSetPin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -96,7 +96,7 @@
                         android:id="@+id/tvPdf"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="PDF (print friendly)"
+                        android:text="Set PIN Lock"
                         android:textSize="18sp"
                         android:textColor="@android:color/black"
                         android:fontFamily="@font/nunitosemibold"
@@ -119,7 +119,7 @@
 
             <!-- CSV Option -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/btnShareCsv"
+                android:id="@+id/btnRemovePin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
@@ -133,7 +133,7 @@
                     android:id="@+id/tvCsv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CSV (table)"
+                    android:text="Remove PIN Lock"
                     android:textSize="18sp"
                     android:textColor="@android:color/black"
                     android:fontFamily="@font/nunitosemibold"
@@ -155,7 +155,7 @@
                 android:id="@+id/tvWarning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-               android:textSize="14sp"
+                android:textSize="14sp"
                 android:textColor="#808080"
                 android:fontFamily="casual"
                 android:lineSpacingExtra="4dp"

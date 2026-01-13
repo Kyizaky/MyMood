@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.skripsta.adapter.MoodHistoryAdapter
-import com.example.skripsta.data.MoodEntryViewModel
+import com.example.skripsta.viewmodel.MoodEntryViewModel
 import com.example.skripsta.databinding.FragmentRiwayatTanggalBinding
 import com.example.skripsta.utils.MoodUtils
 

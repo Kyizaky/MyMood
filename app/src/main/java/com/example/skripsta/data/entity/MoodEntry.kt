@@ -1,4 +1,4 @@
-package com.example.skripsta.data
+package com.example.skripsta.data.entity
 
 import android.os.Parcelable
 import androidx.room.Entity
@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class MoodEntry(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
+    val user_Id: Int,
     val mood: Int,
     val activities: String,
     val activityIcon: Int,

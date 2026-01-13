@@ -1,9 +1,12 @@
-package com.example.skripsta.data
+package com.example.skripsta.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.skripsta.data.AppDatabase
+import com.example.skripsta.data.entity.Feeling
+import com.example.skripsta.data.repository.FeelingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -13,7 +16,7 @@ class FeelingViewModel(application: Application) : AndroidViewModel(application)
     val allFeelings: LiveData<List<Feeling>>
 
     init {
-        val feelingDao = AppDatabase.getDatabase(application).feelingDao()
+        val feelingDao = AppDatabase.Companion.getDatabase(application).feelingDao()
         repository = FeelingRepository(feelingDao)
         allFeelings = repository.allFeelings
     }

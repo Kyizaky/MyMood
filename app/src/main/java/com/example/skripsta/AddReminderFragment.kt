@@ -22,6 +22,7 @@ class AddReminderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Inisialisasi ViewBinding
         binding = FragmentAddReminderBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -29,10 +30,12 @@ class AddReminderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Setup TimePicker
+        // Setup TimePicker (format 24 jam)
         binding.timePicker.setIs24HourView(true)
+
         val reminder = args.reminder
         if (reminder != null) {
+            // Mode edit reminder
             binding.reminderTitle.text = "Edit Reminder"
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 binding.timePicker.hour = reminder.hour
@@ -43,19 +46,20 @@ class AddReminderFragment : Fragment() {
             }
         }
 
-        // Back button
+        // Tombol kembali
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        // Cancel button
+        // Tombol batal
         binding.cancelButton.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        // Save button
+        // Tombol simpan
         binding.saveButton.setOnClickListener {
-            // Check notification permission
+
+            // Cek izin notifikasi (Android 13+)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 ContextCompat.checkSelfPermission(
                     requireContext(),
@@ -64,31 +68,34 @@ class AddReminderFragment : Fragment() {
             ) {
                 Toast.makeText(
                     context,
-                    "Notification permission required to save reminder",
+                    "Notification permission required",
                     Toast.LENGTH_LONG
                 ).show()
                 findNavController().popBackStack()
                 return@setOnClickListener
             }
 
+            // Ambil jam dan menit dari TimePicker
             val hour = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 binding.timePicker.hour
             } else {
                 binding.timePicker.currentHour
             }
+
             val minute = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 binding.timePicker.minute
             } else {
                 binding.timePicker.currentMinute
             }
 
+            // Buat objek Reminder
             val resultReminder = if (reminder != null) {
                 Reminder(reminder.id, hour, minute)
             } else {
-                Reminder(-1, hour, minute) // ID will be set in ReminderFragment
+                Reminder(-1, hour, minute) // ID di-set di ReminderFragment
             }
 
-            // Pass result back to ReminderFragment
+            // Kirim hasil ke ReminderFragment
             val result = Bundle().apply {
                 putParcelable("reminder", resultReminder)
             }

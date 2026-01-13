@@ -134,7 +134,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Download Data"
+                    android:text="Export Data"
                     android:textSize="18sp"
                     android:fontFamily="@font/nunitosemibold"
                     android:textColor="#000000" />
@@ -218,7 +218,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Export/Import Data"
+                    android:text="Import Data"
                     android:textSize="18sp"
                     android:fontFamily="@font/nunitosemibold"
                     android:textColor="#000000" />

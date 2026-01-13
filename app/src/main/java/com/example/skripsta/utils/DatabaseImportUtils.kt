@@ -3,15 +3,33 @@ package com.example.skripsta.utils
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
-import com.example.skripsta.data.MoodEntry
-import com.example.skripsta.data.User
+import com.example.skripsta.data.entity.MoodEntry
+import com.example.skripsta.data.entity.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+/**
+ * DatabaseImportUtils berfungsi untuk mengimpor
+ * data database aplikasi dari file CSV.
+ *
+ * File CSV harus memiliki struktur yang sesuai
+ * dengan hasil ekspor dari DatabaseExportUtils.
+ */
 object DatabaseImportUtils {
 
+    /**
+     * Mengimpor data database dari file CSV.
+     *
+     * @param context Context aplikasi
+     * @param uri Uri file CSV yang dipilih pengguna
+     * @param onDataParsed callback berisi data hasil parsing
+     *        (MoodEntry dan User)
+     *
+     * Proses dijalankan pada thread IO agar tidak
+     * mengganggu performa UI.
+     */
     suspend fun importDatabaseFromCsv(
         context: Context,
         uri: Uri,
@@ -21,25 +39,33 @@ object DatabaseImportUtils {
             val moodList = mutableListOf<MoodEntry>()
             val userList = mutableListOf<User>()
 
+            // Membuka file CSV melalui ContentResolver
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
                 val reader = BufferedReader(InputStreamReader(inputStream))
                 var line: String?
                 var currentSection = ""
 
+                // Membaca file baris per baris
                 while (reader.readLine().also { line = it } != null) {
                     val text = line!!.trim()
 
+                    // Menentukan section data (USER atau MOOD)
                     if (text.startsWith("===")) {
                         currentSection = if (text.contains("USER")) "USER" else "MOOD"
                         continue
                     }
 
+                    // Lewati baris kosong dan header kolom
                     if (text.isEmpty() || text.startsWith("ID")) continue
 
-                    val parts = text.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)".toRegex())
+                    // Split CSV dengan dukungan teks di dalam tanda kutip
+                    val parts = text
+                        .split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)".toRegex())
                         .map { it.replace("\"", "").trim() }
 
                     when (currentSection) {
+
+                        // ===== PARSING DATA USER =====
                         "USER" -> {
                             if (parts.size >= 7) {
                                 val user = User(
@@ -55,18 +81,20 @@ object DatabaseImportUtils {
                             }
                         }
 
+                        // ===== PARSING DATA MOOD =====
                         "MOOD" -> {
-                            if (parts.size >= 9) {
+                            if (parts.size >= 10) {
                                 val mood = MoodEntry(
                                     id = parts[0].toInt(),
-                                    mood = parts[1].toInt(),
-                                    activities = parts[2],
-                                    activityIcon = parts[3].toInt(),
-                                    perasaan = parts[4],
-                                    judul = parts[5],
-                                    jurnal = parts[6],
-                                    tanggal = parts[7],
-                                    jam = parts[8]
+                                    user_Id = parts[1].toInt(),
+                                    mood = parts[2].toInt(),
+                                    activities = parts[3],
+                                    activityIcon = parts[4].toInt(),
+                                    perasaan = parts[5],
+                                    judul = parts[6],
+                                    jurnal = parts[7],
+                                    tanggal = parts[8],
+                                    jam = parts[9]
                                 )
                                 moodList.add(mood)
                             }
@@ -77,14 +105,26 @@ object DatabaseImportUtils {
                 reader.close()
             }
 
+            // Mengirim hasil parsing ke UI Thread
             withContext(Dispatchers.Main) {
                 onDataParsed(moodList, userList)
-                Toast.makeText(context, "✅ Import berhasil! ${moodList.size} mood & ${userList.size} user", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    "✅ Import berhasil! ${moodList.size} mood & ${userList.size} user",
+                    Toast.LENGTH_LONG
+                ).show()
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
+
+            // Menampilkan pesan error di UI Thread
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "❌ Gagal import: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    "❌ Gagal import: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }

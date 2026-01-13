@@ -17,8 +17,16 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.skripsta.data.*
+import com.example.skripsta.viewmodel.ActivityViewModel
+import com.example.skripsta.viewmodel.FeelingViewModel
+import com.example.skripsta.viewmodel.IconViewModel
+import com.example.skripsta.viewmodel.PinLockViewModel
+import com.example.skripsta.viewmodel.UserViewModel
 import com.example.skripsta.databinding.ActivityMainBinding
+import com.example.skripsta.data.entity.Activity
+import com.example.skripsta.data.entity.Feeling
+import com.example.skripsta.data.entity.Icon
+import com.example.skripsta.data.entity.User
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -30,9 +38,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activityViewModel: ActivityViewModel
     private lateinit var iconViewModel: IconViewModel
     private val pinLockViewModel = PinLockViewModel()
+
+    // Variabel untuk menangani double back press
     private var backPressedTime = 0L
     private var backToast: Toast? = null
 
+    // Launcher untuk request permission notifikasi
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
@@ -46,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Menyembunyikan ActionBar
         supportActionBar?.hide()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -56,14 +68,14 @@ class MainActivity : AppCompatActivity() {
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
         iconViewModel = ViewModelProvider(this).get(IconViewModel::class.java)
 
-        // Ensure a valid userId is set
+        // Mengecek apakah userId sudah tersedia
         val userId = sharedPreferences.getInt("current_user_id", -1)
         if (userId == -1) {
             sharedPreferences.edit().putInt("current_user_id", 1).apply()
             Log.d("MainActivity", "Set default userId to 1")
         }
 
-        // Setup navigation
+        // Warna teks BottomNavigation
         val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragmentContainer) as NavHostFragment
         navController = navHost.navController
         binding.bottomNavigationView.setupWithNavController(navController)
@@ -80,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         )
         binding.bottomNavigationView.itemTextColor = textColorStateList
 
+        // Warna ikon BottomNavigation
         val iconColorStateList = ColorStateList(
             arrayOf(
                 intArrayOf(android.R.attr.state_checked),
@@ -99,22 +112,21 @@ class MainActivity : AppCompatActivity() {
             R.id.kegiatanFragment
         )
 
+        // Navigasi ke halaman PIN jika PIN sudah diatur
         if (pinLockViewModel.hasPin(this)) {
-            val currentDestination = navController.currentDestination?.id
-            if (currentDestination != R.id.pinLockFragment) {
-                val bundle = Bundle().apply {
-                    putString("mode", "login")
-                }
-                navController.navigate(R.id.action_global_pinLockFragment, bundle)
-            }
+            navController.navigate(
+                R.id.pinLockFragment,
+                Bundle().apply { putString("mode", "login") }
+            )
         }
 
+        // Menampilkan atau menyembunyikan BottomNavigation
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomNavigationView.visibility =
                 if (destination.id in visibleFragments) View.VISIBLE else View.GONE
         }
 
-        // Initialize data with a slight delay to ensure DB readiness
+        // Inisialisasi data awal aplikasi
         lifecycleScope.launch {
             initializeFeelingData()
             initializeIconData()
@@ -122,7 +134,7 @@ class MainActivity : AppCompatActivity() {
             checkDailyLogin()
         }
 
-        // Request notification permission for Android 13+
+        // Request permission notifikasi untuk Android 13+
         val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
         if (isFirstLaunch && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -136,6 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Mengatur perilaku tombol back
     override fun onBackPressed() {
         val currentDestination = navController.currentDestination?.id
 
@@ -148,14 +161,14 @@ class MainActivity : AppCompatActivity() {
         )
 
         when {
-            // Kalau lagi di salah satu tab utama tapi bukan Home
+            // Jika berada di tab utama selain Home
             currentDestination in mainFragments && currentDestination != R.id.homeFragment -> {
                 navController.popBackStack(R.id.homeFragment, false)
                 binding.bottomNavigationView.selectedItemId = R.id.homeFragment
 
             }
 
-            // Kalau sudah di HomeFragment → tampilkan pesan exit
+            // Jika berada di HomeFragment
             currentDestination == R.id.homeFragment -> {
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - backPressedTime < 2000) {
@@ -177,11 +190,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Navigasi ke atas
     override fun onSupportNavigateUp(): Boolean {
         navController = findNavController(R.id.navHostFragmentContainer)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
+    // Mengecek login harian user
     private fun checkDailyLogin() {
         val userId = sharedPreferences.getInt("current_user_id", 1)
         lifecycleScope.launch {
@@ -204,6 +219,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Inisialisasi data Feeling default
     private fun initializeFeelingData() {
         feelingViewModel.allFeelings.observe(this) { feelings ->
             if (feelings.isNullOrEmpty()) {
@@ -227,14 +243,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Inisialisasi data Icon default
     private fun initializeIconData() {
         iconViewModel.allIcons.observe(this) { icons ->
             if (icons.isNullOrEmpty()) {
                 val initialIcons = listOf(
-                    Icon(colorRes = R.drawable.activity1, noColorRes = R.drawable.activity1_nocolor),
-                    Icon(colorRes = R.drawable.activity2, noColorRes = R.drawable.activity2_nocolor),
-                    Icon(colorRes = R.drawable.activity3, noColorRes = R.drawable.activity3_nocolor),
-                    Icon(colorRes = R.drawable.activity4, noColorRes = R.drawable.activity4_nocolor),
+                    Icon(
+                        colorRes = R.drawable.activity1,
+                        noColorRes = R.drawable.activity1_nocolor
+                    ),
+                    Icon(
+                        colorRes = R.drawable.activity2,
+                        noColorRes = R.drawable.activity2_nocolor
+                    ),
+                    Icon(
+                        colorRes = R.drawable.activity3,
+                        noColorRes = R.drawable.activity3_nocolor
+                    ),
+                    Icon(
+                        colorRes = R.drawable.activity4,
+                        noColorRes = R.drawable.activity4_nocolor
+                    ),
                     Icon(colorRes = R.drawable.activity5, noColorRes = R.drawable.activity5_nocolor)
                 )
                 iconViewModel.addAllIcons(initialIcons)
@@ -245,17 +274,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Inisialisasi data Activity default
     private fun initializeActivityData() {
         activityViewModel.allActivities.observe(this) { activities ->
             if (activities.isNullOrEmpty()) {
                 val initialActivities = listOf(
-                    Activity(name = "Study", iconRes = R.drawable.activity1, selectedIconRes = R.drawable.activity1_nocolor),
-                    Activity(name = "Shop", iconRes = R.drawable.activity2, selectedIconRes = R.drawable.activity2_nocolor),
-                    Activity(name = "Work", iconRes = R.drawable.activity3, selectedIconRes = R.drawable.activity3_nocolor),
-                    Activity(name = "Vacation", iconRes = R.drawable.activity4, selectedIconRes = R.drawable.activity4_nocolor),
-                    Activity(name = "Eat", iconRes = R.drawable.activity5, selectedIconRes = R.drawable.activity5_nocolor),
-                    Activity(name = "Gym", iconRes = R.drawable.activity6, selectedIconRes = R.drawable.activity6_nocolor),
-                    Activity(name = "Swim", iconRes = R.drawable.activity7, selectedIconRes = R.drawable.activity7_nocolor)
+                    Activity(
+                        name = "Study",
+                        iconRes = R.drawable.activity1,
+                        selectedIconRes = R.drawable.activity1_nocolor
+                    ),
+                    Activity(
+                        name = "Shop",
+                        iconRes = R.drawable.activity2,
+                        selectedIconRes = R.drawable.activity2_nocolor
+                    ),
+                    Activity(
+                        name = "Work",
+                        iconRes = R.drawable.activity3,
+                        selectedIconRes = R.drawable.activity3_nocolor
+                    ),
+                    Activity(
+                        name = "Vacation",
+                        iconRes = R.drawable.activity4,
+                        selectedIconRes = R.drawable.activity4_nocolor
+                    ),
+                    Activity(
+                        name = "Eat",
+                        iconRes = R.drawable.activity5,
+                        selectedIconRes = R.drawable.activity5_nocolor
+                    ),
+                    Activity(
+                        name = "Gym",
+                        iconRes = R.drawable.activity6,
+                        selectedIconRes = R.drawable.activity6_nocolor
+                    ),
+                    Activity(
+                        name = "Swim",
+                        iconRes = R.drawable.activity7,
+                        selectedIconRes = R.drawable.activity7_nocolor
+                    )
                 )
                 activityViewModel.addAllActivities(initialActivities)
                 Log.d("MainActivity", "Inserted initial activities: ${initialActivities.map { it.name }}")

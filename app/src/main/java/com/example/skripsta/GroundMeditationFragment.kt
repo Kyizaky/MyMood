@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.cardview.widget.CardView
 import androidx.navigation.fragment.findNavController
 
 class GroundMeditationFragment : Fragment() {
@@ -16,20 +15,25 @@ class GroundMeditationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.fragment_ground_meditation, container, false)
+        // Inflate layout fragment ground meditation
+        val view =
+            inflater.inflate(R.layout.fragment_ground_meditation, container, false)
 
-        val goBack = view.findViewById<ImageView>(R.id.ic_go_back)
+        // Inisialisasi tombol kembali
+        val goBack =
+            view.findViewById<ImageView>(R.id.ic_go_back)
 
+        // Aksi ketika tombol kembali ditekan
         goBack.setOnClickListener {
-            val action = GroundMeditationFragmentDirections.actionGroundMeditationFragmentToKegiatanFragment()
+
+            // Navigasi kembali ke KegiatanFragment
+            val action =
+                GroundMeditationFragmentDirections
+                    .actionGroundMeditationFragmentToKegiatanFragment()
+
             findNavController().navigate(action)
         }
 
         return view
-
     }
-
-
-
-
 }

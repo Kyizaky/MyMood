@@ -1,4 +1,4 @@
-package com.example.skripsta.data
+package com.example.skripsta.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.skripsta.data.entity.User
 
 @Dao
 interface UserDao {
@@ -16,10 +17,10 @@ interface UserDao {
     @Query("SELECT * FROM user_table ORDER BY id ASC")
     fun readAllData(): LiveData<List<User>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
     suspend fun addUser(user: User)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun addUserAll(users: List<User>)
 
     @Query("DELETE FROM user_table")

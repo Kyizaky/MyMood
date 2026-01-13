@@ -74,7 +74,7 @@
             android:id="@+id/tvbell"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Belum ada pengingat. Tambahkan pengingat baru."
+            android:text="No reminders found. Create a new reminder."
             android:textSize="16sp"
             android:textColor="#666666"
             android:fontFamily="@font/nunitosemibold"

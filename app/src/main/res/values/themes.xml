@@ -4,9 +4,17 @@
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:fitsSystemWindows">true</item>
-        <!-- Customize button style -->
+
+        <item name="android:fontFamily">@font/nunitosemibold</item>
+        <item name="fontFamily">@font/nunitosemibold</item>
     </style>
 
     <style name="Theme.SkripsTa" parent="Base.Theme.SkripsTa" />
+
+    <style name="BottomNavTextStyle">
+        <item name="android:fontFamily">@font/nunitosemibold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 
 </resources>

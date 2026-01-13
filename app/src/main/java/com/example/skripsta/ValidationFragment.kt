@@ -20,25 +20,35 @@ import kotlin.random.Random
 
 class ValidationFragment : Fragment() {
 
+    // Mengambil argumen navigasi (moodType) dari fragment sebelumnya
     private val args: ValidationFragmentArgs by navArgs()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        // Inflate layout fragment_validation
         val view = inflater.inflate(R.layout.fragment_validation, container, false)
 
+        // Mengambil nilai moodType dari argument
         val moodType = args.moodType
+
+        // Inisialisasi komponen UI
         val imagemood = view.findViewById<ImageView>(R.id.imageViewMood)
         val imageline1 = view.findViewById<ImageView>(R.id.line1)
         val imageline2 = view.findViewById<ImageView>(R.id.line2)
         val imagebigline = view.findViewById<ImageView>(R.id.bigline)
-        val ivWord = view.findViewById<TextView>(R.id.iv_word) // ubah jadi TextView ya
+        val ivWord = view.findViewById<TextView>(R.id.iv_word)
         val btnBack = view.findViewById<ImageButton>(R.id.ic_back)
         val tvPrompt = view.findViewById<TextView>(R.id.tvMoodPrompt)
 
+        // Aksi tombol back → kembali ke HomeFragment
         btnBack.setOnClickListener {
             val navController = findNavController()
+
+            // Menghapus ValidationFragment dari back stack
             val navOptions = androidx.navigation.NavOptions.Builder()
                 .setPopUpTo(R.id.validationFragment, true)
                 .build()
@@ -49,6 +59,7 @@ class ValidationFragment : Fragment() {
             )
         }
 
+        // Menyesuaikan gambar berdasarkan moodType
         when (moodType) {
             1 -> {
                 imagemood.setImageResource(R.drawable.valid5)
@@ -83,10 +94,11 @@ class ValidationFragment : Fragment() {
             else -> imagemood.setImageResource(R.drawable.ic_medi)
         }
 
+        // Daftar kalimat validasi berdasarkan mood
         val wordList = when (moodType) {
             1 -> listOf(
                 "It's okay to have bad days.",
-                "Take a deep breath, tomorrow will be better.",
+                "Take a deep breath, today will be better.",
                 "Be gentle with yourself."
             )
             2 -> listOf(
@@ -109,32 +121,53 @@ class ValidationFragment : Fragment() {
                 "Keep shining and spread that joy!",
                 "What a wonderful mood to be in!"
             )
-            else -> listOf("How are you feeling today?", "Stay mindful.", "Take a moment to breathe.")
+            else -> listOf(
+                "How are you feeling today?",
+                "Stay mindful.",
+                "Take a moment to breathe."
+            )
         }
+
+        // Menampilkan satu kalimat secara acak
         ivWord.text = wordList.random()
 
+        // Teks dengan bagian yang bisa diklik
         val fullText = "Feeling off? Click here!!"
         val spannable = SpannableString(fullText)
+
+        // Bagian teks yang dijadikan link
         val clickText = "Click here"
         val start = fullText.indexOf(clickText)
         val end = start + clickText.length
 
+        // Memberi warna biru pada teks link
         spannable.setSpan(
-            ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.blue)),
+            ForegroundColorSpan(
+                ContextCompat.getColor(requireContext(), R.color.blue)
+            ),
             start,
             end,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
+        // Aksi ketika teks diklik
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                val action = ValidationFragmentDirections.actionValidationFragmentToKegiatanFragment()
+                val action =
+                    ValidationFragmentDirections.actionValidationFragmentToKegiatanFragment()
                 findNavController().navigate(action)
             }
         }
 
-        spannable.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        // Menempelkan clickable span ke teks
+        spannable.setSpan(
+            clickableSpan,
+            start,
+            end,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
+        // Menampilkan teks dan mengaktifkan klik
         tvPrompt.text = spannable
         tvPrompt.movementMethod = LinkMovementMethod.getInstance()
 

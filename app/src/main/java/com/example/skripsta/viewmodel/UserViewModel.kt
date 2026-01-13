@@ -1,15 +1,18 @@
-package com.example.skripsta.data
+package com.example.skripsta.viewmodel
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.skripsta.data.AppDatabase
+import com.example.skripsta.data.repository.MoodEntryRepository
+import com.example.skripsta.data.entity.User
+import com.example.skripsta.data.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,8 +21,8 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val moodEntryRepository: MoodEntryRepository
 
     init {
-        val userDao = AppDatabase.getDatabase(application).userDao()
-        val moodEntryDao = AppDatabase.getDatabase(application).moodEntryDao()
+        val userDao = AppDatabase.Companion.getDatabase(application).userDao()
+        val moodEntryDao = AppDatabase.Companion.getDatabase(application).moodEntryDao()
         repository = UserRepository(userDao)
         moodEntryRepository = MoodEntryRepository(moodEntryDao)
         readAllData = repository.readAllData
@@ -34,12 +37,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun replaceUsers(users: List<User>) = viewModelScope.launch {
         repository.replaceUsers(users)
-    }
-
-    fun deleteAllUsers() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteAllUsers()
-        }
     }
 
     suspend fun getUserById(userId: Int): User? {

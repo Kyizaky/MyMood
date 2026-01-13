@@ -1,24 +1,20 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app">
+    android:background="@color/app"
+    android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+    <ProgressBar android:id="@+id/progress_bar" android:layout_width="64dp" android:layout_height="64dp" android:layout_gravity="center" android:visibility="gone" />
 
-    <!-- Legend Mood -->
     <androidx.cardview.widget.CardView
         android:id="@+id/container_legend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         app:cardCornerRadius="7dp">
 
         <LinearLayout
@@ -34,20 +30,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/para1" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Terrible"
                     android:fontFamily="@font/nunitosemibold"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp"
                     android:gravity="center" />
             </LinearLayout>
 
@@ -57,20 +51,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/para2" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bad"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:fontFamily="@font/nunitosemibold"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:gravity="center" />
             </LinearLayout>
 
@@ -80,20 +72,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/para3" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Okay"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/nunitosemibold"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:gravity="center" />
             </LinearLayout>
 
@@ -103,18 +93,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/para4" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Good"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/nunitosemibold"
                     android:gravity="center" />
@@ -126,18 +114,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
-
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/para5" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Excellent"
-                    android:textSize="14sp"
-                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/nunitosemibold"
                     android:gravity="center" />
@@ -147,26 +133,23 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="110dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="20dp"
-        android:clipToPadding="true"
-        android:clipChildren="true">
+        android:clipToPadding="false"
+        android:paddingBottom="20dp">
 
         <LinearLayout
             android:id="@+id/container_stat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
-            <!-- Pie Chart -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="7dp"
-                android:layout_marginVertical="15dp">
+                android:layout_marginVertical="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -229,7 +212,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Line Chart -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -283,7 +265,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Grid Mood -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -337,10 +318,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Ranking Activity -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
                 app:cardCornerRadius="7dp">
 
                 <LinearLayout
@@ -390,11 +371,10 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Ranking Feeling -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="15dp"
+                android:layout_marginBottom="15dp"
                 app:cardCornerRadius="7dp">
 
                 <LinearLayout
@@ -445,4 +425,5 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</FrameLayout>
+
+</LinearLayout>

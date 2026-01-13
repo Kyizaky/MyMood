@@ -1,6 +1,8 @@
-package com.example.skripsta.data
+package com.example.skripsta.data.repository
 
 import androidx.lifecycle.LiveData
+import com.example.skripsta.data.dao.FeelingDao
+import com.example.skripsta.data.entity.Feeling
 
 class FeelingRepository(private val feelingDao: FeelingDao) {
 

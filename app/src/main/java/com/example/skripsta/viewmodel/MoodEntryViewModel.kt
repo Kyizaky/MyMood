@@ -1,9 +1,12 @@
-package com.example.skripsta.data
+package com.example.skripsta.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.skripsta.data.AppDatabase
+import com.example.skripsta.data.entity.MoodEntry
+import com.example.skripsta.data.repository.MoodEntryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -11,10 +14,9 @@ class MoodEntryViewModel(application: Application) : AndroidViewModel(applicatio
 
     val readAllData: LiveData<List<MoodEntry>>
     private val repository: MoodEntryRepository
-    private val context = getApplication<Application>().applicationContext
 
     init {
-        val moodEntryDao = AppDatabase.getDatabase(application).moodEntryDao()
+        val moodEntryDao = AppDatabase.Companion.getDatabase(application).moodEntryDao()
         repository = MoodEntryRepository(moodEntryDao)
         readAllData = repository.readAllMoodEntry
     }
@@ -27,12 +29,6 @@ class MoodEntryViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun replaceMoodEntry(moodList: List<MoodEntry>) = viewModelScope.launch {
         repository.replaceMoodEntry(moodList)
-    }
-
-    fun deleteAllMoodEntry() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteAllMoodEntry()
-        }
     }
 
     fun updateMoodEntry(moodEntry: MoodEntry) {

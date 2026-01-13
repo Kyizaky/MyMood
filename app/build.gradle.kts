@@ -115,6 +115,7 @@ dependencies {
     implementation (libs.androidx.lifecycle.common.java8)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
 
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Kotlin components
     implementation (libs.kotlin.stdlib.jdk7)

@@ -23,10 +23,10 @@ import com.example.skripsta.adapter.ActivityAdapter
 import com.example.skripsta.adapter.FeelingAdapter
 import com.example.skripsta.adapter.getDisplayName
 import com.example.skripsta.data.Item
-import com.example.skripsta.data.MoodEntry
-import com.example.skripsta.data.MoodEntryViewModel
-import com.example.skripsta.data.ActivityViewModel
-import com.example.skripsta.data.FeelingViewModel
+import com.example.skripsta.data.entity.MoodEntry
+import com.example.skripsta.viewmodel.MoodEntryViewModel
+import com.example.skripsta.viewmodel.ActivityViewModel
+import com.example.skripsta.viewmodel.FeelingViewModel
 import com.example.skripsta.databinding.FragmentEditMoodBinding
 import com.example.skripsta.utils.MoodUtils
 import com.google.android.flexbox.FlexDirection
@@ -41,15 +41,26 @@ import java.util.Locale
 
 class EditMoodFragment : Fragment() {
 
+    // Mengambil argumen mood entry dari fragment sebelumnya
     private val args by navArgs<EditMoodFragmentArgs>()
+
+    // ViewModel untuk mood, aktivitas, dan perasaan
     private lateinit var mMoodEntryViewModel: MoodEntryViewModel
     private lateinit var mActivityViewModel: ActivityViewModel
     private lateinit var mFeelingViewModel: FeelingViewModel
+
+    // SharedPreferences untuk menyimpan pilihan user
     private lateinit var sharedPreferences: SharedPreferences
+
+    // ViewBinding fragment
     private lateinit var binding: FragmentEditMoodBinding
+
+    // Variabel penyimpan pilihan user
     private var selectedFeelingText: String? = null
     private var selectedActivityItem: Item? = null
     private var selectedMoodButton: ImageButton? = null
+
+    // Formatter tanggal dan waktu
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
     private val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
@@ -58,20 +69,31 @@ class EditMoodFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        // Inisialisasi ViewModel
         mMoodEntryViewModel = ViewModelProvider(this).get(MoodEntryViewModel::class.java)
         mActivityViewModel = ViewModelProvider(this).get(ActivityViewModel::class.java)
         mFeelingViewModel = ViewModelProvider(this).get(FeelingViewModel::class.java)
+
+        // Inisialisasi SharedPreferences
         sharedPreferences = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
+        // Menyembunyikan bottom navigation
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
 
+        // Inisialisasi binding
         binding = FragmentEditMoodBinding.inflate(inflater, container, false)
 
+        // Mengambil data mood entry lama
         val moodEntry = args.moodEntry
+
+        // Menampilkan data awal ke UI
         binding.btnCal.setText(MoodUtils.formatCal(moodEntry.tanggal))
         binding.btnClock.setText(moodEntry.jam)
         binding.tvJurnaling.setText(moodEntry.jurnal)
         binding.etJornal.setText(moodEntry.judul)
+
+        // Menyimpan data awal ke variabel
         selectedFeelingText = moodEntry.perasaan
         selectedActivityItem = Item(
             drawableId = moodEntry.activityIcon,
@@ -82,8 +104,10 @@ class EditMoodFragment : Fragment() {
 
         val calendar = Calendar.getInstance()
 
+        // Setup tombol mood dengan mood awal
         setupMoodButtons(binding.root, moodEntry.mood)
 
+        // Time picker
         binding.btnClock.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
                 requireContext(),
@@ -100,14 +124,16 @@ class EditMoodFragment : Fragment() {
             timePickerDialog.show()
         }
 
+        // Date picker
         binding.btnCal.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
                     val selectedDate = Calendar.getInstance()
                     selectedDate.set(year, month, dayOfMonth)
-                    binding.btnCal.setText(MoodUtils.formatCal(dateFormat.format(selectedDate.time)))
-
+                    binding.btnCal.setText(
+                        MoodUtils.formatCal(dateFormat.format(selectedDate.time))
+                    )
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -116,34 +142,47 @@ class EditMoodFragment : Fragment() {
             datePickerDialog.show()
         }
 
+        // Tombol update mood
         binding.btnUpdate.setOnClickListener {
             updateDataToDatabase(binding.root)
         }
 
+        // Navigasi ke edit aktivitas
         binding.editActivitiesButton.setOnClickListener {
-            findNavController().navigate(R.id.action_editMoodFragment_to_selectActivityFragment)
+            findNavController().navigate(
+                R.id.action_editMoodFragment_to_selectActivityFragment
+            )
         }
 
+        // Navigasi ke edit perasaan
         binding.editFeelingsButton.setOnClickListener {
-            findNavController().navigate(R.id.action_editMoodFragment_to_selectFeelingFragment)
+            findNavController().navigate(
+                R.id.action_editMoodFragment_to_selectFeelingFragment
+            )
         }
 
+        // Tombol kembali
         binding.icBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
+        // Setup recycler view aktivitas dan perasaan
         setupRecyclerView(binding.root)
         setupFeelingRecyclerView(binding.root)
+
+        // Update status tombol simpan
         updateSaveButtonState(binding.root)
 
         return binding.root
     }
 
+    // Setup tombol mood dan status awalnya
     private fun setupMoodButtons(view: View, initialMood: Int?) {
         val moodButtons = listOf(
             R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
             R.id.mood4 to 4, R.id.mood5 to 5
         )
+
         val moodDrawables = mapOf(
             R.id.mood1 to Pair(R.drawable.para1_nocolor, R.drawable.para1),
             R.id.mood2 to Pair(R.drawable.para2_nocolor, R.drawable.para2),
@@ -154,25 +193,32 @@ class EditMoodFragment : Fragment() {
 
         moodButtons.forEach { (id, moodValue) ->
             val button = view.findViewById<ImageButton>(id)
+
+            // Menentukan mood awal
             if (moodValue == initialMood) {
                 button.isSelected = true
                 selectedMoodButton = button
-                val selectedDrawable = moodDrawables[id]?.second
-                if (selectedDrawable != null) button.setImageResource(selectedDrawable)
+                moodDrawables[id]?.second?.let { button.setImageResource(it) }
             } else {
                 button.isSelected = false
-                val defaultDrawable = moodDrawables[id]?.first
-                if (defaultDrawable != null) button.setImageResource(defaultDrawable)
+                moodDrawables[id]?.first?.let { button.setImageResource(it) }
             }
+
+            // Listener klik mood
             button.setOnClickListener {
-                updateMoodSelection(it as ImageButton, moodButtons.map { view.findViewById<ImageButton>(it.first) })
+                updateMoodSelection(
+                    it as ImageButton,
+                    moodButtons.map { view.findViewById<ImageButton>(it.first) }
+                )
                 updateSaveButtonState(view)
             }
         }
     }
 
+    // Setup RecyclerView aktivitas
     private fun setupRecyclerView(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_activities)
+
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
@@ -180,25 +226,33 @@ class EditMoodFragment : Fragment() {
         }
 
         mActivityViewModel.allActivities.observe(viewLifecycleOwner, Observer { activities ->
-            Log.d("EditMoodFragment", "Observed activities: ${activities.map { it.name }}")
-            val selectedNames = sharedPreferences.getStringSet("selected_activity_names", emptySet()) ?: emptySet()
-            val displayedActivities = activities.filter { it.name in selectedNames }.map {
-                Item(
-                    drawableId = it.selectedIconRes,
-                    selectedDrawableId = it.iconRes,
-                    text = it.name,
-                    isSelected = it.name == args.moodEntry.activities
-                )
-            }
-            recyclerView.adapter = ActivityAdapter(displayedActivities, args.moodEntry.activities) { selectedItem ->
-                selectedActivityItem = selectedItem
-                updateSaveButtonState(view)
-            }
+            val selectedNames =
+                sharedPreferences.getStringSet("selected_activity_names", emptySet())
+                    ?: emptySet()
+
+            val displayedActivities = activities
+                .filter { it.name in selectedNames }
+                .map {
+                    Item(
+                        drawableId = it.selectedIconRes,
+                        selectedDrawableId = it.iconRes,
+                        text = it.name,
+                        isSelected = it.name == args.moodEntry.activities
+                    )
+                }
+
+            recyclerView.adapter =
+                ActivityAdapter(displayedActivities, args.moodEntry.activities) { selectedItem ->
+                    selectedActivityItem = selectedItem
+                    updateSaveButtonState(view)
+                }
         })
     }
 
+    // Setup RecyclerView perasaan
     private fun setupFeelingRecyclerView(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_feelings)
+
         recyclerView.layoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
@@ -206,24 +260,33 @@ class EditMoodFragment : Fragment() {
         }
 
         mFeelingViewModel.allFeelings.observe(viewLifecycleOwner, Observer { feelings ->
-            val selectedNames = sharedPreferences.getStringSet("selected_feeling_names", emptySet()) ?: emptySet()
-            val displayedFeelings = feelings.filter { it.name in selectedNames }.map { it.name }
-            Log.d("EditMoodFragment", "Displayed feelings: $displayedFeelings, Initial feeling: ${args.moodEntry.perasaan}")
-            recyclerView.adapter = FeelingAdapter(displayedFeelings, args.moodEntry.perasaan) { selectedFeeling ->
-                selectedFeelingText = selectedFeeling
-                updateSaveButtonState(view)
-            }
+            val selectedNames =
+                sharedPreferences.getStringSet("selected_feeling_names", emptySet())
+                    ?: emptySet()
+
+            val displayedFeelings =
+                feelings.filter { it.name in selectedNames }.map { it.name }
+
+            recyclerView.adapter =
+                FeelingAdapter(displayedFeelings, args.moodEntry.perasaan) { selectedFeeling ->
+                    selectedFeelingText = selectedFeeling
+                    updateSaveButtonState(view)
+                }
         })
     }
 
+    // Mendapatkan mood yang dipilih
     private fun getSelectedMoodType(view: View): Int? {
         val moodButtons = listOf(
             R.id.mood1 to 1, R.id.mood2 to 2, R.id.mood3 to 3,
             R.id.mood4 to 4, R.id.mood5 to 5
         )
-        return moodButtons.firstOrNull { view.findViewById<ImageButton>(it.first).isSelected }?.second
+        return moodButtons.firstOrNull {
+            view.findViewById<ImageButton>(it.first).isSelected
+        }?.second
     }
 
+    // Mengatur perubahan seleksi mood
     private fun updateMoodSelection(button: ImageButton, allButtons: List<ImageButton>) {
         val moodDrawables = mapOf(
             R.id.mood1 to Pair(R.drawable.para1_nocolor, R.drawable.para1),
@@ -233,52 +296,73 @@ class EditMoodFragment : Fragment() {
             R.id.mood5 to Pair(R.drawable.para5_nocolor, R.drawable.para5)
         )
 
+        // Jika mood yang sama ditekan ulang
         if (selectedMoodButton == button) {
             button.isSelected = false
-            val defaultDrawable = moodDrawables[button.id]?.first
-            if (defaultDrawable != null) button.setImageResource(defaultDrawable)
+            moodDrawables[button.id]?.first?.let { button.setImageResource(it) }
             selectedMoodButton = null
             return
         }
 
+        // Reset semua mood
         allButtons.forEach {
             it.isSelected = false
-            val defaultDrawable = moodDrawables[it.id]?.first
-            if (defaultDrawable != null) it.setImageResource(defaultDrawable)
+            moodDrawables[it.id]?.first?.let { drawable -> it.setImageResource(drawable) }
         }
 
+        // Set mood terpilih
         button.isSelected = true
-        val selectedDrawable = moodDrawables[button.id]?.second
-        if (selectedDrawable != null) button.setImageResource(selectedDrawable)
+        moodDrawables[button.id]?.second?.let { button.setImageResource(it) }
         selectedMoodButton = button
     }
 
+    // Update data mood ke database
     private fun updateDataToDatabase(view: View) {
-        val journalContent = binding.tvJurnaling.text.toString().ifBlank { "No story today" }
-        val titleJournal = binding.etJornal.text.toString().ifBlank { "Today" }
+        val journalContent =
+            binding.tvJurnaling.text.toString().ifBlank { "No story today" }
+        val titleJournal =
+            binding.etJornal.text.toString().ifBlank { "Today" }
+
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = selectedFeelingText
         val selectedActivity = selectedActivityItem
         val selectedDate = binding.btnCal.text.toString()
         val selectedTime = binding.btnClock.text.toString()
 
+        // Konversi format tanggal
         val storedDate = try {
-            val date = LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH))
+            val date = LocalDate.parse(
+                selectedDate,
+                DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
+            )
             date.format(dateFormatter)
         } catch (e: Exception) {
-            selectedDate // Fallback to input if conversion fails
+            selectedDate
         }
 
-        if (moodType == null || selectedFeeling == null || selectedActivity == null || selectedDate.isBlank() || selectedTime.isBlank()) {
-            Toast.makeText(requireContext(), "Lengkapi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
+        // Validasi input
+        if (moodType == null || selectedFeeling == null || selectedActivity == null ||
+            selectedDate.isBlank() || selectedTime.isBlank()
+        ) {
+            Toast.makeText(
+                requireContext(),
+                "Lengkapi semua data sebelum menyimpan!",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
+        // Membuat objek mood baru
         val updatedMood = MoodEntry(
             id = args.moodEntry.id,
             mood = moodType,
+            user_Id = args.moodEntry.user_Id,
             activities = selectedActivity.getDisplayName(),
-            activityIcon = if (selectedActivity.isSelected) selectedActivity.selectedDrawableId else selectedActivity.drawableId,
+            activityIcon =
+                if (selectedActivity.isSelected)
+                    selectedActivity.selectedDrawableId
+                else
+                    selectedActivity.drawableId,
             perasaan = selectedFeeling,
             judul = titleJournal,
             jurnal = journalContent,
@@ -286,21 +370,36 @@ class EditMoodFragment : Fragment() {
             jam = selectedTime
         )
 
+        // Update ke database
         mMoodEntryViewModel.updateMoodEntry(updatedMood)
+
+        // Notifikasi berhasil
         Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_LONG).show()
+
+        // Kembali ke fragment sebelumnya
         findNavController().popBackStack()
     }
+
+    // Mengatur status tombol simpan
     private fun updateSaveButtonState(view: View) {
         val moodType = getSelectedMoodType(view)
         val selectedFeeling = selectedFeelingText
         val selectedActivity = selectedActivityItem
-        val selectedDate = view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
-        val selectedTime = view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
+        val selectedDate =
+            view.findViewById<EditText>(R.id.btn_cal)?.text.toString()
+        val selectedTime =
+            view.findViewById<EditText>(R.id.btn_clock)?.text.toString()
 
         val saveButton = view.findViewById<Button>(R.id.btnUpdate)
-        val isComplete = moodType != null && selectedFeeling != null &&
-                selectedActivity != null && selectedDate.isNotBlank() && selectedTime.isNotBlank()
 
+        val isComplete =
+            moodType != null &&
+                    selectedFeeling != null &&
+                    selectedActivity != null &&
+                    selectedDate.isNotBlank() &&
+                    selectedTime.isNotBlank()
+
+        // Mengatur tampilan tombol simpan
         if (isComplete) {
             saveButton.setBackgroundResource(R.drawable.bg_btn)
             saveButton.isEnabled = true
@@ -309,5 +408,4 @@ class EditMoodFragment : Fragment() {
             saveButton.isEnabled = false
         }
     }
-
 }
