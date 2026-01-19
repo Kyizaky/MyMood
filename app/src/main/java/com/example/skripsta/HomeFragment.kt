@@ -49,6 +49,8 @@ class HomeFragment : Fragment() {
     // Set tanggal yang memiliki mood
     private val moodDates = mutableSetOf<LocalDate>()
 
+    private val petDrawables = listOf("pet1", "pet2", "pet3")
+
     // Daftar nama bulan
     private val monthsList = listOf(
         "January", "February", "March", "April", "May", "June",
@@ -224,6 +226,7 @@ class HomeFragment : Fragment() {
         moodEntryViewModel.readAllData.observe(viewLifecycleOwner) { entries ->
             moodEntries = entries
             moodDates.clear()
+            updateWeeklyStatus()
 
             moodDates.addAll(entries.mapNotNull {
                 try {
@@ -242,10 +245,16 @@ class HomeFragment : Fragment() {
         // Observasi data user
         userViewModel.readAllData.observe(viewLifecycleOwner) { userList ->
             val user = userList.find { it.id == userId }
-            binding.pointsText.text =
-                user?.let { "Total Day: ${it.points}" } ?: "Total: 0"
+
+            // Update total day
+            binding.pointsText.text = "Total Day: ${moodEntries.map { it.tanggal }.distinct().size}"
+
+            // Update pet di Home
+            user?.let { updateHomePet(it) }
+
             updateWeeklyStatus()
         }
+
 
         // Navigasi ke daily login
         binding.cardviewDaily.setOnClickListener {
@@ -324,36 +333,71 @@ class HomeFragment : Fragment() {
 
     // Update checklist login mingguan
     private fun updateWeeklyStatus() {
-
-        // Bersihkan klaim lama
-        ClaimPrefsHelper.cleanOldClaimsKeepThisWeek(requireContext())
-
         // Reset semua icon
         loginIcons.forEach { iconId ->
             binding.root.findViewById<ImageView>(iconId)
                 ?.setImageResource(R.drawable.ic_nocheck)
         }
 
-        // Ambil tanggal klaim
-        val claimDates =
-            ClaimPrefsHelper.getAllClaimDates(requireContext())
-
         val today = LocalDate.now()
-        val weekStart =
-            today.minusDays((today.dayOfWeek.value % 7).toLong())
+        val weekStart = today.minusDays((today.dayOfWeek.value % 7).toLong())
 
-        claimDates.forEach { date ->
-            if (date >= weekStart) {
-                val dayIndex =
-                    ChronoUnit.DAYS.between(weekStart, date).toInt()
-                if (dayIndex in 0..6) {
-                    binding.root
-                        .findViewById<ImageView>(loginIcons[dayIndex])
-                        ?.setImageResource(R.drawable.ic_checkbox)
-                }
+        // Ambil semua tanggal mood
+        val moodDates: Set<LocalDate> = moodEntries
+            .mapNotNull { runCatching { LocalDate.parse(it.tanggal, dbFormatter) }.getOrNull() }
+            .toSet()
+
+        // Checklist per hari aktif
+        for (i in 0..6) {
+            val date = weekStart.plusDays(i.toLong())
+
+            if (moodDates.contains(date)) {
+                binding.root.findViewById<ImageView>(loginIcons[i])
+                    ?.setImageResource(R.drawable.ic_checkbox)
+            }
+        }
+
+        // Jika kemarin tidak ada mood → disable
+        val yesterday = today.minusDays(1)
+
+        for (i in 0..6) {
+            val date = weekStart.plusDays(i.toLong())
+
+            if (date == yesterday && !moodDates.contains(yesterday)) {
+                binding.root.findViewById<ImageView>(loginIcons[i])
+                    ?.setImageResource(R.drawable.disable_check)
             }
         }
     }
+
+    private fun updateHomePet(user: com.example.skripsta.data.entity.User) {
+
+        val unlockedPets =
+            user.unlockedPets.split(",").filter { it.isNotEmpty() }
+
+        // Jika belum ada pet yang terbuka
+        if (unlockedPets.isEmpty()) {
+            binding.imageView4.setImageResource(R.drawable.ic_ask)
+            return
+        }
+
+        // Ambil pet TERAKHIR (evolusi tertinggi)
+        val latestPetName = unlockedPets.last()
+
+        val drawableRes = resources.getIdentifier(
+            latestPetName,
+            "drawable",
+            requireContext().packageName
+        )
+
+        if (drawableRes != 0) {
+            binding.imageView4.setImageResource(drawableRes)
+        } else {
+            binding.imageView4.setImageResource(R.drawable.ic_ask)
+        }
+    }
+
+
 
     // Container untuk setiap tanggal di kalender
     inner class DayViewContainer(view: View) : ViewContainer(view) {

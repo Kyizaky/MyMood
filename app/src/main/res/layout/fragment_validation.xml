@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_validasi"
     android:layout_width="match_parent"
+    android:background="#D2DBE6"
     android:layout_height="match_parent">
 
     <ImageView

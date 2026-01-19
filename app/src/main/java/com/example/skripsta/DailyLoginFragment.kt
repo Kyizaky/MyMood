@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.skripsta.data.entity.User
 import com.example.skripsta.viewmodel.UserViewModel
 import com.example.skripsta.databinding.FragmentDailyLoginBinding
-import com.example.skripsta.utils.ClaimPrefsHelper
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -26,7 +25,7 @@ class DailyLoginFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private val dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val petDrawables = listOf("pet1", "pet2", "pet3")
-    private val pointsToEvolveList = listOf(7, 14, 30)
+    private val pointsToEvolveList = listOf(1, 14, 30)
     private var currentUserId: Int = 1
 
     override fun onCreateView(
@@ -152,9 +151,6 @@ class DailyLoginFragment : Fragment() {
                 ) {
                     // Tambah 1 poin streak
                     userViewModel.claimStreakPoints(currentUserId, 1)
-
-                    // Simpan tanggal klaim
-                    ClaimPrefsHelper.saveClaimDateToday(requireContext())
 
                     // Tampilkan notifikasi
                     Toast.makeText(requireContext(), "Claimed 1 point!", Toast.LENGTH_SHORT).show()

@@ -75,15 +75,6 @@ class PengaturanFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        // Tombol menuju halaman berbagi data
-        binding.btnShareData.setOnClickListener {
-            val action =
-                PengaturanFragmentDirections
-                    .actionPengaturanFragmentToShareFragment()
-
-            findNavController().navigate(action)
-        }
-
         // Tombol menuju halaman ekspor dan impor data
         binding.btnExportImportdata.setOnClickListener {
             val action =
