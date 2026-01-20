@@ -68,7 +68,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Meditation calms the mind and reduces stress"
+                            android:text="Recommendations for good moods and bad moods"
                             android:textSize="14sp"
                             android:fontFamily="@font/nunitosemibold"
                             android:textColor="#6D6D6D"
@@ -129,7 +129,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunitosemibold"
-                            android:text="Hold on, just breathe! Feeling better now?"
+                            android:text="Recommendations for good moods"
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
                             android:layout_marginTop="4dp" />
@@ -190,7 +190,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunitosemibold"
-                            android:text="Ground yourself helps you stay calm and present"
+                            android:text="Recommendations for good moods and bad moods"
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
                             android:layout_marginTop="4dp" />
@@ -251,7 +251,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nunitosemibold"
-                            android:text="Observe first means to pause, notice, and understand before reacting"
+                            android:text="Recommendations for bad moods"
                             android:textSize="14sp"
                             android:textColor="#6D6D6D"
                             android:layout_marginTop="4dp" />

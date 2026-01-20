@@ -25,7 +25,7 @@ class DailyLoginFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private val dbDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val petDrawables = listOf("pet1", "pet2", "pet3")
-    private val pointsToEvolveList = listOf(1, 14, 30)
+    private val pointsToEvolveList = listOf(7, 14, 30)
     private var currentUserId: Int = 1
 
     override fun onCreateView(
@@ -125,7 +125,7 @@ class DailyLoginFragment : Fragment() {
                 binding.tvPoints.text = when {
                     isFinalEvolution -> "Max evolution reached!"
                     it.points >= pointsToEvolve && canEvolveToNext -> "Go evolve"
-                    else -> "${pointsToEvolve - it.points} more total days to unlock the next stage"
+                    else -> "${pointsToEvolve - it.points} more Points to unlock the next stage"
                 }
 
                 // Update gambar pet

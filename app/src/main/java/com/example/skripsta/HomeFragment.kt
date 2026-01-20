@@ -15,10 +15,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.skripsta.data.entity.MoodEntry
+import com.example.skripsta.data.entity.User
 import com.example.skripsta.viewmodel.MoodEntryViewModel
 import com.example.skripsta.viewmodel.UserViewModel
 import com.example.skripsta.databinding.FragmentHomeBinding
-import com.example.skripsta.utils.ClaimPrefsHelper
 import com.example.skripsta.utils.MoodUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kizitonwose.calendar.core.*
@@ -27,7 +27,6 @@ import com.kizitonwose.calendar.view.ViewContainer
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 class HomeFragment : Fragment() {
@@ -49,7 +48,8 @@ class HomeFragment : Fragment() {
     // Set tanggal yang memiliki mood
     private val moodDates = mutableSetOf<LocalDate>()
 
-    private val petDrawables = listOf("pet1", "pet2", "pet3")
+    val petDrawables = listOf("pet1", "pet2", "pet3")
+    val pointsToEvolveList = listOf(7, 14, 30)
 
     // Daftar nama bulan
     private val monthsList = listOf(
@@ -250,14 +250,16 @@ class HomeFragment : Fragment() {
             binding.pointsText.text = "Total Day: ${moodEntries.map { it.tanggal }.distinct().size}"
 
             // Update pet di Home
-            user?.let { updateHomePet(it) }
+            user?.let {
+                updateHomePet(it)
+                updateHomePetProgress(it)
+            }
 
             updateWeeklyStatus()
         }
 
-
         // Navigasi ke daily login
-        binding.cardviewDaily.setOnClickListener {
+        binding.cardviewPet.setOnClickListener {
             findNavController()
                 .navigate(R.id.action_homeFragment_to_dailyLoginFragment)
         }
@@ -333,43 +335,51 @@ class HomeFragment : Fragment() {
 
     // Update checklist login mingguan
     private fun updateWeeklyStatus() {
-        // Reset semua icon
+
+        // Reset semua icon ke default
         loginIcons.forEach { iconId ->
             binding.root.findViewById<ImageView>(iconId)
                 ?.setImageResource(R.drawable.ic_nocheck)
         }
 
         val today = LocalDate.now()
-        val weekStart = today.minusDays((today.dayOfWeek.value % 7).toLong())
+        val yesterday = today.minusDays(1)
+        val weekStart = today.minusDays(today.dayOfWeek.value.toLong() % 7)
+        val weekEnd = weekStart.plusDays(6)
 
-        // Ambil semua tanggal mood
-        val moodDates: Set<LocalDate> = moodEntries
-            .mapNotNull { runCatching { LocalDate.parse(it.tanggal, dbFormatter) }.getOrNull() }
+        // Ambil mood hanya untuk minggu ini
+        val moodDatesThisWeek: Set<LocalDate> = moodEntries
+            .mapNotNull {
+                runCatching { LocalDate.parse(it.tanggal, dbFormatter) }.getOrNull()
+            }
+            .filter { it in weekStart..weekEnd }
             .toSet()
 
-        // Checklist per hari aktif
+        // Evaluasi tiap hari dalam minggu
         for (i in 0..6) {
             val date = weekStart.plusDays(i.toLong())
+            val iconView = binding.root.findViewById<ImageView>(loginIcons[i])
 
-            if (moodDates.contains(date)) {
-                binding.root.findViewById<ImageView>(loginIcons[i])
-                    ?.setImageResource(R.drawable.ic_checkbox)
-            }
-        }
+            when {
+                // ✅ Ada data mood
+                date <= today && moodDatesThisWeek.contains(date) -> {
+                    iconView?.setImageResource(R.drawable.ic_checkbox)
+                }
 
-        // Jika kemarin tidak ada mood → disable
-        val yesterday = today.minusDays(1)
+                // 🚫 Sudah lewat / hari ini tapi kosong
+                date <= yesterday && !moodDatesThisWeek.contains(date) -> {
+                    iconView?.setImageResource(R.drawable.disable_check)
+                }
 
-        for (i in 0..6) {
-            val date = weekStart.plusDays(i.toLong())
-
-            if (date == yesterday && !moodDates.contains(yesterday)) {
-                binding.root.findViewById<ImageView>(loginIcons[i])
-                    ?.setImageResource(R.drawable.disable_check)
+                // ⬜ Hari depan
+                else -> {
+                    iconView?.setImageResource(R.drawable.ic_nocheck)
+                }
             }
         }
     }
 
+    // Pet update
     private fun updateHomePet(user: com.example.skripsta.data.entity.User) {
 
         val unlockedPets =
@@ -397,7 +407,36 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun updateHomePetProgress(user: User) {
 
+        val currentIndex =
+            user.currentPetIndex.coerceIn(0, petDrawables.size - 1)
+
+        val isFinalEvolution =
+            currentIndex >= petDrawables.size - 1
+
+        if (isFinalEvolution) {
+            binding.petProgress.visibility = View.GONE
+            binding.petPoints.text = "Max evolution reached"
+            return
+        }
+
+        val pointsToEvolve = pointsToEvolveList[currentIndex]
+        val progress = user.points.coerceAtMost(pointsToEvolve)
+
+        // Progress bar
+        binding.petProgress.visibility = View.VISIBLE
+        binding.petProgress.max = pointsToEvolve
+        binding.petProgress.progress = progress
+
+        // Text info
+        val remaining = pointsToEvolve - user.points
+        binding.petPoints.text =
+            if (remaining > 0)
+                "$remaining more points to evolve"
+            else
+                "Ready to evolve!"
+    }
 
     // Container untuk setiap tanggal di kalender
     inner class DayViewContainer(view: View) : ViewContainer(view) {

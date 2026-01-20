@@ -24,7 +24,7 @@
             android:id="@+id/tv_streak_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Day"
+            android:text="Points"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:textColor="@color/black"

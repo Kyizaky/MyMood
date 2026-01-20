@@ -92,10 +92,13 @@ class RiwayatFragment : Fragment() {
 
         // Navigasi kembali ke HomeFragment
         binding.backHistory.setOnClickListener {
-            val action =
-                RiwayatFragmentDirections.actionRiwayatFragmentToHomeFragment()
-            findNavController().navigate(action)
+            findNavController().popBackStack(
+                R.id.homeFragment,
+                false
+            )
         }
+
+
 
         return binding.root
     }

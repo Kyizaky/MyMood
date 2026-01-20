@@ -33,7 +33,10 @@ class RiwayatTanggalFragment : Fragment() {
 
         // Tombol back ke Home
         binding.icBack.setOnClickListener {
-            findNavController().navigate(RiwayatTanggalFragmentDirections.actionRiwayatTanggalFragmentToHomeFragment())
+            findNavController().popBackStack(
+                R.id.homeFragment,
+                false
+            )
         }
 
         // Format tanggal di title

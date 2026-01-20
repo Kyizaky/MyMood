@@ -250,15 +250,6 @@
                             app:layout_constraintTop_toTopOf="@id/fireIcon"
                             app:layout_constraintVertical_bias="0.736" />
 
-                        <ImageView
-                            android:id="@+id/chev"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/chevron_right"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
@@ -435,6 +426,97 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardviewPet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                app:cardCornerRadius="7dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardviewDaily">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp">
+
+                        <ImageView
+                            android:id="@+id/iconPet"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_pet"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:contentDescription="Pet Icon"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/tvPet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunitosemibold"
+                            android:text="Pet Evolution Journey"
+                            android:textColor="#000000"
+                            android:textSize="15sp"
+                            android:layout_marginStart="5dp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="@id/iconPet"
+                            app:layout_constraintStart_toEndOf="@id/iconPet"
+                            app:layout_constraintTop_toTopOf="@id/iconPet"
+                            app:layout_constraintVertical_bias="0.736" />
+
+                        <ImageView
+                            android:id="@+id/chev"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/chevron_right"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/pet_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="8dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="10dp"
+                        android:max="100"
+                        app:indicatorColor="#6B4EFF"
+                        app:trackColor="#E2E8F0"
+                        app:trackCornerRadius="4dp"
+                        app:trackThickness="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_evolve" />
+
+                    <TextView
+                        android:id="@+id/petPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="Pet evolutions"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/nunitosemibold"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="100dp"
@@ -445,7 +527,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardviewDaily"
+                app:layout_constraintTop_toBottomOf="@+id/cardviewPet"
                 app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

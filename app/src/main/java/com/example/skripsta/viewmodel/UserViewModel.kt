@@ -80,7 +80,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             val user = repository.getUserById(userId) ?: return@launch
             val updatedPets = if (user.unlockedPets.isEmpty()) newPetDrawable else "${user.unlockedPets},$newPetDrawable"
-            repository.updateUnlockedPets(userId, updatedPets, user.currentPetIndex + 1)
+            val updatedUser = user.copy(
+                unlockedPets = updatedPets,
+                currentPetIndex = user.currentPetIndex + 1,
+                points = 0 //
+            )
+            repository.updateUser(updatedUser)
         }
     }
 

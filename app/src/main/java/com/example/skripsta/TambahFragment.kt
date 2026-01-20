@@ -119,19 +119,29 @@ class TambahFragment : Fragment() {
 
         // Date picker
         btnCal.setOnClickListener {
+
+            val todayCalendar = Calendar.getInstance()
+
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
                     val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                    btnCal.setText(MoodUtils.formatCal(selectedDate.format(dateFormatter)))
+                    btnCal.setText(
+                        MoodUtils.formatCal(selectedDate.format(dateFormatter))
+                    )
                     updateSaveButtonState(view)
                 },
                 today.year,
                 today.monthValue - 1,
                 today.dayOfMonth
             )
+
+            // 🚫 Batasi agar tidak bisa memilih tanggal masa depan
+            datePickerDialog.datePicker.maxDate = todayCalendar.timeInMillis
+
             datePickerDialog.show()
         }
+
 
         // Setup komponen UI
         setupMoodButtons(view)
