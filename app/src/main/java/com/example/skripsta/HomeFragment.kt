@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -81,14 +82,13 @@ class HomeFragment : Fragment() {
         // Setup kalender
         val currentMonth = YearMonth.now()
         val currentYear = LocalDate.now().year
-        val firstDayOfWeek = firstDayOfWeekFromLocale()
         val calendarView = binding.calendarView
 
         // Konfigurasi rentang kalender
         calendarView.setup(
             startMonth = YearMonth.of(currentYear, 1),
             endMonth = YearMonth.of(currentYear + 5, 12),
-            firstDayOfWeek = firstDayOfWeek
+            firstDayOfWeek = DayOfWeek.SUNDAY
         )
 
         // Scroll ke bulan saat ini
