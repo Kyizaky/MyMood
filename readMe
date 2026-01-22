@@ -1,0 +1,63 @@
+Mood Tracking Application is an Android-based application designed to help users record, monitor, and analyze their daily moods and activities. 
+This application aims to increase self-awareness of emotional patterns and support mental well-being through structured mood tracking and visual insights.
+
+📱 Features
+Daily Mood Tracking:
+Users can record their daily mood along with feelings and activities.
+
+Mood History:
+View past mood records organized by date in a calendar or list format.
+
+Statistics & Visualization:
+Displays mood trends using charts and summaries to help users understand emotional patterns over time.
+
+Activity & Feeling Management:
+Users can add and manage custom activities and feelings stored locally.
+
+Data Export & Import:
+Export mood data to CSV / PDF / Excel and re-import data when needed.
+
+Offline Storage:
+All data is stored locally using Room Database, ensuring privacy and offline access.
+
+🛠️ Tech Stack
+Platform: 
+Android
+
+Language: 
+Kotlin
+
+Architecture:
+MVVM (Model–View–ViewModel)
+
+Database: 
+Room (SQLite)
+
+UI Components:
+RecyclerView
+Fragment
+Material Design
+Data Visualization: Chart Library
+
+Data Storage:
+Room Database
+SharedPreferences (for lightweight data)
+
+🔄 Application Flow:
+User selects mood, feeling, and activity
+Data is stored in local database
+Mood history and statistics are generated automatically
+Users can export or import data as needed
+
+🎯 Purpose:
+This application is developed as part of an academic project to support:
+Mood self-monitoring
+Mental health awareness
+Research on mood pattern analysis using mobile applications
+
+🚀 Installation:
+Clone this repository:
+git clone https://github.com/yourusername/mood-tracking-app.git
+Open the project in Android Studio
+Sync Gradle
+Run the app on an emulator or physical device
