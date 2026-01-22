@@ -57,7 +57,7 @@ Research on mood pattern analysis using mobile applications
 
 🚀 Installation:
 Clone this repository:
-git clone https://github.com/yourusername/mood-tracking-app.git
+git clone https://github.com/Kyizaky/MyMood.git
 Open the project in Android Studio
 Sync Gradle
 Run the app on an emulator or physical device
