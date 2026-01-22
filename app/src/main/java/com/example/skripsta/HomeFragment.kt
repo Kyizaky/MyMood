@@ -227,6 +227,9 @@ class HomeFragment : Fragment() {
             moodEntries = entries
             moodDates.clear()
             updateWeeklyStatus()
+            // Update total day
+            binding.pointsText.text = "Total Day: ${moodEntries.map { it.tanggal }.distinct().size}"
+
 
             moodDates.addAll(entries.mapNotNull {
                 try {
@@ -245,9 +248,9 @@ class HomeFragment : Fragment() {
         // Observasi data user
         userViewModel.readAllData.observe(viewLifecycleOwner) { userList ->
             val user = userList.find { it.id == userId }
-
             // Update total day
             binding.pointsText.text = "Total Day: ${moodEntries.map { it.tanggal }.distinct().size}"
+
 
             // Update pet di Home
             user?.let {
